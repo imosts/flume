@@ -49,6 +49,7 @@ public:
   str to_str (armor_type_t typ = ARMOR_16) const;
   bool from_str (const str &s);
 
+//unshift()函数？？？ 
   handle_prefix_t type () const { return unshift (_value); }
   handle_prefix_t prefix () const { return type (); }
   u_int64_t basevalue () const { return mask (_value); }
