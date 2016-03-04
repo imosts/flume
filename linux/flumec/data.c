@@ -34,7 +34,6 @@
 #include "flume_clnt.h"
 #include "flume_internal.h"
 
-//ÕÒµ½x_handle_tµÄ¶¨Òå£¡£¡£¡
 x_handle_t
 handle_construct (handle_prefix_t prfx, x_handle_t base)
 {
@@ -162,12 +161,12 @@ labelset_copy (x_labelset_t *out, const x_labelset_t *in)
   int rc = 0;
   rc = labelset_set_S (out, labelset_get_S ((x_labelset_t *)in));
   if (rc == 0) rc = labelset_set_I (out, labelset_get_I ((x_labelset_t *)in));
-  //O¼¯ºÏ²¿·Ö OiºÍOs?
+  //Oé›†åˆéƒ¨åˆ† Oiå’ŒOs?
   if (rc == 0) rc = labelset_set_O (out, labelset_get_O ((x_labelset_t *)in));
   return rc;
 }
 
-//filter ÊÇÉ¶£¿£¿£¿
+//filter æ˜¯å•¥ï¼Ÿï¼Ÿï¼Ÿ
 int
 filter_copy (x_filter_t *in, const x_filter_t *out)
 {
@@ -186,7 +185,6 @@ labelset_alloc (void)
   return r;
 }
 
-//label_copy()¶¨ÒåÔÚÄÄ£¿
 int
 labelset_set_S (x_labelset_t *ls, const x_label_t *s)
 {
@@ -208,7 +206,7 @@ labelset_set_O (x_labelset_t *ls, const x_label_t *o)
     ls->O = label_clone (o);
     return ls->O ? 0 : -1;
   } else if (ls->O) {
-	  //´Ë´¦£¿£¿£¿
+	  //æ­¤å¤„ï¼Ÿï¼Ÿï¼Ÿ
     label_clear (ls->O);
     return 0;
   } else {
