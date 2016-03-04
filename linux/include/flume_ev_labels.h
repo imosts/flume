@@ -59,6 +59,8 @@ public:
   bool operator== (const handle_t &h) const { return _value == h.value (); }
   bool operator!= (const handle_t &h) const { return _value != h.value (); }
 
+
+  //此处const 和 ::
   bool is_group () const { return ::is_group (type ()); }
   bool is_persistent () const { return ::is_persistent (type ()); }
   bool is_valid () const { return ::is_valid (type()); }
