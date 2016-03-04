@@ -11,6 +11,7 @@
 
 typedef unsigned hyper x_handle_t;
 typedef unsigned hyper x_caph_t;
+//此处的<>是什么意思？？？
 typedef x_handle_t x_label_t<>;
 typedef x_label_t x_handlevec_t;
 typedef unsigned handle_prefix_t;
