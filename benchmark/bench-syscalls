@@ -1,0 +1,52 @@
+#!/usr/local/bin/bash
+#
+# Running syscall micro benchmarks:
+#  1) Start RM
+#  2) Run this script
+
+if [ $# -ne 7 ]; then
+  echo "usage: bench-syscalls output_dir rodir rwdir flush_size_mb num_dirs dir_reps file_reps"
+  exit 1;
+fi
+
+OUTPUTDIR=$1
+RODIR=$2
+RWDIR=$3
+FLUSHSIZE=$4
+NUMDIRS=$5
+DIRREPS=$6
+FILEREPS=$7
+
+#CREATERO=""
+
+TAG=`traz-cfg tag`
+RLIB=`traz-cfg rlib`
+
+ulimit -n 1024
+
+if [ -n "$CREATERO" ]; then
+
+rm -rf $RODIR/obsd/d*
+rm -rf $RODIR/traz/d*
+
+`traz-cfg bin`/syscall-bench-linux \
+  createfiles $RODIR/obsd $RWDIR/obsd $FLUSHSIZE $NUMDIRS $DIRREPS $FILEREPS
+
+`traz-cfg bin`/syscall-bench-linux \
+  createfiles $RODIR/traz $RWDIR/traz $FLUSHSIZE $NUMDIRS $DIRREPS $FILEREPS
+
+else
+
+rm -rf $RWDIR/obsd/d*
+rm -rf $RWDIR/traz/d*
+
+echo "linux"
+`traz-cfg bin`/syscall-bench-linux \
+  obsd $RODIR/obsd $RWDIR/obsd $FLUSHSIZE $NUMDIRS $DIRREPS $FILEREPS
+
+echo "traz"
+LD_LIBRARY_PATH=$RLIB TRAZ_SOCKET=`traz-cfg socket` \
+`traz-cfg bin`/syscall-bench-traz \
+  traz $RODIR/traz $RWDIR/traz $FLUSHSIZE $NUMDIRS $DIRREPS $FILEREPS
+
+fi

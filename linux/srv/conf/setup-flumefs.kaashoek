@@ -1,0 +1,30 @@
+#! /usr/local/bin/bash
+
+export BUILD=/home/kaashoek/flume/build
+
+mkdir flumefs
+cd flumefs
+mkdir usr
+mkdir home
+mkdir usr/lib
+mkdir usr/libexec
+
+ln -s /usr/local/lib/sfslite/shdbg/libarpc.so.0.0 usr/lib/libarpc.so.0.0
+ln -s /usr/local/lib/sfslite/shdbg/libasync.so.0.0 usr/lib/libasync.so.0.0
+ln -s $BUILD/libc/libc.so.39.0 usr/lib/libc.so.39.0
+ln -s /usr/local/lib/libgmp.so.6.3 usr/lib/libgmp.so.6.3               
+ln -s /usr/lib/libm.so.2.1 usr/lib/libm.so.2.1 
+ln -s /usr/local/lib/sfslite/shdbg/libsfscrypt.so.0.0 usr/lib/libsfscrypt.so.0.0
+ln -s /usr/local/lib/sfslite/shdbg/libsfsmisc.so.0.0 usr/lib/libsfsmisc.so.0.0
+ln -s /usr/lib/libstdc++.so.42.0 usr/lib/libstdc++.so.42.0
+ln -s /usr/local/lib/sfslite/shdbg/libtame.so.0.0 usr/lib/libtame.so.0.0 
+ln -s $BUILD/rm/libflume/.libs/libflume.so.0.0 usr/lib/libflume.so.0.0
+ln -s $BUILD/rm/prot/.libs/libflumeprot.so.0.0 usr/lib/libflumeprot.so.0.0
+ln -s $BUILD/rm/libuntrusted/.libs/libuntrusted.so.0.0 usr/lib/libuntrusted.so.0.0
+
+ln -s $BUILD/ld.so/ld.so usr/libexec/ay.so
+ln -s /usr/libexec/ld.so usr/libexec/ld.so
+
+echo "helllllo!" > home/testfile
+ 
+ln -s $BUILD/ld.so/ld.so /usr/libexec/ay.so 

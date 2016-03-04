@@ -1,0 +1,39 @@
+
+Next Generation Frankenbuild System for Traz
+
+
+1. Build SFS libraries as before  (automake/autoconf/gmake)
+   - Can be out of directory.
+
+2. Build ld.so 
+   A. build glibc (autoconf/gmake with plash sh script wrappers).
+      - In a local object directory, which can link off-disk to a local
+        drive.
+   B. build c/h stubs for traz_prot.x (rpcgen or arcpgen [sfs])
+      - Probably local build.
+   C. build traz-specific ld.so routines (??)
+   D. glibc additions like rtld-sendmsg.os (Plash's perl/sh)
+   E. ld.so itself (Plash's perl/sh)
+
+ Notes: Might not need arpcgen here; the regular rpcgen built with glibc
+ might be sufficient. Leaning toward doing step 2C with Plash's weird
+ perl-based make-equivalent. 
+
+ 5.3.07: Examined, in glibc-2.5, which symbols would be needed for a 
+ traz-compatible ld.so.  As far as I can tell:
+
+	__open == __libc_open == open
+	__xstat64 == ___xstat64 
+
+
+3. Build RM binaries (automake/autoconf/gmake)
+  - Link against SFS libraries 
+  - Can be out-of-directory
+  - Factored out, though, so that it's only building C++ now.
+
+4. traz-rt-libs (gmake)
+  - Traz runtime libs (in C)
+  - Hopefully one library, with interposition and trazclntc stubs.
+
+5. python libs (gmake , python install)
+  - swig as usual

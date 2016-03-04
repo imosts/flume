@@ -1,0 +1,10 @@
+
+DbHost		127.0.0.1
+DbName		idd_db
+DbUser		idd_user
+DbPassword	asdfqwer
+NumThreads	4
+Port		38423
+
+Seed		i3jdfioj33434234i9sdafoijsjlqhweruiadfio3oaef
+MaxQLen		10248

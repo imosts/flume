@@ -1,0 +1,140 @@
+diff -r -u ../glibc-2.4.old/elf/dl-load.c ./elf/dl-load.c
+--- ../glibc-2.4.old/elf/dl-load.c	20035G5-10-17 16:59:28.000000000 -0400
++++ ./elf/dl-load.c	2007-06-26 12:22:08.000000000 -0400
+@@ -28,6 +28,7 @@
+ #include <ldsodefs.h>
+ #include <bits/wordsize.h>
+ #include <sys/mman.h>
++#include "flume-ld-so-interpose.h"
+ #include <sys/param.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+diff -r -u ../glibc-2.4.old/elf/dl-misc.c ./elf/dl-misc.c
+--- ../glibc-2.4.old/elf/dl-misc.c	2004-07-06 00:16:01.000000000 -0400
++++ ./elf/dl-misc.c	2007-06-26 15:01:01.000000000 -0400
+@@ -26,6 +26,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include "flume-ld-so-interpose.h"
+ #include <sys/mman.h>
+ #include <sys/param.h>
+ #include <sys/stat.h>
+diff -r -u ../glibc-2.4.old/elf/dl-support.c ./elf/dl-support.c
+--- ../glibc-2.4.old/elf/dl-support.c	2005-05-11 13:27:22.000000000 -0400
++++ ./elf/dl-support.c	2007-06-26 15:01:23.000000000 -0400
+@@ -27,6 +27,7 @@
+ #include <ldsodefs.h>
+ #include <dl-machine.h>
+ #include <bits/libc-lock.h>
++#include "flume-ld-so-interpose.h"
+ #include <dl-cache.h>
+ #include <dl-librecon.h>
+ #include <unsecvars.h>
+diff -r -u ../glibc-2.4.old/elf/Makefile ./elf/Makefile
+--- ../glibc-2.4.old/elf/Makefile	2006-03-01 01:18:26.000000000 -0500
++++ ./elf/Makefile	2007-06-26 12:22:08.000000000 -0400
+@@ -28,6 +28,7 @@
+ # The core dynamic linking functions are in libc for the static and
+ # profiled libraries.
+ dl-routines	= $(addprefix dl-,load cache lookup object reloc deps \
++				flume-interpose \
+ 			          runtime error init fini debug misc \
+ 				  version profile conflict tls origin \
+ 				  execstack caller open close trampoline)
+diff -r -u ../glibc-2.4.old/elf/rtld.c ./elf/rtld.c
+--- ../glibc-2.4.old/elf/rtld.c	2005-12-30 02:22:27.000000000 -0500
++++ ./elf/rtld.c	2007-06-26 15:03:20.000000000 -0400
+@@ -26,6 +26,7 @@
+ #include <unistd.h>
+ #include <sys/mman.h>		/* Check if MAP_ANON is defined.  */
+ #include <sys/param.h>
++#include "flume-ld-so-interpose.h"
+ #include <sys/stat.h>
+ #include <ldsodefs.h>
+ #include <stdio-common/_itoa.h>
+diff -r -u ../glibc-2.4.old/sunrpc/xdr_array.c ./sunrpc/xdr_array.c
+--- ../glibc-2.4.old/sunrpc/xdr_array.c	2005-07-20 13:50:28.000000000 -0400
++++ ./sunrpc/xdr_array.c	2007-06-26 12:22:08.000000000 -0400
+@@ -44,7 +44,6 @@
+ #include <string.h>
+ #include <rpc/types.h>
+ #include <rpc/xdr.h>
+-#include <libintl.h>
+ #include <limits.h>
+ 
+ #ifdef USE_IN_LIBIO
+@@ -105,7 +104,6 @@
+ 	*addrp = target = mem_alloc (nodesize);
+ 	if (target == NULL)
+ 	  {
+-	    (void) __fxprintf (NULL, "%s", _("xdr_array: out of memory\n"));
+ 	    return FALSE;
+ 	  }
+ 	__bzero (target, nodesize);
+diff -r -u ../glibc-2.4.old/sunrpc/xdr.c ./sunrpc/xdr.c
+--- ../glibc-2.4.old/sunrpc/xdr.c	2005-07-20 13:50:28.000000000 -0400
++++ ./sunrpc/xdr.c	2007-06-26 12:22:08.000000000 -0400
+@@ -44,7 +44,6 @@
+ #include <stdio.h>
+ #include <limits.h>
+ #include <string.h>
+-#include <libintl.h>
+ 
+ #include <rpc/types.h>
+ #include <rpc/xdr.h>
+@@ -563,7 +562,6 @@
+ 	}
+       if (sp == NULL)
+ 	{
+-	  (void) __fxprintf (NULL, "%s", _("xdr_bytes: out of memory\n"));
+ 	  return FALSE;
+ 	}
+       /* fall into ... */
+@@ -715,7 +713,6 @@
+ 	*cpp = sp = (char *) mem_alloc (nodesize);
+       if (sp == NULL)
+ 	{
+-	  (void) __fxprintf (NULL, "%s", _("xdr_string: out of memory\n"));
+ 	  return FALSE;
+ 	}
+       sp[size] = 0;
+diff -r -u ../glibc-2.4.old/sunrpc/xdr_rec.c ./sunrpc/xdr_rec.c
+--- ../glibc-2.4.old/sunrpc/xdr_rec.c	2005-07-20 13:50:28.000000000 -0400
++++ ./sunrpc/xdr_rec.c	2007-06-26 12:22:08.000000000 -0400
+@@ -48,7 +48,6 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <rpc/rpc.h>
+-#include <libintl.h>
+ 
+ #ifdef USE_IN_LIBIO
+ # include <wchar.h>
+@@ -153,7 +152,6 @@
+ 
+   if (rstrm == NULL || buf == NULL)
+     {
+-      (void) __fxprintf (NULL, "%s", _("xdrrec_create: out of memory\n"));
+       mem_free (rstrm, sizeof (RECSTREAM));
+       mem_free (buf, sendsize + recvsize + BYTES_PER_XDR_UNIT);
+       /*
+diff -r -u ../glibc-2.4.old/sunrpc/xdr_ref.c ./sunrpc/xdr_ref.c
+--- ../glibc-2.4.old/sunrpc/xdr_ref.c	2005-07-20 13:50:28.000000000 -0400
++++ ./sunrpc/xdr_ref.c	2007-06-26 12:22:08.000000000 -0400
+@@ -44,7 +44,6 @@
+ #include <string.h>
+ #include <rpc/types.h>
+ #include <rpc/xdr.h>
+-#include <libintl.h>
+ 
+ #ifdef USE_IN_LIBIO
+ # include <wchar.h>
+@@ -82,8 +81,6 @@
+ 	*pp = loc = (caddr_t) mem_alloc (size);
+ 	if (loc == NULL)
+ 	  {
+-	    (void) __fxprintf (NULL, "%s",
+-			       _("xdr_reference: out of memory\n"));
+ 	    return FALSE;
+ 	  }
+ 	__bzero (loc, (int) size);

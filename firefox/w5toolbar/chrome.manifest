@@ -1,0 +1,7 @@
+content   w5toolbar  chrome/chromeFiles/content/ 
+
+locale    w5toolbar  en-US   chrome/chromeFiles/locale/en-US/w5toolbar/
+
+overlay   chrome://browser/content/browser.xul   chrome://w5toolbar/content/w5toolbar-overlay.xul
+
+

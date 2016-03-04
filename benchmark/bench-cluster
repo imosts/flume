@@ -1,0 +1,43 @@
+#!/usr/local/bin/bash
+
+NREQ=10000
+NUSERS=20
+NPAGES=200
+HOST=18.26.4.6
+REST=1
+#LOGINFLAG="-H tmoin_tpwlist.hydra1"
+
+SERVER=$HOST:8000
+TYPE=tmoincli
+NODES="1 2 3 4"
+#NODES="4"
+CONCUR="1"
+
+read_test () {
+    for C in $CONCUR
+      do
+      sleep $REST
+      FILE=moincluster-$N-$NUSERS-$NPAGES-$NREQ-$C-$HOST
+      rm -f $FILE
+
+      ./ascli -e $FILE -c $C -n $NREQ -N $N $TYPE $LOGINFLAG -p moin/TestPage -r $NPAGES $SERVER > /dev/null
+      
+      tail -1 $FILE | perl -ne '/bad_responses=(\d+)/; if ($1 > 0) {printf STDERR "Bad Responses!\n";}'
+      
+      THROUGHPUT=`tail -2 $FILE | head -1 | perl -ne '/(\d+),(\d+),(\d+)/; printf "%f", $2/($3/1000000);'`
+      LATENCY=`head -$NREQ $FILE | stats.pl -f | perl -ne '/(\S+) (\S+) (\S+)/; printf "%9.6f %9.6f %9.6f", $1/1000000, $2/1000000, $3/1000000,'`
+      echo "$N $NUSERS $NPAGES $NREQ $C $THROUGHPUT $LATENCY read"
+    done
+}
+
+usage () {
+    echo "usage: bench-moin {-m | -t} server_ip"
+    exit 1
+}
+
+
+for N in $NODES
+  do
+  read_test
+done
+

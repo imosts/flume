@@ -1,0 +1,14 @@
+<h1>W5 Blogger: Uploader</h1>
+
+<a href="{{urlprefix}}/upload/newblog/{{ new_page_id }}/">Create a new Blog</a>
+
+<h2>Your Blogs</h2>
+{% if blog_includes %}
+    <ul>
+    {% for b in blog_includes %}
+       <li>{{ b }}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No blogs.</p>
+{% endif %}

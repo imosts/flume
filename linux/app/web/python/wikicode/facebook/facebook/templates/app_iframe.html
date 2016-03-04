@@ -1,0 +1,84 @@
+<script language="Javascript">
+
+{% for dat in app_data.items %}
+
+  function make_row (x, y, typ) {
+    var row = document.createElement ("tr");
+    var td1 = document.createElement (typ);
+    var td2 = document.createElement (typ);
+    td1.appendChild (x);
+    td2.appendChild (y);
+    row.appendChild (td1);
+    row.appendChild (td2);
+    return row;
+  }
+
+  function switch_app_{{ dat.0 }} () {
+    list = document.getElementById ("app_menu");
+    while (list.firstChild)
+      list.removeChild (list.firstChild);
+
+    var anchor;
+
+    var x = document.createElement ("span");
+    var y = document.createElement ("span");
+    y.innerHTML = "Who may see it";
+    x.innerHTML = "Action";
+    list.appendChild (make_row (x, y, "th"));
+
+
+    {% for link in dat.1 %}
+      anchor = document.createElement ("a")
+      anchor.setAttribute ("id", "{{ link.elem_id }}");
+      anchor.setAttribute ("href", "javascript: iframe_load ('{{ link.url }}', '{{ link.elem_id }}')");
+      anchor.innerHTML = "{{ link.link_name }}";
+      hint = document.createElement ("span");
+      hint.setAttribute ("id", "{{ link.elem_id }}_hint");
+      hint.innerHTML = " ({{ link.link_hint }})"
+      list.appendChild (make_row (anchor, hint, "td"));
+    {% endfor %}
+
+  }
+
+{% endfor %}
+
+function iframe_load (s, link_id) {
+  var links = document.getElementById ("app_menu");
+  for (var i=0; i<links.childNodes.length; i++) {
+      var row = links.childNodes[i];
+      for (var j=0; j<row.childNodes.length; j++) {
+          var td = row.childNodes[j];
+          e = td.childNodes[0];
+          e.setAttribute ("style", "");
+      }
+  }  
+
+  link = document.getElementById (link_id);
+  link.setAttribute ("style", "font-weight: bold");
+  hint = document.getElementById (link_id + "_hint");
+  hint.setAttribute ("style", "font-weight: bold");
+
+  iframe = document.getElementById ("app_iframe");
+  iframe.src = s;
+}
+</script>
+
+
+<table>
+<tr>
+<td valign="top">
+  <p>Safebook Apps:
+  <ul id="app_list">
+  {% for dat in app_data.items %}
+  <li><a id="use_{{ dat.0 }}" href="javascript: switch_app_{{ dat.0 }}();">{{ dat.0 }}</a>
+  {% endfor %}
+  </ul>
+
+  <p>
+  <table id="app_menu" width="300" border="1"></table>
+
+</td>
+<td>
+<iframe id="app_iframe" height="400" width="600" src="about:blank">iframes don't work!</iframe>
+</td>
+</table>

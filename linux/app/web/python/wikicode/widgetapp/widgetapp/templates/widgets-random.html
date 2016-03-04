@@ -1,0 +1,33 @@
+<script type='text/javascript'>
+//<![CDATA[
+var _yourBlogUrl = "{{ feed_posts_url }}";
+
+function randomPost() {
+  var script = document.createElement("script");
+  script.setAttribute("type", "text/javascript");
+  var theUrl = _yourBlogUrl;
+  script.setAttribute("src", theUrl);
+  document.documentElement.firstChild.appendChild(script);
+};
+
+function getTotalPostsCallback(json) {
+   var randomNumber = Math.floor((Math.random() * 3) + 1);
+   var script2 = document.createElement("script");
+   script2.setAttribute("type", "text/javascript");
+   var theUrl = _yourBlogUrl;
+   script2.setAttribute("src", theUrl);
+   document.documentElement.firstChild.appendChild(script2);
+};
+
+function getTheUrlCallback(json) {
+   var theUrl = json.feed.entry[0].summary.$t;
+   output = document.getElementById("random");
+   output.innerHTML = output.innerHTML + theUrl;
+}
+//]]>
+
+randomPost();
+</script>
+
+<div id="random">
+</div>

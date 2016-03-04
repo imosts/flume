@@ -1,0 +1,412 @@
+#!/bin/sh
+
+#
+# A flume script to get your (meaning max, yipal, natan, whomever's) 
+# flume prefix.
+#
+
+prog=$0
+
+usage()
+{
+    echo "Usage: $prog ( runprefix | root | user | group | socket |" 1>&2
+    echo "            pyvers | tag | srcdir | rlib | lib | bin | srvbin |" 1>&2
+    echo "            pybin | include | include-ev | testbin | kodir |" 1>&2
+    echo "            apacheport | apachesslport | proxyport | w5domain |" 1>&2
+    echo "            httpdir | oflags | dmalloc | pylib |" 1>&2
+    echo "            pypath | confdir | prefix | iddhost | iddport | pghost )" 1>&2
+    exit 1
+}
+
+if [ $# -lt 1 ] 
+then
+    usage
+fi
+
+ARG=$1
+
+if [ -f ~/.flume ]
+then
+    . ~/.flume
+fi
+
+print_root()
+{
+    if test "${FLUME_GLOBAL}" -o `whoami` = "root" ; then
+	echo 1
+    else
+	echo 0
+    fi
+}
+
+print_user()
+{
+    if test "${FLUME_USER}" ; then
+	echo ${FLUME_USER}
+    else
+	echo ${USER}
+    fi
+}
+
+print_prefix()
+{
+    if test "${FLUME_PREFIX}" ; then
+	echo ${FLUME_PREFIX}
+    elif test "${FLUME_GLOBAL}" ; then
+	echo /usr/local/flume
+    else
+	echo /disk/`print_user`/flume
+    fi
+}
+
+print_iddhost()
+{
+    if test "${FLUME_IDDHOST}" ; then
+	echo ${FLUME_IDDHOST}
+    else
+	echo 127.0.0.1
+    fi
+}
+
+print_iddport()
+{
+    if test "${FLUME_IDDPORT}" ; then
+	echo ${FLUME_IDDPORT}
+    else
+	echo 38423
+    fi
+}
+
+print_pghost()
+{
+    if test "${FLUME_PGHOST}" ; then
+	echo ${FLUME_PGHOST}
+    else
+	echo 127.0.0.1
+    fi
+}
+
+print_runprefix()
+{
+    echo `print_prefix`/run
+}
+
+print_group()
+{
+    if test "${FLUME_GROUP}" ; then
+	echo ${FLUME_GROUP}
+    else
+	echo "users"
+    fi
+}
+
+print_socket()
+{
+    if test "${FLUME_GLOBAL}"; then
+	echo "/tmp/flume.sock"
+    else
+	echo "/tmp/flumesock."`print_user`
+    fi
+}
+
+print_tag()
+{
+    if test "${FLUME_TAG}"; then
+	echo "${FLUME_TAG}"
+    else
+	echo "shared"
+    fi
+}
+
+print_pybin()
+{
+    echo `print_runprefix`/pybin/
+}
+
+print_testbin()
+{
+    echo `print_runprefix`/testbin/
+
+}
+
+print_srcdir()
+{
+    if test "${FLUME_SRC}"; then
+	echo "${FLUME_SRC}"
+    else
+	echo "ERROR, undefined FLUME_SRC!" >&2
+	exit 2
+    fi
+}
+
+print_kodir()
+{
+    echo `print_runprefix`/modules/
+}
+
+
+print_flume_loc()
+{
+    echo `print_runprefix`/$1/`print_tag`/
+}
+
+print_lib()
+{
+    print_flume_loc lib
+}
+
+print_rlib()
+{
+    print_flume_loc rlib
+}
+
+print_bin()
+{
+    echo `print_runprefix`/bin/
+}
+
+print_srvbin()
+{
+    print_flume_loc bin
+}
+
+print_pyvers()
+{
+    python='python'
+    if test "$1" ; then
+	python=$1
+    fi
+    V=`${python} -c 'import sys; \
+                   print ".".join ([str(x) for x in sys.version_info[0:2]])'`
+    if [ $? -ne 0 ] ; then
+	echo "executing '${python}' failed" 1>&2
+	exit 2
+    fi
+    echo $V
+}
+
+print_pypath()
+{
+    V=`print_pyvers $1`
+    echo `print_runprefix`/lib/python$V/site-packages/
+}
+
+print_pylib()
+{
+    V=`print_pyvers $1`
+    echo `print_runprefix`/lib/python$V/site-packages/
+}
+
+print_oflags()
+{
+    tag=`print_tag`
+    FL=""
+    case $tag in
+	shopt|optmz)
+	    FL='-O2'
+	    ;;
+    esac
+    echo $FL
+}
+
+print_dmalloc()
+{
+    tag=`print_tag`
+    L=""
+    case $tag in
+	shdbg|debug)
+	    L="-L/usr/lib -ldmalloc"
+	    ;;
+    esac
+    echo $L
+}
+
+print_include()
+{
+    print_flume_loc include
+}
+
+print_include_ev()
+{
+    echo `print_flume_loc include`ev/
+}
+
+print_proxyport()
+{
+    if test "${FLUME_PROXYPORT}" ; then
+	echo ${FLUME_PROXYPORT}
+    else
+	echo "7000"
+    fi
+}
+
+print_apacheport()
+{
+    if test "${FLUME_APACHEPORT}" ; then
+	echo ${FLUME_APACHEPORT}
+    else
+	echo "7001"
+    fi
+}
+
+print_apachesslport()
+{
+    if test "${FLUME_APACHESSLPORT}" ; then
+	echo ${FLUME_APACHESSLPORT}
+    else
+	echo "7002"
+    fi
+}
+
+print_w5domain()
+{
+    if test "${FLUME_W5DOMAIN}" ; then
+	echo ${FLUME_W5DOMAIN}
+    else
+	echo `hostname -f`
+    fi
+}
+
+print_httpdir()
+{
+    echo `print_srcdir`/../httpd/
+}
+
+print_confdir()
+{
+    echo `print_prefix`/conf/
+
+}
+
+case $ARG in
+
+    include)
+	print_include
+	;;
+
+    include-ev)
+	print_include_ev
+	;;
+
+    pybin)
+	print_pybin
+	;;
+
+    pyvers)
+	print_pyvers $2
+	;;
+
+    pylib)
+	print_pylib $2
+	;;
+
+    pypath)
+	print_pypath $2
+	;;
+
+    lib)
+	print_lib
+	;;
+
+    bin)
+	print_bin
+	;;
+
+    rlib)
+	print_rlib
+	;;
+
+    testbin)
+	print_testbin
+	;;
+
+    srvbin)
+	print_srvbin
+	;;
+
+    runprefix)
+	print_runprefix
+	;;
+
+    prefix)
+	print_prefix
+	;;
+
+    root)
+	print_root
+	;;
+
+    user)
+	print_user
+	;;
+
+    group)
+	print_group
+	;;
+
+    socket)
+	print_socket
+	;;
+
+    tag)
+	print_tag
+	;;
+
+    srcdir)
+	print_srcdir
+	;;
+
+    kodir)
+	print_kodir
+	;;
+
+    proxyport)
+        print_proxyport
+        ;;
+
+    apacheport)
+        print_apacheport
+        ;;
+
+    apachesslport)
+        print_apachesslport
+        ;;
+
+    w5domain)
+        print_w5domain
+        ;;
+
+    httpdir)
+        print_httpdir
+        ;;
+
+    oflags)
+	print_oflags
+	;;
+
+    dmalloc)
+	print_dmalloc
+	;;
+
+    confdir)
+	print_confdir
+	;;
+
+    iddport)
+	print_iddport
+	;;
+
+    iddhost)
+	print_iddhost
+	;;
+
+    pghost)
+        print_pghost
+        ;;
+
+    *)
+	usage
+	;;
+esac
+
+

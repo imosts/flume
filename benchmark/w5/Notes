@@ -1,0 +1,640 @@
+
+
+W5Proxy at 18.26.4.60:8000
+
+./ascli -e foo -c 1 -n 10 w5cli 18.26.4.60:8000 > /dev/null ; tail -2 foo | head -1 | perl -ne '/(\d+),(\d+),(\d+)/; printf "%f\n", $2/($3/1000000);'
+
+
+./ascli -c 1 -n 1 w5cli 18.26.4.60:8000
+
+python bench-w5.py
+python bench-w5.py -f login_info
+
+
+-----------------------------------------------------------------------------------------------
+4-19-08  DBV is slowing down over time.
+  - Does not slow down on homepage request
+  - DOES slow down on Album requests
+  - Restarting DBV restores original performance.
+  - Every client DB connection is affected (not just one query is slowing down)
+  - The same queries without going through Django do not slow down.
+
+conn1: 16 queries get tag values  (Spans whole HTTP request, Must be Gateways' connection)
+         user0:gtag, photoapp:itag, photoapp:publish, photoapp:wtag, 
+         user0:itag, user0:publish, user0:wtag, user0:anon
+       Also, get all tags matching ((tv.tagvalue >> 56) = 5 OR (tv.tagvalue >> 56) = 1)
+       {'I': '[]', 'S': '[]', 'O': '[]'}
+
+conn2: 6 queries (short lived, sets labelset on context id)
+       {'I': '[0x0900000000006502]', 'S': '[0x0100000000006504]', 'O': '[]'}
+
+conn3: 14 queries get tag values (conn4 and conn5 are executed while conn3 is open)
+         djangotools:itag, djangotools:publish, djangotools:wtag, 
+         photoapp:itag, photoapp:publish, photoapp:wtag, user0:publish
+       Also, get username with id.
+       {'I': '[]', 'S': '[0x050000000000a4ba]', 'O': '[]'}
+
+conn4: 6 queries (short lived, get the photoalbum by id)
+       {'I': '[]', 'S': '[0x050000000000a4ba]', 'O': '[]'}
+
+conn5: 6 queries (short lived, get the photopointers by album_id)
+       Both conn4 and conn5 start at the same time.
+       {'I': '[]', 'S': '[0x050000000000a4ba]', 'O': '[]'}
+
+Doing lots of dbvtst (median times, 3 httpreq)
+  base     1864.687, 1869.722
+  basic    1857.456, 1867.816
+  slabel   1880.210, 1876.990
+  olabel   1864.902, 1875.507
+  desls    1847.779, 1860.553
+  filter   2009.228, 2041.836 ***
+-----------------------------------------------------------------------------------------------
+
+python bench-w5.py -f login_info
+
+4-20-08 Baseline, no optimizations
+loginpage  1 10 1    1.433  696.988  698.114    3.296  695.232  703.512
+loginpage  1 10 2    1.771 1124.352 1113.485   79.836 1014.519 1275.409
+loginpage  1 10 3    1.728 1694.853 1612.495  255.050  909.498 1806.800
+homepage   1 10 1    0.714 1401.156 1400.803   14.440 1380.403 1430.874
+homepage   1 10 2    0.941 2111.503 2116.144   70.391 2022.722 2276.876
+homepage   1 10 3    0.982 2952.367 2789.631  440.009 1552.032 3004.908
+blog       1 10 1    0.545 1832.762 1835.208   21.413 1810.416 1873.233
+blog       1 10 2    0.752 2577.871 2631.645  196.661 2393.139 3017.581
+blog       1 10 3    0.768 3780.294 3541.563  580.630 1991.846 3946.240
+album      1 10 1    0.499 2011.444 2005.774   14.316 1981.763 2029.581
+album      1 10 2    0.718 2762.800 2755.575  117.022 2582.096 2906.310
+album      1 10 3    0.764 3741.724 3581.612  474.184 2279.748 3959.256
+
+4-21-08 Gateway running as FastCGI 
+loginpage  1 10 1    2.507  398.774  398.925   10.332  384.166  417.910
+loginpage  1 10 2    3.177  628.105  623.961   38.008  567.013  673.859
+loginpage  1 10 3    2.954  859.059  957.172  650.197  562.139 2770.260
+homepage   1 10 1    0.783 1245.956 1276.471   72.708 1215.068 1394.287
+homepage   1 10 2    1.104 1786.357 1803.278  117.251 1653.840 1972.001
+homepage   1 10 3    1.268 2403.396 2243.989  349.731 1510.578 2582.078
+blog       1 10 1    0.550 1807.674 1818.154   38.398 1778.462 1915.636
+blog       1 10 2    0.787 2544.256 2509.542  120.987 2353.051 2751.025
+blog       1 10 3    0.843 3410.049 3284.766  428.211 2156.403 3654.373
+album      1 10 1    0.514 1947.595 1946.347   16.865 1926.543 1986.487
+album      1 10 2    0.759 2577.705 2593.613   81.092 2487.354 2735.949
+album      1 10 3    0.801 3507.693 3438.647  401.694 2494.675 3985.210
+
+fastcgitest 1 20 1   30.112   33.029   33.254    0.622   32.474   34.974
+fastcgitest 1 20 3   41.684   69.205   68.620    7.682   47.918   79.118
+fastcgitest 1 20 6   19.446  104.245  148.677  207.392   79.423 1028.327
+fastcgitest 1 20 9   18.428  105.042  299.458  402.984   55.567 1085.183
+
+Get this when benchmarking, fastcgi, reuse process:
+
+Traceback (most recent call last):
+  File "/disk/yipal/flume/run/pybin/wclaunch-fast.py", line 22, in <module>
+    WSGIServer(myapp).run()
+  File "/disk/yipal/flume/run/lib/python2.5/site-packages/wikicode/flup/fcgi_single.py", line 118, in run
+    ret = SingleServer.run(self, sock)
+  File "/disk/yipal/flume/run/lib/python2.5/site-packages/wikicode/flup/singleserver.py", line 94, in run
+    conn.run()
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 642, in run
+    self.process_input()
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 678, in process_input
+    self._do_params(rec)
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 777, in _do_params
+    self._start_request(req)
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 761, in _start_request
+    req.run()
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 570, in run
+    self._flush()
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 577, in _flush
+    self.stdout.close()
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 336, in close
+    self._conn.writeRecord(rec)
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 693, in writeRecord
+    rec.write(self._sock)
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 530, in write
+    self._sendall(sock, header)
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_base.py", line 507, in _sendall
+    sent = sock.send(data)
+socket.error: (32, 'Broken pipe')
+ 
+Explanation: 
+1) Apache is timing out while waiting for response from FastCGI process.??
+  - No, increasing the timeout just lengthens the time between Hydra's
+    CPUs going idle and when Apache reports the timeout
+2) Something in wclaunch/flup/Flume is hanging.
+3) Happens with 9 concurrent clients, requesting 20 pages. ("homepage") 
+4) Bug in DB causing Hang ??
+5) Bug in RM socket accept code (This was it, and we're working around the bug)
+
+-----------------------------------------------------------------------------------------------
+4-22-08 Database Performance
+  Single dbvloadtest.py client: "SELECT username from w5_user"
+query 0 records 57 connect 0.013 cursor 0.000 execute 0.014 fetch 0.000 close 0.003 total 0.031
+
+-----------------------------------------------------------------------------------------------
+4-22-08 Breakdown
+
+Loading Homepage:
+
+FastCGI
+  1100ms total
+    -   38 'launcher.start'  Create launcher object (only on first run, otherwise, 1ms)
+    - 1018 'spawn9b'         Wait for child process
+      - 658 running application code (not sure what this consists of)
+      - 351 before worker code runs 
+
+  Opens or stat (including failures) for homepage with no Django
+    6135 SlowCGI - one request
+    6135 FastCGI - first request
+    2172 FastCGI - second request
+        183 opens succeed
+         87 stats succeed
+
+FastCGI with python -S (Not much change)
+  homepage   1 20 1    0.799 1250.301 1251.104   16.075 1233.705 1313.816
+  homepage   1 20 3    1.341 2211.299 2172.343  625.561  675.695 3702.088
+  homepage   1 20 6    1.495 4100.966 3727.852 1410.672 1880.715 6812.413
+
+    4963 FastCGI - first request
+    2229 FastCGI - second request
+     258 succeed
+
+OPTMIZING PYTHON OPEN
+
+Opens come from
+ 1) shared libraries for python executable
+ 2) base python modules for running python.
+
+Opens for just Python (mostly in fast public, read-only file system)
+  flumepython
+    -> 497 opens and stats
+  flumepython -S
+    -> 415 opens and stats
+  flumepython -S -i ''
+    -> 348 opens and stats
+    -> 66 ms ?
+
+  flumepython /disk/yipal/flume/run/testbin/null.py
+    -> 448 opens and stats
+  flumepython -S /disk/yipal/flume/run/testbin/null.py
+    -> 350 opens and stats
+    -> 68 ms
+Ideas:
+ 1) Freeze python
+ 2) Put all .py files in one directory
+ 3) Write custom importer that knows where all the .py files are.
+
+**************************************************************
+Why does it take 351 ms before the worker code runs?
+  time flumepython /disk/yipal/flume/run/testbin/spawner.py
+    -> takes 218 ms, why so long? (68ms to start python?)
+
+  time flumepython -S /disk/yipal/flume/run/testbin/spawnnull.py 
+    before spawn 0.000 1208900854.965
+    after spawn 0.004 1208900854.969
+    after wait 0.063 1208900855.032
+    real    0m0.177s
+    It takes 70 ms before the child code actually gets running.
+      This is on par with flumepython -c ''
+
+**************************************************************
+4-23-08
+Compiled SFS & Flume with shopt:
+
+time flumepython -S /disk/yipal/flume/run/testbin/null.py
+  ~ 50 ms
+
+time flumepython -S /disk/yipal/flume/run/testbin/spawnnull.py
+  before spawn 0.000 1208959350.093
+  after spawn 0.002 1208959350.095
+  after wait 0.040 1208959350.135
+  real    0m0.125s
+  It takes about 49 ms before the child code actually gets running, after the parent calls spawn.
+
+With FastCGI, optimized SFS/RM
+homepage   1 20 1    0.932 1073.087 1072.494   16.779 1047.152 1120.607
+homepage   1 20 3    1.607 1720.686 1810.533  549.005 1093.496 3312.899
+homepage   1 20 6    1.744 3150.371 3253.522  934.407 2279.625 5563.068
+homepage   1 20 9    1.736 4763.511 4819.468 1176.346 2139.233 6780.744
+
+With FastCGI, optimized SFS/RM, -S
+homepage   1 20 1    0.951 1056.904 1051.209   21.861 1010.105 1083.941
+homepage   1 20 3    1.672 1871.670 1765.601  245.225 1312.779 2087.173
+homepage   1 20 6    1.670 3553.976 3339.383  612.748 1483.282 4029.190
+homepage   1 20 9    1.589 5522.896 5127.793 1052.946 2101.888 5783.522
+
+Freezing wcmain.py:
+0) cp /usr/lib/python2.5/site-packages/psycopg2/_psycopg.so /disk/yipal/flume/run/pybin/wctrusted/
+1) cd linux/app/web/python/wikicode/trusted
+2) PYTHONPATH=/disk/yipal/flume/run/lib/python2.5/site-packages 
+3) python /usr/share/doc/python2.5/examples/Tools/freeze/freeze.py -m wcmain.py
+   site
+4) make -j 4
+
+  Need pythonpath so freeze can find our python libraries.
+
+
+Frozen wcmain:
+  4681 open|stat FastCGI first request (includes DB opens)
+  1028 open|stat FastCGI second request
+   130 open|stat succeed 
+
+Freezing cuts eliminates about 130 successful from 258 open|stats. (5ms)
+Freezing cuts eliminates about 1100 failed open|stats. (44ms)
+Freezing total savings for homepage about (50ms)
+
+If we froze django, we might save about 200 opens and 40 ms)
+
+homepage   1 20 1    1.016  971.915  984.733   41.007  956.554 1136.946
+homepage   1 20 3    1.650 1713.113 1789.684  540.309  979.411 3285.596
+homepage   1 20 6    1.789 3062.468 3179.046  862.518 1997.149 5225.948
+homepage   1 20 9    1.878 4432.409 4333.447 1040.743 2013.082 6257.033
+
+
+In SlowCGI, non-frozen, we still see 147 ms between calling spawn and
+the child starting to run.  
+  - Actually, it's 30 ms, I put the print time after some imports and
+    it takes a while to import things!
+  - Now, the parent thinks the child is running for 57ms longer than
+    the child thinks it's running for.
+
+  ** Fixed the bug above: in wsgi code we returned a string rather than a list of strings **
+
+With FastCGI, optimized SFS/RM, -S
+homepage   1 20 1    1.349  737.757  741.279   12.737  727.879  784.963
+homepage   1 20 5    1.859 2594.041 2542.561 1093.717  757.860 4492.740
+homepage   1 20 10    1.998 4240.076 4525.821 1660.886 2507.508 7496.362
+homepage   1 20 15    1.938 6532.315 6675.151 2076.426 3834.716 10180.428
+homepage   1 20 20    1.823 10243.279 10201.803  520.125 9043.450 10970.686
+
+Homepage breakdown
+~750ms = 700 (in worker) + 31 spawn time + 19 unknown
+
+With FastCGI, optimized SFS/RM, Frozen wcmain
+homepage   1 20 1    1.496  666.733  668.283   12.263  658.073  712.088
+homepage   1 20 5    2.049 2223.024 2307.346  969.152  658.032 4071.379
+homepage   1 20 10    2.147 3794.018 4147.649 1571.964 2504.150 6810.300
+homepage   1 20 15    2.143 6105.797 5958.151 1788.380 3266.692 9146.574
+homepage   1 20 20    2.073 8666.095 8710.653  562.989 7591.015 9646.954
+
+Breakdown open/stats:
+  Album: 
+    5562 (fastcgi, -S, non frozen, django.zip)
+     817 Succeed
+     284 are for django.zip
+album      1 20 1    0.775 1287.303 1291.053   30.966 1258.704 1404.587
+album      1 20 5    1.492 3242.169 3199.298  306.111 2624.060 3779.760
+album      1 20 10    1.382 6514.960 6479.855 1759.709 2811.734 12569.557
+album      1 20 15    1.400 8326.617 8370.154 2657.077 4875.876 14285.394
+album      1 20 20    1.322 14029.106 13415.911 1516.259 10913.314 15122.529
+
+    6453 (fastcgi, -S, non frozen, non-django.zip)
+     900 Succeed
+album      1 20 1    0.701 1425.768 1425.928   24.211 1388.848 1485.248
+album      1 20 5    1.295 3634.130 3730.805  334.169 3181.567 4390.732
+album      1 20 10    1.166 7737.516 7821.061 1347.072 5443.369 11703.760
+album      1 20 15    1.149 11900.415 11002.842 2924.269 7113.019 17352.163
+album      1 20 20    1.155 14859.844 14327.665 2093.985 9933.086 17314.310
+
+
+4-23-08
+  Album:
+  FastImporter sees 422 import requests
+    - 214 are actually real modules
+    - 208 are dummy modules (listed in ~/w5_logfiles/album_dummies)
+
+  Reduced from 5562 to 3566 by FastImporter
+    - 342 to start python -S -c ''
+    - 109 to import FastImporter
+
+4-26-08
+  Frozen python save the python path during freezing and looks for .py
+  files in that path?  It's looking for .py files in their original
+  location, not in their current location like in /ihome/
+
+Hacky: 
+  make install-app-web-python && make freeze-photoapp 2>&1 | tee /tmp/out3  && make prepare-w5
+
+FastCGI, optimized SFS/RM, Frozen django
+album      1 20 1    1.796  552.331  556.718   15.757  542.068  613.160
+album      1 20 5    2.960 1383.736 1613.362  873.599  551.300 3466.923
+
+  1273 open/stat
+   145 succeed
+    56 before meminfo (12 succeed)
+
+Reduced pypath from 10 to 5:
+album      1 20 1    1.878  529.643  532.405   16.801  517.319  600.669
+album      1 20 5    3.048 1235.182 1535.989  875.580  529.883 3450.576
+album      1 20 10    3.301 2412.154 2724.189 1451.074 1261.989 5407.285
+album      1 20 15    3.423 3482.590 3718.203 1349.406 1532.604 5841.984
+album      1 20 20    3.116 4746.820 4756.695 1165.214 2043.858 6418.154
+  993 open/stat
+
+Stop importing crap like flumedb
+  953 open/stat
+
+98 mx.so
+35 apport (useless)
+25 swig_runtime_data (useless)
+40 org (useless)
+40 mod_python
+
+24 ssl.so
+crypto.so
+libz.so
+math.so
+binascii.so
+random.so
+fcntl.so
+cString.so
+struct.so
+datetime.so
+select.so
+collections.so
+zlib.so
+cPickle.so
+psycopg.so
+locale.so
+haslib.so
+array.so
+
+/ihome/iq5saaaaaaaba..ig5saaaaaaaba/publish
+/disk/yipal/flume/run/lib/python2.5/site-packages
+/usr/lib/python2.5
+/usr/lib/python2.5/lib-dynload
+/usr/lib/python2.5/site-packages
+
+Change order to:
+'/usr/lib/python2.5/lib-dynload', 
+'/usr/lib/python2.5/site-packages', 
+'/ihome/iq5saaaaaaaba..ig5saaaaaaaba/publish', 
+'/disk/yipal/flume/run/lib/python2.5/site-packages'
+'/usr/lib/python2.5'
+
+FastCGI, optimized SFS/RM, Frozen django, optimized pypath
+album      1 40 1    1.874  533.801  533.519    4.999  523.808  545.754
+album      1 40 5    3.780 1291.383 1297.857  105.157 1114.218 1558.960
+album      1 40 10    3.892 2490.052 2508.301  242.108 2049.094 2986.996
+album      1 40 15    3.747 3818.568 3691.240  577.999 2481.443 4494.884
+album      1 40 20    3.917 4568.316 4748.664 1065.076 2134.354 7861.317
+
+  633 open/stat
+
+FastCGI, optimized SFS/RM, Frozen django, optimized pypath, optimize mx
+  573 open/stat
+
+FastCGI, optimized SFS/RM, Frozen django, optimized pypath, optimize mx, rxx_cache
+album      1 40 1    2.006  497.750  498.590    5.304  488.882  513.687
+album      1 40 5    3.513 1225.411 1393.189  695.308  502.492 3290.196
+album      1 40 10    3.853 2365.136 2454.612  987.686 1225.526 5293.826
+album      1 40 15    3.765 3442.205 3811.562 1449.255 1708.709 9870.073
+album      1 40 20    3.740 4683.168 4888.726 1980.487 1746.301 10430.086
+
+Turned off debug output
+album      1 40 1    2.001  498.305  499.815   10.625  489.811  560.082
+album      1 40 5    3.398 1228.983 1438.877  774.158  501.370 3586.024
+album      1 40 10    3.789 2374.475 2518.864 1088.755 1224.766 5895.100
+album      1 40 15    3.853 3349.536 3666.755 1614.351 1184.872 9486.441
+album      1 40 20    3.637 4822.642 5026.619 2083.741 1919.334 10606.532
+
+With in-memory postgres database
+album      1 40 1    2.019  492.295  495.424   14.347  483.159  575.080
+album      1 40 5    3.513 1222.607 1393.524  659.102  494.870 3329.504
+album      1 40 10    3.808 2327.509 2539.675 1069.027 1249.935 5705.853
+album      1 40 15    3.789 3458.009 3825.102 1242.623 2482.247 7261.523
+album      1 40 20    3.513 4534.393 5117.097 2432.352 2598.564 11242.867
+
+4-27-08
+
+Removed to_hex() from dbv
+album      1 40 1    2.411  413.672  414.845    8.135  403.751  453.809
+album      1 40 5    4.547  903.246 1065.356  619.731  412.860 2778.592
+album      1 40 10    5.251 1529.892 1819.061 1020.070  887.653 4567.600
+album      1 40 15    5.095 2409.142 2777.289 1262.049 1431.832 7742.613
+album      1 40 20    4.964 3375.287 3543.581 1489.363 1211.895 8057.541
+
+Minor optimization of DBV security checks and translation
+album      1 40 1    2.412  412.515  414.638    9.937  403.978  465.446
+album      1 40 5    4.554  908.818 1077.337  636.498  414.904 2886.837
+album      1 40 10    5.061 1595.019 1870.059 1040.287  774.078 4792.304
+album      1 40 15    5.144 2426.132 2758.391 1216.945 1260.066 7541.599
+album      1 40 20    4.964 3045.564 3427.728 1789.545 1203.959 8057.325
+
+Cache more tags in the launcher
+album      1 40 1    2.496  400.798  400.683   10.491  390.292  459.863
+album      1 40 5    4.613  894.439 1055.128  628.835  390.167 2810.715
+album      1 40 10    5.288 1520.213 1805.465 1252.402  786.505 7165.467
+album      1 40 15    5.242 2309.597 2720.607 1116.756 1466.992 5745.177
+album      1 40 20    5.285 2915.637 3307.447 1591.152 1504.144 7567.739
+
+# Setting up experiment
+make install-app-web-python
+make freeze-photoapp
+make freeze-nullcgipy
+make prepare-experiment
+
+4-30-08
+
+Reduced the number of req_privs
+python bench-w5.py -f login_info -p nullpy
+nullc      100 5000 1    8.842  112.341  113.143   13.264   76.432  359.236
+
+
+nullc      100 5000 1    7.777  127.045  128.626   23.374 -176.592  451.442
+
+
+python bench-w5.py -f login_info -p nullc
+
+
+We can't currently run nullcgi-static because we can't execute
+binaries in ihome.  This costs about 20ms to run the dynamic linker.
+
+
+1 User (74ms)
+handler1 0.001 1209592700.679
+security1 0.000 1209592700.679
+security1a 0.000 1209592700.679
+security1b 0.000 1209592700.679
+security6 0.000 1209592700.679
+security7 0.043 1209592700.722
+handler2 0.000 1209592700.722
+handler3 0.000 1209592700.722
+spawn1 0.002 1209592700.724
+spawn2 0.000 1209592700.724
+spawn3 0.000 1209592700.724
+spawn4 0.000 1209592700.725
+spawn5 0.003 1209592700.727
+spawn6 0.002 1209592700.729
+spawn7 0.000 1209592700.729
+spawn8 0.000 1209592700.730
+spawn9a 0.016 1209592700.746
+spawn9b 0.000 1209592700.746
+spawn9c 0.000 1209592700.746
+spawn9d 0.000 1209592700.746
+spawn10 0.000 1209592700.746
+spawn11 0.000 1209592700.746
+launcher.total 0.069
+
+100 Users (105ms)
+handler1 0.009 1209592740.185
+security1 0.000 1209592740.185
+security1a 0.000 1209592740.185
+security1b 0.000 1209592740.185
+security6 0.000 1209592740.185
+security7 0.046 1209592740.231
+handler2 0.000 1209592740.231
+handler3 0.000 1209592740.232
+spawn1 0.026 1209592740.257
+spawn2 0.000 1209592740.257
+spawn3 0.000 1209592740.258
+spawn4 0.000 1209592740.258
+spawn5 0.003 1209592740.261
+spawn6 0.001 1209592740.262
+spawn7 0.000 1209592740.262
+spawn8 0.000 1209592740.262
+spawn9a 0.017 1209592740.279
+spawn9b 0.000 1209592740.279
+spawn9c 0.000 1209592740.279
+spawn9d 0.000 1209592740.279
+spawn10 0.000 1209592740.279
+spawn11 0.000 1209592740.279
+launcher.total 0.104
+
+handler1 and spawn1 seem to be slower
+ -> handler2b and 4
+
+
+ls ../bin/wclaunch.py ../bin/wclaunch-fast.fcgi db/* flup/* Launcher/* trusted/* *.py | grep -v \~ | xargs wc
+
+wc ./bin/dbv.py ./DBV/translator.py ./DBV/dbvbindings.py ./DBV/__init__.py ./DBV/security.py ./DBV/util.py ./DBV/kjParseBuild.py ./DBV/kjSet.py ./DBV/kjParser.py ./DBV/kjbuckets_select.py ./DBV/grammar.py ./DBV/dbapi.py
+
+find -name "*.py" | grep -v build | grep -E "common|photoapp|photoedit|calenda|blog|weather|django" | xargs wc
+   83   240  2338 ./app-common/w5djangoutil.py
+   97   252  2631 ./app-common/rundjango.py
+   18    36   388 ./app-common/settings.py
+   11    23   266 ./django-tools/main.py
+   97   374  3355 ./django-tools/djangotools/default_settings.py
+   20    67   611 ./django-tools/djangotools/util.py
+    1     1     5 ./django-tools/djangotools/__init__.py
+   48   180  1546 ./django-tools/syncdb.py
+  373  1486 15728 ./photoapp/photoapp/views.py
+    1     1     5 ./photoapp/photoapp/__init__.py
+   62   179  1784 ./photoapp/photoapp/models.py
+   15    58   651 ./photoapp/photoapp/urls.py
+  194   700  8128 ./blog/blog/views.py
+    1     1     5 ./blog/blog/__init__.py
+   62   172  1701 ./blog/blog/models.py
+   11    49   655 ./blog/blog/urls.py
+  108   386  4341 ./photoedit/photoedit/views.py
+    0     0     0 ./photoedit/photoedit/__init__.py
+    1     1     5 ./photoedit/photoedit/models.py
+   10    40   424 ./photoedit/photoedit/urls.py
+   73   361  2657 ./calendarapp/calendarapp/templatetags/schedule_cal.py
+    0     0     0 ./calendarapp/calendarapp/templatetags/__init__.py
+   96   310  3553 ./calendarapp/calendarapp/views.py
+    1     1     5 ./calendarapp/calendarapp/__init__.py
+   21    47   526 ./calendarapp/calendarapp/models.py
+   15    66   783 ./calendarapp/calendarapp/urls.py
+  105   380  4654 ./weathergrabber/weathergrabber/views.py
+    1     1     5 ./weathergrabber/weathergrabber/__init__.py
+   14    42   391 ./weathergrabber/weathergrabber/models.py
+    9    28   269 ./weathergrabber/weathergrabber/urls.py
+
+
+Static linked nullcgi
+nullc      1000 5000 1   15.666   62.722   63.872    5.996   59.675  262.306
+nullc      1000 5000 10   24.613  423.612  406.092  123.774   61.271 2944.329
+
+Frozen nullcgipy
+nullpy     1000 5000 1    9.912   93.435  100.930   18.392   89.236  614.919
+nullpy     1000 5000 10   22.063  457.628  453.088  118.956  121.192 2925.621
+
+Photoapp 8/2 photos
+612 opens and stats
+album      1000 5000 1    2.392  394.364  418.144   61.604  378.252  972.096
+album      1000 5000 10    5.438 1849.377 1838.299  221.582  449.433 4439.789
+
+Blog 
+blog       1000 5000 1    2.612  347.892  382.907   71.444  338.514  806.997
+blog       1000 5000 10    5.986 1683.944 1670.234  230.422  404.191 4657.832
+
+Apache Only
+apachenullc 1000 5000 1  279.576    3.598    3.597    0.391    3.030    9.745
+apachenullc 1000 5000 5  645.486    7.354    7.763    2.452    3.383   21.109
+apachenullc 1000 5000 10  759.658   12.276   13.180    5.836    3.907  208.743
+apachenullc 1000 5000 20  675.794   16.708   26.587  147.340    4.474 3024.177
+apachenullc 1000 5000 30  549.834   20.097   40.889  228.031    4.862 3039.897
+apachenullc 1000 5000 40  555.248   19.760   55.151  322.681    4.191 9002.610
+apachenullc 1000 2000 10  665.898   11.399   13.612   67.040    3.651 3003.020
+apachenullc 1000 2000 12  770.442   14.143   15.572   11.418    4.229  248.928
+apachenullc 1000 2000 15  665.694   15.752   18.791   67.499    4.476 3003.946
+apachenullc 1000 2000 20  665.031   17.433   25.749  134.325    4.704 3006.932
+
+Optimize w5_context queries and index the table.
+nullc      1000 5000 1   17.152   51.090   58.343   15.396   48.651  386.430
+nullc      1000 5000 5   28.413  177.778  175.989   65.890   49.643 1892.265
+nullc      1000 5000 10   32.422  301.628  308.319   89.924   92.622 2358.910
+nullc      1000 5000 20   30.950  687.797  645.650  196.832  208.520 5926.723
+nullc      1000 5000 30   29.828 1079.294 1004.487  267.428  404.277 7076.696
+
+Add indexes to labelid2tag and labelid2label (Empty cache)
+nullc      1000 5000 1   17.180   50.634   58.249   15.957   48.078  334.668
+nullc      1000 5000 7   28.745  254.913  243.486   84.422   48.761 2225.810
+nullc      1000 5000 10   33.878  279.052  295.060   77.009  130.159 2906.484
+
+After Analyze (Warm cache)
+nullc      1000 5000 1   16.889   53.143   59.250   14.338   50.524  363.357
+nullc      1000 5000 7   39.091  171.154  179.027   32.267   96.117  313.050
+nullc      1000 5000 10   40.833  233.009  244.841   43.262  114.564  414.388
+nullc      1000 5000 12   42.204  272.262  284.272   78.607  155.201 3270.831
+nullc      1000 5000 15   39.886  352.477  375.843  152.131  171.704 5401.759
+
+After Analyze (Warmer cache)
+nullc      1000 5000 1   18.112   53.932   55.252    7.468   51.462  410.153
+nullc      1000 5000 7   40.307  168.194  173.659   28.821   94.833  467.948
+nullc      1000 5000 10   42.414  228.618  235.706   36.063  119.501  397.223
+nullc      1000 5000 12   42.595  272.280  281.623   43.680  176.223  610.692
+nullc      1000 5000 15   43.935  328.870  341.258  107.886  126.159 3386.575
+
+nullc      1000 5000 10   43.387  224.575  230.379   54.699  127.644 3233.402
+nullc      1000 5000 12   44.411  263.722  270.096   39.240  152.810  699.045
+nullc      1000 5000 15   45.064  326.561  332.693   43.562  184.169  807.250
+
+nullc      1000 5000 10   43.664  222.744  228.957   58.065  132.155 3232.469
+nullc      1000 5000 12   44.631  263.926  268.760   36.802  114.014  507.994
+nullc      1000 5000 15   43.340  329.290  345.754  120.775  161.646 3455.614
+
+
+
+Non-W5 Django Hello World
+djangonull 1000 2000 1    8.114  122.461  123.270    3.912  121.040  189.471
+djangonull 1000 2000 7   29.745  211.117  235.116  105.581  127.920 1170.858
+djangonull 1000 2000 10   30.046  279.659  332.263  190.484  129.402 1612.193
+djangonull 1000 2000 12   30.072  321.331  398.489  255.946  129.247 2048.670
+djangonull 1000 2000 15   30.008  396.912  498.450  364.050  129.103 4603.009
+
+
+cd ~/research/flume/flume/unmodified-django-apps
+sh -x setup.sh
+python bench-w5.py -f login_info -p djangoalbum
+
+Non-W5 Django Photo App
+djangoalbum 1 100 1    5.522  180.859  181.143    1.997  178.752  191.616
+djangoalbum 1 100 5   20.159  225.353  245.717   62.425  187.984  533.538
+djangoalbum 1 100 10   21.371  363.330  457.726  338.825  189.399 2037.608
+djangoalbum 1 100 15   21.308  373.708  678.327  920.913  189.553 4637.323
+djangoalbum 1 100 20   21.544  665.442  898.186  896.315  211.070 4376.506
+
+djangoalbum 1 200 1    5.489  181.350  182.240    3.228  178.694  199.852
+djangoalbum 1 200 10   21.442  359.537  461.563  449.777  188.489 3375.074
+djangoalbum 1 200 20   21.552  676.740  913.364  937.156  192.640 7690.934
+djangoalbum 1 200 25   21.473  784.746 1129.780 1156.945  245.847 8523.542
+djangoalbum 1 200 30   21.524  935.816 1342.609 1353.813  190.943 9277.045
+
+djangoalbum 1000 5000 1    5.510  181.002  181.536    2.875  178.126  206.830
+djangoalbum 1000 5000 10   21.404  422.956  466.983  264.333  188.204 4363.447
+djangoalbum 1000 5000 15   20.995  615.440  713.715  708.365  187.555 17388.068
+djangoalbum 1000 5000 20   21.629  556.700  923.953 1694.323  187.938 22430.462
+djangoalbum 1000 5000 25   21.614  501.208 1155.703 2177.620  188.474 31233.942
+djangoalbum 1000 5000 30   21.555  555.621 1389.872 2846.688  188.265 26740.712
+djangoalbum 1000 5000 40   21.535  559.331 1852.882 2956.641  187.885 25437.539

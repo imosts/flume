@@ -1,0 +1,18 @@
+<script type="text/javascript">
+function pipeCallback(obj) {
+ document.write('<ol style="text-transform: capitalize;">');
+ var i;
+ for (i = 0; i < obj.count ; i++)
+ {
+ var href = "'" + obj.value.items[i].link + "'";
+ var item = "<li>" + "<a href=" + href + ">" + obj.value.items[i].title + "</a> </li>";
+ document.write(item);
+ }
+ document.write('</ol>');
+ }
+ </script>
+<!--<script src="http://pipes.yahoo.com/pipes/pipe.run?_render=json&_callback=pipeCallback&_id=1cf38ae68efbe859c4ba1ee239cec099&url=http%3A%2F%2Fhydra.lcs.mit.edu%3A8001%2Ffeed_content" type="text/javascript"></script> -->
+
+<script src="http://pipes.yahoo.com/pipes/pipe.run?_render=json&_callback=pipeCallback&_id=1cf38ae68efbe859c4ba1ee239cec099&url=http%3A%2F%2Fhydra.lcs.mit.edu:8001/cgi-bin/comments-feed.py/" type="text/javascript"></script>
+
+<span style="font-size: 80%">Widget by <a href="http://www.bloggerbuster.com">Blogger Buster </a></span>

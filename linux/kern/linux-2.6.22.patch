@@ -1,0 +1,172 @@
+diff -ru ../linux-source-2.6.22/include/linux/security.h ./include/linux/security.h
+--- ../linux-source-2.6.22/include/linux/security.h	2007-12-18 02:30:37.000000000 -0500
++++ ./include/linux/security.h	2008-01-10 07:16:49.000000000 -0500
+@@ -34,6 +34,8 @@
+ #include <linux/xfrm.h>
+ #include <net/flow.h>
+ 
++#define HAVE_FLUME_GETPID_PROTECTION 1
++
+ struct ctl_table;
+ 
+ /*
+@@ -1308,6 +1310,11 @@
+ 	void (*task_reparent_to_init) (struct task_struct * p);
+ 	void (*task_to_inode)(struct task_struct *p, struct inode *inode);
+ 
++	int (*task_getpgid_self) (void);
++	int (*task_getsid_self) (void);
++	int (*task_getpid) (void);
++	int (*task_getppid) (void);
++
+ 	int (*ipc_permission) (struct kern_ipc_perm * ipcp, short flag);
+ 
+ 	int (*msg_msg_alloc_security) (struct msg_msg * msg);
+@@ -2030,6 +2037,26 @@
+ 	security_ops->task_to_inode(p, inode);
+ }
+ 
++static inline int security_task_getpgid_self (void)
++{
++	return security_ops->task_getpgid_self ();
++}
++
++static inline int security_task_getsid_self (void)
++{
++	return security_ops->task_getsid_self ();
++}
++ 
++static inline int security_task_getpid (void)
++{
++	return security_ops->task_getpid ();
++}
++
++static inline int security_task_getppid (void)
++{
++	return security_ops->task_getppid ();
++}
++
+ static inline int security_ipc_permission (struct kern_ipc_perm *ipcp,
+ 					   short flag)
+ {
+Only in ./include/linux: security.h.orig
+diff -ru ../linux-source-2.6.22/kernel/sys.c ./kernel/sys.c
+--- ../linux-source-2.6.22/kernel/sys.c	2007-12-18 02:30:37.000000000 -0500
++++ ./kernel/sys.c	2008-01-10 07:16:49.000000000 -0500
+@@ -1499,9 +1499,13 @@
+ 
+ asmlinkage long sys_getpgid(pid_t pid)
+ {
+-	if (!pid)
+-		return process_group(current);
+-	else {
++	if (!pid) {
++		int retval;
++		retval = security_task_getpgid_self();
++		if (!retval)
++			retval = process_group(current);
++		return retval; 
++	} else {
+ 		int retval;
+ 		struct task_struct *p;
+ 
+@@ -1524,16 +1528,24 @@
+ asmlinkage long sys_getpgrp(void)
+ {
+ 	/* SMP - assuming writes are word atomic this is fine */
+-	return process_group(current);
++	int retval;
++	retval = security_task_getpgid_self ();
++	if (!retval)
++		retval = process_group(current);
++	return retval;
+ }
+ 
+ #endif
+ 
+ asmlinkage long sys_getsid(pid_t pid)
+ {
+-	if (!pid)
+-		return process_session(current);
+-	else {
++	if (!pid) {
++		int retval;
++		retval = security_task_getsid_self();
++		if (!retval)
++			retval = process_session(current);
++		return retval;	
++	} else {
+ 		int retval;
+ 		struct task_struct *p;
+ 
+Only in ./kernel: sys.c.orig
+diff -ru ../linux-source-2.6.22/kernel/timer.c ./kernel/timer.c
+--- ../linux-source-2.6.22/kernel/timer.c	2007-07-08 19:32:17.000000000 -0400
++++ ./kernel/timer.c	2008-01-10 07:22:09.000000000 -0500
+@@ -34,6 +34,7 @@
+ #include <linux/cpu.h>
+ #include <linux/syscalls.h>
+ #include <linux/delay.h>
++#include <linux/security.h>
+ #include <linux/tick.h>
+ #include <linux/kallsyms.h>
+ 
+@@ -939,7 +940,11 @@
+  */
+ asmlinkage long sys_getpid(void)
+ {
+-	return current->tgid;
++	int retval;
++	retval = security_task_getpid ();
++	if (!retval)
++		retval = current->tgid;
++	return retval;	
+ }
+ 
+ /*
+@@ -951,10 +956,15 @@
+ asmlinkage long sys_getppid(void)
+ {
+ 	int pid;
++	
++	pid = security_task_getppid ();
++	if (!pid) {
++
++		rcu_read_lock();
++		pid = rcu_dereference(current->real_parent)->tgid;
++		rcu_read_unlock();
+ 
+-	rcu_read_lock();
+-	pid = rcu_dereference(current->real_parent)->tgid;
+-	rcu_read_unlock();
++	}
+ 
+ 	return pid;
+ }
+diff -ru ../linux-source-2.6.22/security/dummy.c ./security/dummy.c
+--- ../linux-source-2.6.22/security/dummy.c	2007-12-18 02:30:36.000000000 -0500
++++ ./security/dummy.c	2008-01-10 07:16:49.000000000 -0500
+@@ -589,6 +589,11 @@
+ static void dummy_task_to_inode(struct task_struct *p, struct inode *inode)
+ { }
+ 
++static int dummy_task_getpgid_self (void) { return 0; }
++static int dummy_task_getpid (void) { return 0;  }
++static int dummy_task_getppid (void) { return 0; }
++static int dummy_task_getsid_self (void) { return 0; }
++
+ static int dummy_ipc_permission (struct kern_ipc_perm *ipcp, short flag)
+ {
+ 	return 0;
+@@ -1066,6 +1071,10 @@
+ 	set_to_dummy_if_null(ops, task_prctl);
+ 	set_to_dummy_if_null(ops, task_reparent_to_init);
+  	set_to_dummy_if_null(ops, task_to_inode);
++	set_to_dummy_if_null(ops, task_getpgid_self);
++	set_to_dummy_if_null(ops, task_getsid_self);
++	set_to_dummy_if_null(ops, task_getppid);
++	set_to_dummy_if_null(ops, task_getpid);
+ 	set_to_dummy_if_null(ops, ipc_permission);
+ 	set_to_dummy_if_null(ops, msg_msg_alloc_security);
+ 	set_to_dummy_if_null(ops, msg_msg_free_security);
+Only in ./security: dummy.c.orig

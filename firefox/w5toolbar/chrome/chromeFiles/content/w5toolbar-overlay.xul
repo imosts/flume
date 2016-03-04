@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+
+<overlay id="w5toolbar_browser_overlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- Include the javascript code -->
+  <script type="application/x-javascript" src="chrome://w5toolbar/content/util.js" />
+  <script type="application/x-javascript" src="chrome://w5toolbar/content/w5toolbar-overlay.js" />
+  <!-- <script type="application/x-javascript" src="chrome://w5toolbar/content/test.js" /> -->
+  <script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js" />
+
+
+  <!-- Init only if this is an actual browser window (not prefs or something) -->
+  <window id="main-window">
+    <script type="application/x-javascript">
+	window.addEventListener("load", w5toolbar_init, false);
+    </script>
+  </window>
+
+
+  <!-- Add the W5toolbar icon to the bottom right of screen -->
+  <statusbar id="status-bar">
+    <statusbarpanel 
+        id="w5toolbar-status-text" 
+        onclick="w5toolbar_toggle (true);"
+    />
+  </statusbar>
+
+
+
+
+  <toolbox id="navigator-toolbox">
+    <toolbar id="TutTB-Toolbar" toolbarname="W5 Toolbar" accesskey="T"
+             class="chromeclass-toolbar" context="toolbar-context-menu"
+             hidden="false" persist="hidden">
+
+      <toolbaritem>
+        <image src="chrome://w5toolbar/content/images/webmac32.png"
+               width="32" height="32"/>
+
+      <splitter id="w5-ResizeSplitter" state="open" collapse="none"
+                resizebefore="closest" resizeafter="farthest">
+        <vbox id="w5-ResizeBar" />
+      </splitter>
+        <!--
+        <toolbarbutton id="bla" label="W5:"
+                       type="button" tooltiptext="W5"> 
+        </toolbarbutton>
+        -->
+
+        <toolbarbutton id="bla" label="Group Editor"
+                       type="button" tooltiptext="Group Editor">
+        </toolbarbutton>
+      </toolbaritem>
+
+      <splitter id="w5-ResizeSplitter" state="open" collapse="none"
+                resizebefore="closest" resizeafter="farthest">
+        <vbox id="w5-ResizeBar" />
+      </splitter>
+
+      <toolbaritem persist="width">
+        <!--
+        <textbox id="w5toolbar_tagname" editable="true" flex="0"
+                  minwidth="100" width="100"
+                  onkeypress="TutTB_KeyHandler(event);">
+        </textbox>
+        <toolbarbutton id="w5toolbar_newtag_button" label="Create Group"
+                       type="button" tooltiptext="Create a new ACL group"
+                       oncommand="w5toolbar_creategroup">
+        </toolbarbutton>
+        -->
+      </toolbaritem>
+      
+      <toolbaritem flex="0">
+        <toolbarbutton id="bla" label="Current Groups:"
+                       type="button" tooltiptext="W5">
+        </toolbarbutton>
+      </toolbaritem>
+
+      <toolbaritem flex="0" id="w5toolbar_group_checkboxes">
+      </toolbaritem>
+
+      <toolbarspring />
+
+
+    </toolbar>
+  </toolbox>
+</overlay>

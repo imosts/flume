@@ -1,0 +1,219 @@
+#!/usr/bin/env python
+
+##
+## A little script that prepares all necessary directories based on the
+## input configuration file.  It also does some config file rewriting
+## in the case of SetuidHandle; to get this, it actually fires up the RM
+## and issues a call or two.
+##
+
+import sys
+import getopt
+import sfs.conf
+import getopt
+import os
+from subprocess import Popen, PIPE
+import os.path
+import re
+
+FLUME_IDD_PORT = 38423
+
+class Error (sfs.conf.Error):
+   pass
+
+def mkdir (d):
+   if os.path.exists (d):
+      if not os.path.isdir (d):
+         raise Error, "cannot mkdir (%s): file exists" % d
+   else:
+      os.mkdir (d)
+
+def mkdirAll (p):
+   path = p.split (os.path.sep)
+   if len(path) == 0:
+      return
+   
+   it = iter (path)
+   p = ''
+   
+   if len(path[0]):
+      p = os.path.sep
+      it.next ()
+
+   for i in it:
+      p += i + '/'
+      mkdir (p)
+
+class CmdError (Exception):
+
+   def __init__ (self, x):
+      self.value = x
+
+   def __str__ (self):
+      return repr (self.value)
+
+class FileServer:
+   """A parsed representation of a Flume file server."""
+    
+   def __init__(self, argv):
+        
+      (opts, args) = getopt.getopt (argv, "p:oRPIGg:u:t:L:")
+      self._real_fs = args[0]
+      self._flume_fs = args[1]
+
+      opts = set (x[0][1] for x in opts)
+      self._opts = opts
+
+   def isGhetto (self):
+      return 'G' in self._opts
+
+   def isReadOnly (self):
+      return 'R' in self._opts
+
+   def __str__ (self):
+      return "(%s,%s)" % ( self._real_fs, self._flume_fs)
+
+   def doInit (self, flmc):
+      """Initliaze the given file server; if -RP was given, then don't
+      need to initialize it."""
+      
+      mkdirAll (self._real_fs)
+
+      if not self.isReadOnly ():
+
+         args = [ flmc.srvBinCmd ("initfs") ]
+         if self.isGhetto ():
+            args += [ "-G", "-I", str (flmc.idd ()) ]
+            
+            
+         args +=  [ self._real_fs ]
+            
+         flmc.doCmd (args)
+
+class Idd:
+
+   """A parsed representation of an IDD server"""
+
+   server_rxx = re.compile ('(?P<hostname>[^\s:]+)(:(?P<port>\d+))?')
+
+   def __init__ (self, argv):
+
+      (opts, args) = getopt.getopt (argv, 'C')
+      s = args[0]
+      x = self.server_rxx.match (s)
+      if x is None:
+         raise Error, "bad <hostname>:<port>"
+      self._hostname = x.group ('hostname')
+
+      tmp = x.group ('port')
+      if tmp is not None:
+         try:
+            self._port = int (tmp)
+         except ValueError, e:
+            raise Error, "bad portname: %s" % tmp
+      if self._port is None:
+         self._port = FLUME_IDD_PORT
+
+   def __str__ (self):
+      return "%s:%d" % (self._hostname, self._port)
+
+class TzConf (sfs.conf.Parse):
+   """A Flume Conf file reader, and fixer-upper."""
+    
+   def __init__ (self, file, debug=False):
+      sfs.conf.Parse.__init__ (self, file)
+      self._dispatch_tab = { 'TopDir'       : (self.doTopDir, False),
+                             'FileServer'   : (self.doFileServer, True),
+                             'SetuidHandle' : (self.doSetuidHandle, False),
+                             'IDD'          : (self.doIdd, False),
+                             'Spawner'      : (self.doSpawner, True)
+                             }
+      self._topDir = None
+      self._setuid = None
+      self._fs = []
+      self._doDebug = debug
+
+   def doSpawner (self, pl, loc):
+      return pl
+      
+   def doTopDir (self, pl, loc):
+      try:
+         self._topDir = pl.argv ()[0]
+         return pl
+      except IndexError, e:
+         raise Error, "%s: usage: %s <top-dir>" % (loc, pl.cmd ())
+      
+   def doSetuidHandle (self, pl, loc):
+      self._setuid = pl
+      return pl
+
+   def doFileServer (self, pl, loc):
+      try:
+         self._fs.append (FileServer (pl.argv ()))
+         return pl
+      except IndexError, e:
+         raise Error ("%s: usage: %s [opts] <path> <tzpath>" \
+                      % (loc, pl.cmd ()))
+
+   def doIdd (self, pl, loc):
+      try:
+         self._idd = Idd (pl.argv ())
+         return pl
+      except IndexError, e:
+         raise Error ("%s: usage: %s [opts] <hostname>:<port>" \
+                      % (loc, pl.cmd ()))
+      except Error, e:
+         raise Error ("%s: %s" % (loc, str (e)))
+
+   def idd (self):
+      return self._idd
+      
+   def initFileServers (self):
+      """Given a parsed configuration file, issue the required commands
+      to initialized file servers."""
+      for f in self._fs:
+         if self._doDebug:
+            print "init fs: %s" % str (f)
+         f.doInit (self)
+
+   def initFlume (self):
+      self.initFileServers()
+
+   def doCmd (self, argv):
+      """Execute a command, potentionally outputting debug information."""
+      cmd = ' '.join (argv)
+      if self._doDebug:
+         print "+ spawn: " + cmd
+      subp = Popen (argv, stdout=PIPE)
+      output = subp.communicate ()[0]
+      rc = subp.wait ()
+      if self._doDebug:
+         print " -> %d" % rc
+      if rc != 0:
+         raise CmdError, "Command %s returned non-0 return code %s" \
+               % (argv[0], rc)
+      return output
+
+   def srvBinCmd (self, cmd):
+      """Execute a command found in the serve bin."""
+      args = [ 'flume-cfg', 'srvbin' ]
+      return os.path.join (self.doCmd (args).rstrip (), cmd)
+      
+def usage ():
+    print "usage: %s [-v] <conf-file>" % sys.argv[0]
+    sys.exit (1)
+
+(opts, args) = getopt.getopt (sys.argv[1:], "v")
+
+if len (args) != 1:
+    usage ()
+	
+infile = args[0]
+
+debug = False
+if dict(opts).get ('-v') is not None:
+   debug = True
+
+flmc = TzConf (file = infile, debug = debug)
+flmc.parse ()
+flmc.initFlume ()

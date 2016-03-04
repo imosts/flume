@@ -1,0 +1,25 @@
+<h1>PhotoApp Uploader</h1>
+
+<a href="{{urlprefix}}/upload/newalbum/{{new_page_id}}/">Create a new album</a>
+
+<h2>Your Albums</h2>
+{% if album_includes %}
+    <ul>
+    {% for a in album_includes %}
+       <li>{{ a }}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No albums.</p>
+{% endif %}
+
+<h2>All Albums</h2>
+{% if all_albums %}
+    <ul>
+    {% for a in all_albums %}
+        <li>{{ a.title }}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No albums.</p>
+{% endif %}

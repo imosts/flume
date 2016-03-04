@@ -1,0 +1,23 @@
+#!/usr/local/bin/bash
+#
+# Running ipc micro benchmarks:
+#  1) Start RM
+#  2) Run this script
+
+if [ $# -ne 4 ]; then
+  echo "usage: bench-ipc output_dir transfer_mb nmsgs nullmsgs"
+  exit 1;
+fi
+
+OUTPUTDIR=$1
+IPCTRANSFER=$2
+NMSGS=$3
+NULLMSGS=$4
+
+echo "linux"
+`traz-cfg bin`/ipc-bench-linux obsd $IPCTRANSFER $NMSGS
+
+echo "traz"
+LD_LIBRARY_PATH=`traz-cfg rlib` TRAZ_SOCKET=`traz-cfg socket` \
+`traz-cfg bin`/ipc-bench-traz traz $IPCTRANSFER $NMSGS $NULLMSGS
+

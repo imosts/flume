@@ -1,0 +1,43 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<title>Cbox</title>
+<link rel="stylesheet" type="text/css" href="{{ urlprefix }}/cbox_css/">
+</head>
+
+<body id="bdy" class="mnbdy" style="overflow:auto">
+<table id="mt" border="0" cellpadding="2" cellspacing="0" width="100%" class="hbtbl">
+<tr id="1"><td class="stxt2"><div class="dtxt2">30 Oct 08, 18:07</div>
+<a href="mailto:foo@mit.edu" target="_blank"><b class="pn_std">system</b></a>: Hold your horses!</td></tr>
+</table>
+
+<script type="text/javascript">
+rld = 0;
+tme = 1225404683;
+function cinit () {
+  try { 
+    cf=parent.cboxform;
+    if(rld)cf.rld=1;
+    if(!rld && !cf.rld && cf.ctme+5<=1225404346) {
+      rld=1;
+      cf.document.location.reload(true);
+    } else {
+      cf.lp = 1;
+      cf.tbl = document.getElementById("mt").tBodies[0];
+      cf.delban();
+      cf.upd_tms();
+      cf.ard = 120;
+      cf.ar_reset();
+    }
+  } catch (e) {}
+};
+
+cinit();
+if (parent == window) location.replace("{{ urlprefix }}/cbox/");
+</script>
+
+
+<!--  tme: 2.96ms. qry: 3  -->
+</body></html>

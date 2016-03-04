@@ -1,0 +1,21 @@
+<html>
+<body>
+<h1>{{title}}</h1>
+
+<div id="mydiv"></div>
+
+<SCRIPT type="text/javascript">
+document.getElementById("mydiv").innerHTML = "I'm javascript";
+</SCRIPT>
+
+
+<h2>Photos</h2>
+{% if photo_urls %}
+    {% for p in photo_urls %}
+        <p><IMG BORDER=2 SRC="{{ p }}"></p>
+    {% endfor %}
+{% else %}
+    <p>No photos are available.</p>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,27 @@
+
+<h1>Safebook</h1>
+
+<p>labelset: {{ labelset }}</p>
+
+View Profile:
+<a href="{{ urlprefix }}/viewprofile/{{ username }}/">My profile</a>, 
+{% for f in friends %}
+<a href="{{ urlprefix }}/viewprofile/{{ f }}/">{{ f }}</a>, 
+{% endfor %}
+
+{% if msg %}<p>Message: {{ msg }}</p> {% endif %}
+
+<p>
+<form action="{{urlprefix}}/upload/" method="post">
+
+{% for hid in hidden_ids %}
+<input type="hidden" name="{{ hid.0 }}" value="{{ hid.1 }}">
+{% endfor %}
+
+<table> {{ form }} </table><br>
+<input type="submit" name="update" value="Update">
+</form>
+</p>
+
+
+{% include "app_iframe.html" %}

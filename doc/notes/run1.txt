@@ -1,0 +1,13 @@
+
+Instructions on How To Get Basic Traz working (Version 1)
+
+1. Init SQL tables / get IDD running
+  a. install mysql
+  b. run bin/initdb.sh
+  c. in this case, just use rael.lcs.mit.edu:38423
+
+2. Init FS
+  a. use ghetto extended attributes; need to be root
+     # export INITFS=/disk/max/run/bin/traz/shared/initfs 
+     # $INITFS -G -I rael.lcs.mit.edu:38423 /disk/traz/data/ihome
+     # $INITFS -G -I rael.lcs.mit.edu:38423 /disk/traz/data/home

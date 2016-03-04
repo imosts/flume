@@ -1,0 +1,10 @@
+
+<h1>WidgetBlog</h1>
+
+{% for widget in widget_data %}
+
+<p>Widget: {{ widget.name }}, Label: {{ widget.ls }}
+<iframe id="{{ id_name }}" name="{{ id_name }}" height="400" width="600" src="{{ widget.url }}">iframes don't work!</iframe>
+</p>
+
+{% endfor %}

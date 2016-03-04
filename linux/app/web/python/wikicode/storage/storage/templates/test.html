@@ -1,0 +1,23 @@
+
+Basic tests for the storage system.
+
+<form action="{{ urlprefix }}/put/" method="POST">
+<table>
+<tr>
+<td>Key</td>
+<td><input type="text" name="key"></td>
+</tr>
+
+<tr>
+<td>Val</td>
+<td><input type="text" name="val"></td>
+</tr>
+</table>
+
+<input type="submit" name="submit" value="Put">
+</form>
+
+<form action="{{ urlprefix }}/get/" method="GET">
+<input type="text" name="key">
+<input type="submit" name="submit" value="Get">
+</form>

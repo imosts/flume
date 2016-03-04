@@ -1,0 +1,21 @@
+#!/bin/sh
+
+FLUME_CFG=`PATH="$PATH:./bin:../bin" which flume-cfg`
+PYTHON=/usr/bin/python
+
+if [ $? -ne 0 ]
+then
+    echo "** cannot find flume-cfg utility; death ensues" 2>&1
+    exit 2
+fi
+
+if [ "$PYTHONPATH" ] ; then
+    pp=":$PYTHONPATH"
+else
+    pp=""
+fi
+
+LD_LIBRARY_PATH=`${FLUME_CFG} rlib` \
+PYTHONPATH=`${FLUME_CFG} pypath ${PYTHON}`${pp} \
+FLUME_SOCKET=`${FLUME_CFG} socket` \
+	$PYTHON "$@"

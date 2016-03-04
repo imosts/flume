@@ -1,0 +1,120 @@
+#!/bin/sh
+
+#CONCUR="1 2 3 4 5 10 15 20 30 40 50"
+NUSERS=100
+
+NREQ=500
+NPAGES=200
+HOST=$2
+REST=5
+LOGIN=
+#MOIN_LAB=viasaaaaaaaba
+MOIN_LAB=3icaaaaaaaaba
+
+
+#echo "Creating $NUSERS users"
+#sh create-moinusers.sh $NUSERS $SERVER/moin/UserPreferences | tee moin_userlist
+
+#echo "Logging in users to get MOIN_IDs"
+#sh login-moinusers.sh -m $NUSERS moin_userlist $SERVER | tee moin_cookielist
+
+prepare_pages () {
+if [ "$MODE" = "-t" ]; then
+    ssh $HOST "cd /disk/yipal/moin-ihome/$MOIN_LAB/; sh ~/research/traz/traz-2.0/benchmark/prepare_pages.sh $NPAGES $MODE $MOIN_LAB" > x
+else
+    ssh $HOST "cd /disk/yipal/unmodified-moin/moin-instance/data/pages; sh ~/research/traz/traz-2.0/benchmark/prepare_pages.sh $NPAGES $MODE $MOIN_LAB" > x
+fi
+}
+
+warm_up () {
+   rm data; ./ascli -e data -c 7 -n $NPAGES moincli -p $PAGE -r $NPAGES -s $SERVER > /dev/null
+}
+
+read_test () {
+    prepare_pages
+    warm_up
+    echo "Finished warmup"
+
+    for C in $CONCUR
+      do
+      sleep $REST
+      FILE=moinread-$NUSERS-$NPAGES-$NREQ-$C-$HOST
+      rm -f $FILE
+
+      if [ "$LOGIN" ]; then
+          ./ascli -e $FILE  -c $C -n $NREQ $TYPE -H $PWLIST -p $PAGE -r $NPAGES $SERVER > /dev/null
+      else 
+          ./ascli -e $FILE  -c $C -n $NREQ $TYPE -p $PAGE -r $NPAGES $SERVER > /dev/null
+      fi
+      
+      tail -1 $FILE | perl -ne '/bad_responses=(\d+)/; if ($1 > 0) {printf STDERR "Bad Responses!\n";}'
+      
+      THROUGHPUT=`tail -2 $FILE | head -1 | perl -ne '/(\d+),(\d+),(\d+)/; printf "%f", $2/($3/1000000);'`
+      LATENCY=`head -$NREQ $FILE | stats.pl -f | perl -ne '/(\S+) (\S+) (\S+)/; printf "%9.6f %9.6f %9.6f", $1/1000000, $2/1000000, $3/1000000,'`
+      echo "$NUSERS $NPAGES $NREQ $C $THROUGHPUT $LATENCY read"
+    done
+}
+
+write_test () {
+    for C in $CONCUR
+      do
+      sleep $REST
+      FILE=moinwrite-$NUSERS-$NPAGES-$NREQ-$C-$HOST
+      rm -f $FILE
+      
+      # Reset pages to revision 1
+      prepare_pages
+      
+      if [ "$LOGIN" ]; then
+          ./ascli -e $FILE -c $C -n $NREQ $TYPE -H $PWLIST -p $PAGE -r $NPAGES -w $SERVER > /dev/null
+      else
+          ./ascli -e $FILE -c $C -n $NREQ $TYPE -p $PAGE -r $NPAGES -w $SERVER > /dev/null
+      fi
+      
+      tail -1 $FILE | perl -ne '/bad_responses=(\d+)/; if ($1 > 0) {printf STDERR "Bad Responses!\n";}'
+      
+      THROUGHPUT=`tail -2 $FILE | head -1 | perl -ne '/(\d+),(\d+),(\d+)/; printf "%f", $2/($3/1000000);'`
+      LATENCY=`head -$NREQ $FILE | stats.pl -f | perl -ne '/(\S+) (\S+) (\S+)/; printf "%9.6f %9.6f %9.6f", $1/1000000, $2/1000000, $3/1000000,'`
+      echo "$NUSERS $NPAGES $NREQ $C $THROUGHPUT $LATENCY write"
+    done
+}
+
+usage () {
+    echo "usage: bench-moin {-m | -t} server_ip"
+    exit 1
+}
+
+if [ $# -lt 2 ]; then
+    usage
+fi
+
+if [ "$1" = "-m" ]; then
+    PAGE=frozenmoin/TestPage
+
+    SERVER=$HOST:9000
+    TYPE=moincli
+    PWLIST=moin_cookielist
+    MODE="-m"
+
+    CONCUR="1 3 5 7 10 15 20 30"
+    read_test
+
+    CONCUR="1 20 30 40 50 60 70 80"
+    write_test
+
+elif  [ "$1" = "-t" ]; then
+    PAGE=moin/TestPage
+
+    SERVER=$HOST:8000
+    TYPE=tmoincli
+    PWLIST=tmoin_tpwlist
+    MODE="-t"
+
+    CONCUR="1 3 4 5 6 7 8 9"
+    read_test
+
+    CONCUR="1 3 6 9"
+    #write_test
+else
+    usage
+fi

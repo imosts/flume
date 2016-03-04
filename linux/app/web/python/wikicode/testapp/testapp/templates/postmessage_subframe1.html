@@ -1,0 +1,82 @@
+<script type='text/javascript'>
+/*
+ * In window A's scripts, with A being on <http://example.com:8080>:
+ */
+
+function dump_object (obj) {
+    var s = "";
+    for (var k in obj) {
+        s += k + "\n";
+    }
+    alert (s);
+}
+
+function self_dump_PM () { window.dump ("window.postMessage: " + window.postMessage + "\n"); }
+function parent_dump_PM () { window.dump ("parent.postMessage: " + window.parent.postMessage + "\n"); }
+
+function self_postMessage () { window.postMessage ("Sent to myself via postMessage", "*"); }
+function parent_postMessage () { window.parent.postMessage("Sent via postMessage!", "*"); }
+
+function test_w5send () {
+  if ("createEvent" in document) {
+    var popup = window.parent;
+    
+    // test code
+    window.dump ("popup: " + popup + "\n");
+
+    var element = document.createElement("MyCrossDomainMsg");
+    element.setAttribute("target", "parent_window");
+    element.setAttribute("msg", "hello world");
+    document.documentElement.appendChild(element);
+
+    var evt = document.createEvent("Events");
+    evt.initEvent("w5send", true, false);
+    element.dispatchEvent(evt);
+
+  } else {
+    alert ("could not find createEvent");
+  } 
+}
+
+function fetch_page (strURL) {
+    var xmlHttpReq = false;
+    var self = this;
+    // Mozilla/Safari
+    if (window.XMLHttpRequest) {
+        self.xmlHttpReq = new XMLHttpRequest();
+    }
+    // IE
+    else if (window.ActiveXObject) {
+        self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    self.xmlHttpReq.open('GET', strURL, true);
+    self.xmlHttpReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    self.xmlHttpReq.onreadystatechange = function() {
+        if (self.xmlHttpReq.readyState == 4) {
+            document.getElementById("response").innerHTML = self.xmlHttpReq.responseText;
+        }
+    }
+    self.xmlHttpReq.send(null);
+}
+</script>
+
+Tests for cross-domain and cross-frame messaging.
+
+<p>
+Read some tainted data via an AJAX request:<br>
+<button onClick="fetch_page ('{{ extra_taint }}/postmessage_subframe2/');">Send AJAX req</button><br>
+<span id="response"></span>
+</p>
+
+
+<p>
+Send a message to our parent frame!<br>
+<button onClick="self_dump_PM();">Dump my postMessage</button><br>
+<button onClick="parent_dump_PM();">Dump parent postMessage</button><br>
+
+<button onClick="self_postMessage();">Send postMessage to myself</button><br>
+<button onClick="parent_postMessage();">Send postMessage to parent</button><br>
+
+<button onClick="test_w5send();">Send W5 msg with w5send</button><br>
+</p>
+

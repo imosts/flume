@@ -1,0 +1,36 @@
+#!/usr/local/bin/bash
+#
+# Running shopping card benchmark:
+#  1) Start RM
+#  2) Start session-server
+#  3) Run this script
+
+# ascli options
+ASCLI=./ascli
+SERVER=click.lcs.mit.edu
+PORT=8000
+CONCURRENCY=1
+TOTAL_REQS=20
+NUSERS=3
+USERLIST=./userlist
+URL=cgi-bin2/nullcgi
+RESULTS=$DATE-bench-results
+OUTPUT=$DATE-bench-output
+
+
+
+DATE=`date +%Y%m%d%H%M`
+
+$ASCLI \
+  -v0 
+  -c $CONCURRENCY \
+  -n $TOTAL_REQS \
+  -U $NUSERS \
+  -r $NUSERS \
+  -H $USERLIST \
+  -p $URL \
+  -e $RESULTS \
+  $SERVER:$PORT \
+  > $OUTPUT
+
+echo "Writing results to \"$RESULTS\", http output to \"$OUTPUT\""

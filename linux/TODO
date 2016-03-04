@@ -1,0 +1,50 @@
+
+- either build sfslite from source (as we do Glibc) or make an sfslite
+  .deb package
+
+- everything has to work for both 32 and 64 bit for platforms that have both.
+  I suspsect this means 2 versions of the LD_PRELOAD library and of
+  ld.so
+
+- figure out linux extended attributes (libtraz-srv/ea.T)
+
+- fill out the traz.ko LSM; right now, it's just hello world.
+
+- autoconf MySQL
+
+- openat, mkdirat, linkat, etc, syscalls; support interposition
+
+- change trazfs to use openat instead of open + fchdir.
+
+- perf. bug in handle_open w/ creation -- shouldn't need to fswalk
+
+- strip out txa_prot and other elements from OKWS
+
+- Read elf files, and figure out which dynamic linker was requested
+ (instead of guessing).  How To:
+  - look in /usr/include/elf.h for elf formatting
+  - download GNU binutils and look at binutils/readelf.c, for ideas
+    how to scan the elf headers to find the appropriate section.  It
+    turns out the dynamic linker is listed in the 'Program Headers'
+    section of the ELF file.
+
+- Dependencies are slightly broken for preliminary build.  Things have
+  to wait on glibc that currently don't.
+
+- Install process bugs:
+	- /disk/foo/etc isn't getting created
+	- compiler warnings for ld.so stuff
+	- not copying over ld.so.cache
+	- need to create groups wheel and nobody
+
+- Make get_ctl_sock thread-safe.
+	- First check if this thread already has a ctl sock
+	- If not, then ask for a new one.
+	- Store thread id <-> CTL sock in a hash table
+	- Employ the appropriate locking.
+
+- Make a version libpthread like plash does, and install it 
+  in a place where python can find it.
+
+- Weird retry behavior for FS <-> IDD that seems to explode
+  exponentially...

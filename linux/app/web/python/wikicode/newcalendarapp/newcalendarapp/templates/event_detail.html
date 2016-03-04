@@ -1,0 +1,8 @@
+<h1>{{ event.title }}</h1>
+<ul>
+    <li>date: {{ event.edate }}</li>
+    <li>zip: {{ event.zip }}</li>
+    {% if w %}
+    <li>weather: low of {{ w.low }}, high of {{ w.high }}. {{ w.condition}} </li>
+    {% endif %}
+</ul>

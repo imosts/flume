@@ -1,0 +1,14 @@
+
+Send poke to {{ friend_un }}:
+
+<script type="text/javascript" src="{{ myprefix }}/poke_js/"></script>
+
+<!-- <form name="myform" action="javascript: send_poke(this)" --
+  -- method="post"> -->
+<form name="myform" action="#" method="get">
+<input id="poke_content" type="text" name="poke_content">
+<input id="sender" type="hidden" name="sender" value="{{ sender }}">
+<input id="receiver" type="hidden" name="receiver" value="{{ receiver }}">
+<!-- <input type="submit" name="submit" value="Poke1" > -->
+<input type="button" name="foo" value="Poke2" onClick="javascript: send_poke (this)">
+</form>

@@ -1,0 +1,22 @@
+<h1>W5 Calendar App</h1>
+{% block main_content %}
+	<h2>Monthly Outlook</h2>
+	{% load schedule_cal %}
+	{% schedule_cal date date_list urlprefix %}
+{% endblock %}
+
+{% block sidebar %}
+	<h3>What is this?</h3>
+	<p>This is a calendar of the goings-on this month. You'll see events with locations  
+		and upcoming projects.  All data is for your eyes only, but you can 
+	        add plug-ins.   That other people write.</p>
+	
+	<hr />
+	
+	<h3>Upcoming Projects</h3>
+	<ul>
+		{% for upcoming in upcoming_projects %}
+			<li><a href="{{ urlprefix }}/project/{{ upcoming.id }}">{{ upcoming.name }}</a><small>Due: {{ upcoming.due|date:"F j" }}</small></li>
+		{% endfor %}
+	</ul>
+{% endblock %}

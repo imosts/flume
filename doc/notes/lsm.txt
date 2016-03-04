@@ -1,0 +1,51 @@
+
+Notes on How To Build an LSM
+-----------------------------
+
+ - main struct per task is task_struct , as defined in include/linux/sched.h
+
+ - that struct, and many others in linux, has a 'void *security;' field that
+   can be set for security module purposes.  there's a hook in LSM
+   call task_alloc to allocate that structure.
+
+ - another struct of interest is linux_binprm, which is allocated and
+   maintained as linux goes through the different steps
+   involved with exec.  see fs/exec.c for an implementation of exec.
+   see include/linux/binfmts.h for the definition of the linux_binprm
+   structure.  note this structure also has a void *security field.
+
+   It seems as if this field is only temporary, alive only as long
+   as the kernel is doing do_exec.
+
+ - example of lsm, see selinux, distributed with linux. for instance,
+   in security/selinux/hooks.c, there is a huge dispatch table with
+   a hook for lots of kernel suboperations, that presumably selinux
+   has code for.
+
+ - one hook that will be particularly useful is inode_permission, called
+   whenever the kernel traverses an inode (as in namei -- fs/namei.c)
+
+ - getting code: just very quickly, i downloaded a source tarball from
+   kernel.org and dumped it in /disk/max/src.  Looks like it's version
+   2.6.21.1
+
+ - looks like task_prctl might be a good place to put in the 
+   'systrace_me' hook that processes will have to call during
+   spawn, to voluntarily put themselves under systrace.
+ 
+ - seems like there used to be support for sys_security, which allowed
+   an arbitrary syscall for LSMs, but that they stripped it out of
+   current linuxes. Shucks, I'm not sure how we can add new syscalls
+   with a module -- probably we cannot.  The only concern here, of course,
+   is fexecve.
+
+Here's the build information for building selinux out of the Linux
+source tree.  Obviously, we don't want to require Traz being built in
+this manner, so we'll figure out something else...
+
+  gcc -m32 -Wp,-MD,security/selinux/.netlink.o.d  -nostdinc -isystem /usr/lib/gcc/i486-linux-gnu/4.1.2/include -D__KERNEL__ -Iinclude  -include include/linux/autoconf.h -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O2 -pipe -msoft-float -mregparm=3 -freg-struct-return -mpreferred-stack-boundary=2  -march=i686 -mtune=generic -ffreestanding -maccumulate-outgoing-args   -Iinclude/asm-i386/mach-default -fomit-frame-pointer  -fno-stack-protector -Wdeclaration-after-statement -Wno-pointer-sign -Isecurity/selinux/include   -D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(netlink)"  -D"KBUILD_MODNAME=KBUILD_STR(selinux)" -c -o security/selinux/.tmp_netlink.o security/selinux/netlink.c
+  gcc -m32 -Wp,-MD,security/selinux/.nlmsgtab.o.d  -nostdinc -isystem /usr/lib/gcc/i486-linux-gnu/4.1.2/include -D__KERNEL__ -Iinclude  -include include/linux/autoconf.h -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O2 -pipe -msoft-float -mregparm=3 -freg-struct-return -mpreferred-stack-boundary=2  -march=i686 -mtune=generic -ffreestanding -maccumulate-outgoing-args   -Iinclude/asm-i386/mach-default -fomit-frame-pointer  -fno-stack-protector -Wdeclaration-after-statement -Wno-pointer-sign -Isecurity/selinux/include   -D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(nlmsgtab)"  -D"KBUILD_MODNAME=KBUILD_STR(selinux)" -c -o security/selinux/.tmp_nlmsgtab.o security/selinux/nlmsgtab.c
+  gcc -m32 -Wp,-MD,security/selinux/.netif.o.d  -nostdinc -isystem /usr/lib/gcc/i486-linux-gnu/4.1.2/include -D__KERNEL__ -Iinclude  -include include/linux/autoconf.h -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O2 -pipe -msoft-float -mregparm=3 -freg-struct-return -mpreferred-stack-boundary=2  -march=i686 -mtune=generic -ffreestanding -maccumulate-outgoing-args   -Iinclude/asm-i386/mach-default -fomit-frame-pointer  -fno-stack-protector -Wdeclaration-after-statement -Wno-pointer-sign -Isecurity/selinux/include   -D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(netif)"  -D"KBUILD_MODNAME=KBUILD_STR(selinux)" -c -o security/selinux/.tmp_netif.o security/selinux/netif.c
+  gcc -m32 -Wp,-MD,security/selinux/.exports.o.d  -nostdinc -isystem /usr/lib/gcc/i486-linux-gnu/4.1.2/include -D__KERNEL__ -Iinclude  -include include/linux/autoconf.h -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O2 -pipe -msoft-float -mregparm=3 -freg-struct-return -mpreferred-stack-boundary=2  -march=i686 -mtune=generic -ffreestanding -maccumulate-outgoing-args   -Iinclude/asm-i386/mach-default -fomit-frame-pointer  -fno-stack-protector -Wdeclaration-after-statement -Wno-pointer-sign -Isecurity/selinux/include   -D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(exports)"  -D"KBUILD_MODNAME=KBUILD_STR(selinux)" -c -o security/selinux/.tmp_exports.o security/selinux/exports.c
+  ld -m elf_i386 -m elf_i386  -r -o security/selinux/selinux.o security/selinux/avc.o security/selinux/hooks.o security/selinux/selinuxfs.o security/selinux/netlink.o security/selinux/nlmsgtab.o security/selinux/netif.o security/selinux/exports.o
+

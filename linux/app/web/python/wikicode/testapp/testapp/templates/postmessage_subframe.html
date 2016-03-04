@@ -1,0 +1,31 @@
+<script type='text/javascript'>
+
+function w5recvListener(event){
+  var elm = event.target;
+  var msg = elm.getAttribute("msg");
+
+  document.getElementById ("foo").innerHTML = msg;
+
+  //*** clean up
+  if (elm.hasAttribute("msg"))
+    elm.removeAttribute("msg");
+}
+window.addEventListener("w5recv", w5recvListener, false);
+window.name = "parent_window";
+</script>
+
+<!-- need this so that extension can send us a message -->
+<div id="w5recvdiv")></div> 
+
+
+
+Got message: <div id="foo"></div>
+
+<p><button onclick="document.getElementById ('foo').innerHTML = '';">Clear</button></p>
+
+
+<h2>Same Domain</h2>
+<iframe height="300" width="600" src="{{ urlprefix }}/postmessage_subframe1/">iframes don't work!</iframe>
+
+<h2>Different Domain</h2>
+<iframe height="300" width="600" src="{{ newcid_prefix }}/postmessage_subframe1/">iframes don't work!</iframe>

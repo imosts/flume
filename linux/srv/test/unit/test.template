@@ -1,0 +1,7 @@
+New handle: foo -> $foo
+New handle: bar -> $bar
+Label set successful.
+Label returned: {$foo,$bar}
+New handle: baz -> $baz
+Label set successful.
+Label returned: {$foo,$bar,$baz}

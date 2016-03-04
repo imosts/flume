@@ -1,0 +1,157 @@
+
+Playing Around With ld.so on Ubuntu Linux
+5.1.07
+Max
+
+
+1. Getting ld.so source code:
+   
+ % apt-get source glibc
+
+
+2. Building everything:
+ 
+ % apt-get -b source glibc
+
+The -b flag tells apt-get to build the thing once it's been downloaded.  To
+get this working, I had to apt-get install a lot of build tools (such as 
+gettext and texi2html, and lots of others I can't recall).
+
+This runs a whole bunch of deb- and ubuntu-specific patches, and then
+eventually kicks off dpkg-buildpackage (with some options that I forget).
+
+Note everything will be happening in /usr/src/glibc-2.4.  The source
+tree will be expanded into /usr/src/glibc-2.4/buildtree/glibc-2.4, and
+the object directories will be in i386-i686 and i386-libc in that
+buildtree/ directory.
+
+I interrupted this process halfway through to poke around at it a little 
+bit.
+
+
+3. ld.so in particular
+
+Source code is in glibc-2.4/elf, and object files are in
+i386-libc/elf.  As in OpenBSD, ld.so will need its own versions of the
+C library functions like open, etc.  They compile down to object files
+of the form io/rtld-open.os, and are compiled with commands such as
+the following, as part of the build process:
+
+
+gmake[4]: Nothing to be done for `rtld-all'.
+gmake[4]: Leaving directory `/usr/src/glibc-2.4/build-tree/glibc-2.4/csu'
+gmake subdir=gmon -C ../gmon ..=../ objdir=/usr/src/glibc-2.4/build-tree/i386-libc -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-profil.os rtld-prof-freq.os'
+gmake[4]: Entering directory `/usr/src/glibc-2.4/build-tree/glibc-2.4/gmon'
+gmake[4]: Nothing to be done for `rtld-all'.
+gmake[4]: Leaving directory `/usr/src/glibc-2.4/build-tree/glibc-2.4/gmon'
+gmake subdir=io -C ../io ..=../ objdir=/usr/src/glibc-2.4/build-tree/i386-libc -f Makefile -f ../elf/rtld-Rules rtld-all rtld-modules='rtld-xstat64.os rtld-fxstat64.os rtld-open.os rtld-close.os rtld-read.os rtld-write.os rtld-lseek.os rtld-access.os rtld-fcntl.os rtld-getcwd.os'
+gmake[4]: Entering directory `/usr/src/glibc-2.4/build-tree/glibc-2.4/io'
+(echo '#include <sysdep-cancel.h>'; \
+         echo 'PSEUDO (__libc_open, open, 3)'; \
+         echo ' ret'; \
+         echo 'PSEUDO_END(__libc_open)'; \
+         echo 'libc_hidden_def (__libc_open)'; \
+         echo 'weak_alias (__libc_open, __open)'; \
+         echo 'libc_hidden_weak (__open)'; \
+         echo 'weak_alias (__libc_open, open)'; \
+         echo 'libc_hidden_weak (open)'; \
+        ) | gcc-4.1 -fno-stack-protector -c -I../include -I/usr/src/glibc-2.4/build-tree/i386-libc/io -I/usr/src/glibc-2.4/build-tree/i386-libc -I../sysdeps/i386/elf -I../nptl/sysdeps/unix/sysv/linux/i386/i486 -I../nptl/sysdeps/unix/sysv/linux/i386 -I../sysdeps/unix/sysv/linux/i386 -I../nptl/sysdeps/unix/sysv/linux -I../nptl/sysdeps/pthread -I../sysdeps/pthread -I../sysdeps/unix/sysv/linux -I../sysdeps/gnu -I../sysdeps/unix/common -I../sysdeps/unix/mman -I../sysdeps/unix/inet -I../sysdeps/unix/sysv/i386 -I../nptl/sysdeps/unix/sysv -I../sysdeps/unix/sysv -I../sysdeps/unix/i386 -I../nptl/sysdeps/unix -I../sysdeps/unix -I../sysdeps/posix -I../nptl/sysdeps/i386/i486 -I../sysdeps/i386/i486 -I../sysdeps/i386/fpu -I../nptl/sysdeps/i386 -I../sysdeps/i386 -I../sysdeps/wordsize-32 -I../sysdeps/ieee754/ldbl-96 -I../sysdeps/ieee754/dbl-64 -I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754 -I../sysdeps/generic/elf -I../sysdeps/generic -I../nptl -I.. -I../libio -I. -nostdinc -isystem /usr/lib/gcc/i486-linux-gnu/4.1.2/include -isystem /usr/src/glibc-2.4/debian/include -D_LIBC_REENTRANT -DNO_TLS_DIRECT_SEG_REFS -include ../include/libc-symbols.h -DPIC -DSHARED -DNOT_IN_libc=1 -DIS_IN_rtld=1 -DASSEMBLER -DGAS_SYNTAX -Wa,--noexecstack -x assembler-with-cpp -o /usr/src/glibc-2.4/build-tree/i386-libc/io/rtld-open.os -
+
+In other words, the source file is of the form:
+
+#include <sysdep-cancel.h>
+PSEUDO (__libc_open, open, 3)
+ ret
+PSEUDO_END(__libc_open)
+libc_hidden_def (__libc_open)
+weak_alias (__libc_open, __open)
+libc_hidden_weak (__open)
+weak_alias (__libc_open, open)
+libc_hidden_weak (open)
+
+And is fed directly into the assembler.
+
+Here's a look at the link line to create ld.so:
+
+gcc-4.1 -fno-stack-protector   -nostdlib -nostartfiles -r -o /usr/src/glibc-2.4/build-tree/i386-libc/elf/librtld.os '-Wl,-(' /usr/src/glibc-2.4/build-tree/i386-libc/elf/dl-allobjs.os /usr/src/glibc-2.4/build-tree/i386-libc/elf/rtld-libc.a -lgcc '-Wl,-)' \
+                  -Wl,-Map,/usr/src/glibc-2.4/build-tree/i386-libc/elf/librtld.os.map
+gcc-4.1 -fno-stack-protector   -nostdlib -nostartfiles -shared  \
+                  -Wl,-z,combreloc -Wl,-z,relro -Wl,-z,defs -Wl,--verbose 2>&1 |        \
+                  LC_ALL=C \
+                  sed -e '/^=========/,/^=========/!d;/^=========/d'    \
+                      -e 's/\. = 0 + SIZEOF_HEADERS;/& _begin = . - SIZEOF_HEADERS;/' \
+                  > /usr/src/glibc-2.4/build-tree/i386-libc/elf/ld.so.lds
+gcc-4.1 -fno-stack-protector   -nostdlib -nostartfiles -shared -o /usr/src/glibc-2.4/build-tree/i386-libc/elf/ld.so                     \
+                  -Wl,-z,combreloc -Wl,-z,relro -Wl,-z,defs     \
+                  /usr/src/glibc-2.4/build-tree/i386-libc/elf/librtld.os -Wl,--version-script=/usr/src/glibc-2.4/build-tree/i386-libc/ld.map            \
+                  -Wl,-soname=ld-linux.so.2 -T /usr/src/glibc-2.4/build-tree/i386-libc/elf/ld.so.lds
+
+
+Looks like the libc libraries needed to run ld.so are here:
+
+      /usr/src/glibc-2.4/build-tree/i386-libc/elf/librtld.os
+
+--------------------
+
+More or librtld.os;  it's generated with this line:
+
+gcc-4.0   -nostdlib -nostartfiles -r -o /disk/max/src/plash/glibc-2.5-objs/elf/librtld.os '-Wl,-(' /disk/max/src/plash/glibc-2.5-objs/elf/dl-allobjs.os /disk/max/src/plash/glibc-2.5-objs/elf/rtld-libc.a -lgcc '-Wl,-)' \
+          -Wl,-Map,/disk/max/src/plash/glibc-2.5-objs/elf/librtld.os.map
+gcc-4.0   -nostdlib -nostartfiles -shared   \
+          -Wl,-z,combreloc -Wl,-z,relro -Wl,-z,defs -Wl,--verbose 2>&1 |    \
+          LC_ALL=C \
+          sed -e '/^=========/,/^=========/!d;/^=========/d'    \^M
+              -e 's/\. = 0 + SIZEOF_HEADERS;/& _begin = . - SIZEOF_HEADERS;/' \
+          > /disk/max/src/plash/glibc-2.5-objs/elf/ld.so.lds
+
+Meaning, it's a combination of dl-allobjs.os and rtld-libc.a. The former
+are the source files needed specifically for ld.so; the latter is the
+abbreviated libc archive that the linker sucks in at links against 
+statically.
+
+-----------------------------------------------------------------------
+Note, documentation on various gcc attributes:
+
+http://docs.freebsd.org/info/gcc/gcc.info.Function_Attributes.html
+
+
+-----------------------------------------------------------------------
+
+This is how I built a random libc file for use with ld.so.  Basically I
+followed the plash script (make-glibc-extras.sh) and did this:
+
+hydra$ make -C `pwd`/glibc-2.5/socket objdir=`pwd`/glibc-2.5-objs -f Makefile
+-f ../elf/rtld-Rules rtld-all rtld-modules=sendmsg.os
+
+the output was:
+
+make: Entering directory `/disk/max/src/plash/glibc-2.5/socket'
+make: Nothing to be done for `rtld-all'.
+make: Leaving directory `/disk/max/src/plash/glibc-2.5/socket'
+hydra$ make -C `pwd`/glibc-2.5/socket objdir=`pwd`/glibc-2.5-objs -f Makefile
+-f ../elf/rtld-Rules rtld-all rtld-modules=rtld-sendmsg.os
+make: Entering directory `/disk/max/src/plash/glibc-2.5/socket'
+gcc-4.0 ../sysdeps/unix/sysv/linux/sendmsg.S -c  -I../include
+-I/disk/max/src/plash/glibc-2.5-objs/socket
+-I/disk/max/src/plash/glibc-2.5-objs -I../sysdeps/i386/elf
+-I../nptl/sysdeps/unix/sysv/linux/i386/i686
+-I../nptl/sysdeps/unix/sysv/linux/i386 -I../sysdeps/unix/sysv/linux/i386
+-I../nptl/sysdeps/unix/sysv/linux -I../nptl/sysdeps/pthread
+-I../sysdeps/pthread -I../sysdeps/unix/sysv/linux -I../sysdeps/gnu
+-I../sysdeps/unix/common -I../sysdeps/unix/mman -I../sysdeps/unix/inet
+-I../sysdeps/unix/sysv/i386 -I../nptl/sysdeps/unix/sysv -I../sysdeps/unix/sysv
+-I../sysdeps/unix/i386 -I../nptl/sysdeps/unix -I../sysdeps/unix
+-I../sysdeps/posix -I../sysdeps/i386/i686/fpu -I../nptl/sysdeps/i386/i686
+-I../sysdeps/i386/i686 -I../sysdeps/i386/i486 -I../nptl/sysdeps/i386/i486
+-I../sysdeps/i386/fpu -I../nptl/sysdeps/i386 -I../sysdeps/i386
+-I../sysdeps/wordsize-32 -I../sysdeps/ieee754/ldbl-96
+-I../sysdeps/ieee754/dbl-64 -I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754
+-I../sysdeps/generic/elf -I../sysdeps/generic -I../nptl  -I.. -I../libio -I.
+-I /lib/modules/2.6.17-10-server/build/include -D_LIBC_REENTRANT -include
+../include/libc-symbols.h  -DPIC -DSHARED     -DNOT_IN_libc=1 -DIS_IN_rtld=1
+-DASSEMBLER  -DGAS_SYNTAX    -o
+/disk/max/src/plash/glibc-2.5-objs/socket/rtld-sendmsg.os -MD -MP -MF
+/disk/max/src/plash/glibc-2.5-objs/socket/rtld-sendmsg.os.dt -MT
+/disk/max/src/plash/glibc-2.5-objs/socket/rtld-sendmsg.os
+make: Leaving directory `/disk/max/src/plash/glibc-2.5/socket'
+

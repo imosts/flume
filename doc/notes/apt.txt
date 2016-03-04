@@ -1,0 +1,16 @@
+python2.5-dev
+swig
+gawk
+g++
+autoconf
+automake
+libtool
+texinfo
+gettext
+subversion
+libgmp3-dev
+flex
+bison
+libmysqlclient15-dev 
+mysql-server
+linux-headers-YOUR-EXACT-VERSION

@@ -1,0 +1,68 @@
+
+##
+## IDD <hostname>:<port>
+##
+##   Connect to an IDD over TCP/IP, either local or over the network.
+##   IDD must be started before you can start up flumerm.
+##
+
+IDD -C 127.0.0.1:38424
+##IDD -C 18.26.4.60:38424  #NFS
+##IDD -C 18.26.4.60:38424
+
+Seed fooBEEFfooTACOfooBARfoo
+
+##
+## Flume's socketfile
+##
+SocketFile /tmp/flumesock.yipal
+
+##
+## TopDir <dir>
+##
+##   Specify where to find flume helper processes
+##
+TopDir FLUME_BIN/FLUME_TAG
+
+#Greedy 1
+
+FileServer	flumefs -o -R -L "{ I : all, S : [] }" -t 600 /usr /usr
+FileServer	flumefs -o -R -L "{ I : all, S : [] }" -t 600 /lib /lib
+FileServer	flumefs -o -R -L "{ I : all, S : [] }" -t 600 /var/lib /var/lib
+FileServer	flumefs -o -R -L "{ I : all , S : [] }" -t 600 FLUME_RUNPREFIX FLUME_RUNPREFIX
+FileServer	flumefs -o -R -L "{ I : all , S : [] }" -t 600 /disk/flume/data/etc /etc
+#FileServer	flumefs    -RP -t 600 /var/run /var/run
+
+FileServer	flumefs -o -R -L "{ I : all , S : [] }" -t 600 /mnt/sw1/yipal/Python-2.4.4 /mnt/sw1/yipal/Python-2.4.4
+
+#FileServer	flumefs    -u yipal -g yipal /disk/yipal/tmp        /disk/yipal/tmp
+#FileServer	flumefs -o -R -L "{ I : all , S : [] }" -t 600 /disk/yipal/readonly /disk/yipal/readonly
+#FileServer	flumefs -u yipal -g yipal                      /disk/yipal/readwrite /disk/yipal/readwrite
+
+#FileServer	flumefs    -u yipal -g yipal -L "{ I : all, S : [] }" /disk/yipal/moin-home  /home
+FileServer	flumefs -G -u root -g wheel /disk/yipal/sockets     /var/run
+
+FileServer	flumefs    -I -u yipal -g yipal /disk/yipal/ihome /ihome 
+#FileServer	flumefs -G -I -u root -g wheel  /mnt/nfs-ihome         /ihome #NFS
+
+#FileServer      flumefs -o -R -L "{ I : all, S : [] }" -t 600 /disk/yipal/moin /disk/yipal/moin
+#FileServer      flumefs -o -R -L "{ I : all, S : [] }" -t 600 /disk/yipal/moin-instance /disk/yipal/moin-instance
+
+FileServer	flumefs -o -R -L "{ I : all, S : [] }" -t 600 /tmp /tmp
+
+##
+## Spawner process.
+##
+#Spawner FLUME_DEBUG_SRV=0xffffff ASRV_TRACE=10 ACLNT_TRACE=10 spawner -L FLUME_RLIB
+#Spawner spawner -L FLUME_RLIB
+Spawner FLUME_DEBUG_SRV=0xffffff spawner -L FLUME_RLIB
+
+##
+## A read-protect tag used in the Setuid Mechanism
+##
+# Hydra2
+#SetuidHandle 	snaaaaaaaaaac 
+# Hydra
+#SetuidHandle    picaaaaaaaaac 
+
+SetuidHandle 3jpsaaaaaaaac

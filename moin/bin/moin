@@ -1,0 +1,3 @@
+#! /usr/local/bin/python
+from MoinMoin.script.moin import run
+run()

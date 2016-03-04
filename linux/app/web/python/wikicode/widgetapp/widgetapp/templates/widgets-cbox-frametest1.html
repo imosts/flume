@@ -1,0 +1,94 @@
+
+Cbox frametest 1
+<form>
+<input type="button" onClick="fetch_secret ();"
+       value="Fetch Secret">
+</form>
+<br>
+
+<iframe height="150" width="200" src="{{ urlprefix1 }}/cbox_frametest2/{{ ctx2 }}"></iframe>
+<iframe height="150" width="200" src="{{ urlprefix2 }}/cbox_frametest2/{{ ctx1 }}"></iframe>
+
+<script type="text/javascript">
+function http(m, u, d, f, s, c){
+  //alert ("HTTP " + m);
+  var r=null;
+  var t=0,p=0,q=0;
+  if(window.XMLHttpRequest){
+    r=new XMLHttpRequest();
+  }else{
+    if(window.ActiveXObject){
+      try{
+        r=new ActiveXObject("Msxml2.XMLHTTP");
+      }
+      catch(e){
+        try{
+          r=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        catch(e){
+        }
+      }
+    }
+  }
+  if(!r){
+    return false;
+  }
+  r.onreadystatechange=function(){
+    if(r.readyState==4){
+      window.clearTimeout(w);
+      if(r.status==200){
+        t=r.responseText;
+        
+        //q=t.substring(0,1);
+        //p=t.substring(1);
+        p = t;
+        
+        eval(f+"(p, c)"); // YIPAL: success case
+
+      } else if (r.status==500) {
+        // YIPAL: no results for this chat_id
+        eval (f + "('', c)");
+        
+      }else{
+        if(!s){
+          alert(t14+r.status);
+          eval(f+"('', c)"); // YIPAL: error case
+        }
+      }
+    }
+  };
+  this.hfail=function(){
+    r.onreadystatechange=function(){
+    };
+    r.abort();
+    if(!s){
+      alert(t14+"timeout");
+      eval(f+"('', c)");
+    }
+  };
+
+  var w=window.setTimeout(this.hfail,20000);
+  r.open(m,u,true);
+  r.setRequestHeader("Connection","close");
+  if(d){
+    r.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+  }
+  r.send(d);
+  return true;
+}
+
+function fetch_secret () {
+      http("GET",
+           "{{ urlprefix_secret }}/cbox_frametest2/{{ ctx1 }}/",
+           null,
+           "fetch_cb",
+           false,
+           null);
+}
+
+function fetch_cb (data, x) {
+  alert (data);
+}
+
+</script>
+

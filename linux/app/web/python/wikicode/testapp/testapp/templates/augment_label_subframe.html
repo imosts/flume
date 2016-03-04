@@ -1,0 +1,28 @@
+
+{% if tag %}
+<script type="text/javascript">
+function test_augment () {
+  if ("createEvent" in document) {
+    var element = document.createElement("MyAugmentLabelReq");
+    element.setAttribute("tag", "{{ tag }}");
+    document.documentElement.appendChild(element);
+
+    var evt = document.createEvent("Events");
+    evt.initEvent("w5augment_label", true, false);
+    element.dispatchEvent(evt);
+
+  } else {
+    alert ("could not find createEvent");
+  } 
+}
+</script>
+{% endif %}
+
+{% if tag %}
+Tests for augmenting label.
+<p><button onClick="test_augment();">Add {{ tag }} to label</button></p>
+{% endif %}
+
+{% if subsubframe_uri %}
+  <iframe src="{{ subsubframe_uri }}" width="600" height="75"></iframe>
+{% endif %}

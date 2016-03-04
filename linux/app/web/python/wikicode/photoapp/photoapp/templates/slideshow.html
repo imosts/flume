@@ -1,0 +1,73 @@
+<html>
+<body>
+<h1>{{title}}</h1>
+
+<script type="text/javascript">
+
+function update_photo_txt (strURL) {
+    var xmlHttpReq = false;
+    var self = this;
+    // Mozilla/Safari
+    if (window.XMLHttpRequest) {
+        self.xmlHttpReq = new XMLHttpRequest();
+    }
+    // IE
+    else if (window.ActiveXObject) {
+        self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    self.xmlHttpReq.open('GET', strURL, true);
+    self.xmlHttpReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    self.xmlHttpReq.onreadystatechange = function() {
+        if (self.xmlHttpReq.readyState == 4) {
+            updatepage(self.xmlHttpReq.responseText);
+        }
+    }
+    self.xmlHttpReq.send(null);
+}
+
+function updatepage (txt){
+    document.getElementById("caption").innerHTML = txt;
+}
+
+
+
+var urls = [];
+{% for p in photo_urls %}
+    urls[{{ forloop.counter0 }}] = "{{ p }}";
+{% endfor %}
+
+var captions = [];
+{% for c in caption_urls %}
+    captions[{{ forloop.counter0 }}] = "{{ c }}";
+{% endfor %}
+
+var current_photo = 0;
+function nextphoto () {
+  current_photo += 1;
+  if (current_photo >= {{photo_urls|length}}) { current_photo = 0; }
+  document.getElementById("photo").src = urls[current_photo];
+  update_photo_txt (captions[current_photo])
+}
+
+</script>
+
+
+<table border="0">
+<tr>
+  <td><IMG id="photo" BORDER=2 SRC="{{ photo_urls.0 }}"></td>
+  <td>
+    <div id="caption"></div>
+    <form name="f1">
+      <input value="Prev" type="button" onclick="JavaScript:alert('not implemented!')">
+      <input value="Next" type="button" onclick="JavaScript:nextphoto()">
+    </form>
+  </td>
+</tr>
+</table>
+
+<script type="text/javascript">
+  update_photo_txt (captions[0])
+</script>
+
+</body>
+</html>

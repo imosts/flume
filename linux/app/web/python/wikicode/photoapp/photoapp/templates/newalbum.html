@@ -1,0 +1,10 @@
+<h1>Create Album</h1>
+
+<p>Now is a good time to set the label on cid {{ cid }}.
+
+<form action="{{urlprefix}}/upload/newalbum/{{ new_page_id }}/" method="post">
+<p>Title: <BR><input type="text" name="title"></p>
+<input type="hidden" name="page_id" value={{ page_id }}>
+<input type="submit" value="Submit"><BR>
+</form>
+

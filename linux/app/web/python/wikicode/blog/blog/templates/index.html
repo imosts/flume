@@ -1,0 +1,24 @@
+
+<h1>W5 Blogger</h1>
+
+<h2>Search</h2>
+<form action="{{urlprefix_alltags}}/search/">
+Search for: <input type=text name=keywords value=foo>
+<input type=submit name=submit value="Search!">
+</form>
+
+<h2>Blogs</h2>
+{% if blog_list %}
+    <table border=1>
+    <tr><td>Title</td><td>Owner</td></tr>
+
+    {% for blog in blog_list %}
+        <tr>
+        <td><a href="{{urlprefix}}/viewblog/{{blog.id}}/">{{ blog.title }}</a></td>
+        <td>{{ blog.owner.username }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No blogs are available.</p>
+{% endif %}

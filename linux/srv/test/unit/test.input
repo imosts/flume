@@ -1,0 +1,7 @@
+n foo
+n bar
+s S foo bar
+f S
+n -p baz
+s S foo bar p:baz
+f S

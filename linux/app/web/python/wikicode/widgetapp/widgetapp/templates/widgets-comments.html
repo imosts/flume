@@ -1,0 +1,17 @@
+<script type="text/javascript">
+
+function pipeCallback(obj) {
+ document.write('<ol>');
+ var i;
+ for (i = 0; i < obj.count ; i++)
+ {
+ var href = "'" + obj.value.items[i].link + "'";
+ var item = '<li>' + '<a href=" + href + ">' + obj.value.items[i].title + '</a> </li>'
+ document.write(item);
+ }
+ document.write('</ol>');
+ }
+ </script>
+
+<!-- <script src="http://pipes.yahoo.com/pipes/pipe.run?_render=json&_callback=pipeCallback&_id=c92ac21897d8b56e61cfa85930dd89a1&url=http%3A%2F%2Fnehawidgets.blogspot.com&num=10" type="text/javascript"></script> -->
+<script src="http://pipes.yahoo.com/pipes/pipe.run?_render=json&_callback=pipeCallback&_id=c92ac21897d8b56e61cfa85930dd89a1&url=http%3A%2F%2Fhydra.lcs.mit.edu:8001/cgi-bin/comments-feed.py/" type="text/javascript"></script>

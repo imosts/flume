@@ -1,0 +1,18 @@
+
+Cbox frametest 2
+
+<script type="text/javascript">
+
+function make_subframe () {
+  e = document.createElement ("iframe");
+  e.setAttribute ("src", "{{ urlprefix_other }}/cbox_frametest2/");
+  document.getElementById ("foo").appendChild (e);
+}
+
+</script>
+
+<form>
+<input type="button" value="Make subframe" onClick="make_subframe ();">
+</form>
+
+<div id="foo"></div>

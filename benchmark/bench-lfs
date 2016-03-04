@@ -1,0 +1,33 @@
+#!/usr/local/bin/bash
+#
+#  1) Start the RM
+#  2) Run this script
+#
+#  <tmpdir> must be mounted writable in traz
+#
+# Typical arguments: ./bench-lfs testoutput /disk/yipal/tmp 1024 1000 1024
+
+if [ $# -ne 6 ]; then
+  echo "usage: bench-syscalls output_dir tmpdir flush_size_mb num_dirs num_files file_size"
+  exit 1;
+fi
+
+OUTPUTDIR=$1
+TMPDIR=$2
+FLUSHSIZE=$3
+NUMDIRS=$4
+NUMFILES=$5
+FILESIZE=$6
+TAG=`$TRAZ_HOWINSTALL tag`
+
+rm -rf $TMPDIR/obsd/d*
+rm -rf $TMPDIR/traz/d*
+
+./lfs/smallfb $TMPDIR/obsd $FLUSHSIZE $NUMDIRS $NUMFILES $FILESIZE 2>&1 | tee $OUTPUTDIR/lfs-small-obsd.dat
+
+LD_LIBRARY_PATH=/usr/local/lib:/disk/$USER/run/lib/traz/$TAG/runtime \
+TRAZ_DESIRED_RING=2 \
+./lfs/smallfb $TMPDIR/traz $FLUSHSIZE $NUMDIRS $NUMFILES $FILESIZE 2>&1 | tee $OUTPUTDIR/lfs-small-traz.dat
+
+
+

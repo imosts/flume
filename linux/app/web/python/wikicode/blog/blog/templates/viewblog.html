@@ -1,0 +1,24 @@
+<h1>W5 Blogger: {{title}}</h1>
+
+<h2>Posts</h2>
+{% if post_list %}
+    {% for p in post_list %}
+        {{ p }}
+    {% endfor %}
+{% else %}
+    <p>No posts are available.</p>
+{% endif %}
+
+
+<h2>Widgets</h2>
+{% if widget_list %}
+    <table border=1>
+    {% for widget in widget_list %}
+        <tr>
+        <td><a href="{{widget.urlprefix}}/{{blog.id}}/">{{ blog.title }}</a></td
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No widgets are available.</p>
+{% endif %}

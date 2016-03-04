@@ -1,0 +1,27 @@
+<h1>CalendarApp Uploader</h1>
+
+<a href="{{urlprefix}}/upload/newevent/">Create a new event</a>
+
+<a href="{{urlprefix}}/upload/newproject/">Create a new project</a>
+
+<h2>Your Events</h2>
+{% if all_events %}
+    <ul>
+    {% for a in all_events %}
+       <li>{{ a }}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No events.</p>
+{% endif %}
+
+<h2>Your Projects</h2>
+{% if all_projects %}
+    <ul>
+    {% for a in all_projects %}
+       <li>{{ a }}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No projects.</p>
+{% endif %}

@@ -1,0 +1,4 @@
+
+How to set coredump pattern on linux to be something reasonable:
+
+echo "%e.core" > /proc/sys/kernel/core_pattern

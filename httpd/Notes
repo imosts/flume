@@ -1,0 +1,3 @@
+
+TRAZ_DEBUG_LEVEL=0xfffff ./runapache.sh start
+TRAZ_DEBUG_LEVEL=0xfffff ./runapache.sh stop

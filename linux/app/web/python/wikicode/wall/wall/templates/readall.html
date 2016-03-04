@@ -1,0 +1,9 @@
+
+<h1>{{ user }}'s Wall</h1>
+
+<ul>
+{% for p in posts %}
+<li>{{ p.author }} wrote {{ p.text }} on {{ p.pub_date }}
+{% endfor %}
+</ul>
+

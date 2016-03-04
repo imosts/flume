@@ -1,0 +1,19 @@
+<h1>Edit Photo</h1>
+
+<IMG BORDER=2 SRC="{{ imgurl }}">
+
+<p>
+
+<form action="{{ urlprefix }}/upload/editphoto/{{ photo.id }}/{{ newpageid }}/" method=POST>
+<input type=hidden name=action value="rotateright">
+<input type=submit name=submit value="Rotate Right">
+</form>
+
+<p>
+<form action="{{ urlprefix }}/upload/editphoto/{{ photo.id }}/{{ newpageid }}/" method=POST>
+Title: <input type=text name=title value="{{ photo.title }}"><BR>
+Caption: <input type=text name=caption value="{{ photo.caption }}"><BR>
+<input type=hidden name=action value="update_metadata">
+<input type=submit name=submit value="Update Metadata">
+</form>
+

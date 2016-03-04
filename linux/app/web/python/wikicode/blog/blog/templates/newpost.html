@@ -1,0 +1,18 @@
+
+
+<h1>Create a new post</h1>
+
+<form action="{{ urlprefix }}/upload/newpost/{{ blog_id }}/{{ new_page_id }}/" method="post">
+
+<p>Title: <BR><input type="text" name="title"><BR></p>
+
+<p>Content: <BR>
+<TEXTAREA name="content" rows="20" cols="80">
+Foo bar
+</TEXTAREA>
+</p>        
+
+<input type="submit" value="Submit"><BR>
+<input type="hidden" name="page_id" value="{{ page_id }}">
+</form>
+

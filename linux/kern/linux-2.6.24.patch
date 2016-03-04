@@ -1,0 +1,211 @@
+diff -u -r ../linux-2.6.24.orig/include/linux/security.h ./include/linux/security.h
+--- ../linux-2.6.24.orig/include/linux/security.h	2008-05-14 17:56:19.000000000 -0400
++++ ./include/linux/security.h	2008-05-14 17:58:15.000000000 -0400
+@@ -41,6 +41,8 @@
+ 
+ extern unsigned securebits;
+ 
++#define HAVE_FLUME_GETPID_PROTECTION 1
++
+ struct ctl_table;
+ 
+ /*
+@@ -1354,6 +1356,11 @@
+ 	void (*task_reparent_to_init) (struct task_struct * p);
+ 	void (*task_to_inode)(struct task_struct *p, struct inode *inode);
+ 
++	int (*task_getpgid_self) (void);
++	int (*task_getsid_self) (void);
++	int (*task_getpid) (void);
++	int (*task_getppid) (void);
++
+ 	int (*ipc_permission) (struct kern_ipc_perm * ipcp, short flag);
+ 
+ 	int (*msg_msg_alloc_security) (struct msg_msg * msg);
+@@ -1643,6 +1650,11 @@
+ int security_secid_to_secctx(u32 secid, char **secdata, u32 *seclen);
+ void security_release_secctx(char *secdata, u32 seclen);
+ 
++int security_task_getpgid_self (void);
++int security_task_getsid_self (void);
++int security_task_getpid (void);
++int security_task_getppid (void);
++
+ #else /* CONFIG_SECURITY */
+ 
+ /*
+@@ -2197,6 +2209,26 @@
+ static inline void security_task_to_inode(struct task_struct *p, struct inode *inode)
+ { }
+ 
++static inline int security_task_getpgid_self (void)
++{
++	return security_ops->task_getpgid_self ();
++}
++
++static inline int security_task_getsid_self (void)
++{
++	return security_ops->task_getsid_self ();
++}
++ 
++static inline int security_task_getpid (void)
++{
++	return security_ops->task_getpid ();
++}
++
++static inline int security_task_getppid (void)
++{
++	return security_ops->task_getppid ();
++}
++
+ static inline int security_ipc_permission (struct kern_ipc_perm *ipcp,
+ 					   short flag)
+ {
+diff -u -r ../linux-2.6.24.orig/kernel/sys.c ./kernel/sys.c
+--- ../linux-2.6.24.orig/kernel/sys.c	2008-05-14 17:57:23.000000000 -0400
++++ ./kernel/sys.c	2008-05-14 17:58:15.000000000 -0400
+@@ -989,9 +989,13 @@
+ 
+ asmlinkage long sys_getpgid(pid_t pid)
+ {
+-	if (!pid)
+-		return task_pgrp_vnr(current);
+-	else {
++	if (!pid) {
++		int retval;
++		retval = security_task_getpgid_self();
++		if (!retval)
++			retval = task_pgrp_vnr(current);
++		return retval; 
++	} else {
+ 		int retval;
+ 		struct task_struct *p;
+ 		struct pid_namespace *ns;
+@@ -1016,16 +1020,24 @@
+ asmlinkage long sys_getpgrp(void)
+ {
+ 	/* SMP - assuming writes are word atomic this is fine */
+-	return task_pgrp_vnr(current);
++	int retval;
++	retval = security_task_getpgid_self ();
++	if (!retval)
++		retval = task_pgrp_vnr(current);
++	return retval;
+ }
+ 
+ #endif
+ 
+ asmlinkage long sys_getsid(pid_t pid)
+ {
+-	if (!pid)
+-		return task_session_vnr(current);
+-	else {
++	if (!pid) {
++		int retval;
++		retval = security_task_getsid_self();
++		if (!retval)
++			retval = task_session_vnr(current);
++		return retval;	
++	} else {
+ 		int retval;
+ 		struct task_struct *p;
+ 		struct pid_namespace *ns;
+diff -u -r ../linux-2.6.24.orig/kernel/timer.c ./kernel/timer.c
+--- ../linux-2.6.24.orig/kernel/timer.c	2008-05-14 17:57:23.000000000 -0400
++++ ./kernel/timer.c	2008-05-14 17:58:15.000000000 -0400
+@@ -35,6 +35,7 @@
+ #include <linux/cpu.h>
+ #include <linux/syscalls.h>
+ #include <linux/delay.h>
++#include <linux/security.h>
+ #include <linux/tick.h>
+ #include <linux/kallsyms.h>
+ 
+@@ -964,7 +965,11 @@
+  */
+ asmlinkage long sys_getpid(void)
+ {
+-	return task_tgid_vnr(current);
++	int retval;
++	retval = security_task_getpid ();
++	if (!retval)
++		retval = task_tgid_vnr(current);
++	return retval;	
+ }
+ 
+ /*
+@@ -976,10 +981,15 @@
+ asmlinkage long sys_getppid(void)
+ {
+ 	int pid;
++	
++	pid = security_task_getppid ();
++	if (!pid) {
++
++		rcu_read_lock();
++		pid = task_tgid_nr_ns(current->real_parent, current->nsproxy->pid_ns);
++		rcu_read_unlock();
+ 
+-	rcu_read_lock();
+-	pid = task_tgid_nr_ns(current->real_parent, current->nsproxy->pid_ns);
+-	rcu_read_unlock();
++	}
+ 
+ 	return pid;
+ }
+diff -u -r ../linux-2.6.24.orig/security/dummy.c ./security/dummy.c
+--- ../linux-2.6.24.orig/security/dummy.c	2008-05-14 17:57:30.000000000 -0400
++++ ./security/dummy.c	2008-05-14 17:58:15.000000000 -0400
+@@ -600,6 +600,11 @@
+ static void dummy_task_to_inode(struct task_struct *p, struct inode *inode)
+ { }
+ 
++static int dummy_task_getpgid_self (void) { return 0; }
++static int dummy_task_getpid (void) { return 0;  }
++static int dummy_task_getppid (void) { return 0; }
++static int dummy_task_getsid_self (void) { return 0; }
++
+ static int dummy_ipc_permission (struct kern_ipc_perm *ipcp, short flag)
+ {
+ 	return 0;
+@@ -1074,6 +1079,10 @@
+ 	set_to_dummy_if_null(ops, task_prctl);
+ 	set_to_dummy_if_null(ops, task_reparent_to_init);
+  	set_to_dummy_if_null(ops, task_to_inode);
++	set_to_dummy_if_null(ops, task_getpgid_self);
++	set_to_dummy_if_null(ops, task_getsid_self);
++	set_to_dummy_if_null(ops, task_getppid);
++	set_to_dummy_if_null(ops, task_getpid);
+ 	set_to_dummy_if_null(ops, ipc_permission);
+ 	set_to_dummy_if_null(ops, msg_msg_alloc_security);
+ 	set_to_dummy_if_null(ops, msg_msg_free_security);
+diff -u -r ../linux-2.6.24.orig/security/security.c ./security/security.c
+--- ../linux-2.6.24.orig/security/security.c	2008-05-14 17:57:30.000000000 -0400
++++ ./security/security.c	2008-05-14 17:58:15.000000000 -0400
+@@ -585,6 +585,26 @@
+ 	return security_ops->task_create(clone_flags);
+ }
+ 
++int security_task_getsid_self (void)
++{
++	return security_ops->task_getsid_self ();
++}
++
++int security_task_getpgid_self (void)
++{
++	return security_ops->task_getpgid_self ();
++}
++
++int security_task_getppid (void)
++{
++	return security_ops->task_getppid ();
++}
++
++int security_task_getpid (void)
++{
++	return security_ops->task_getpid ();
++}
++
+ int security_task_alloc(struct task_struct *p)
+ {
+ 	return security_ops->task_alloc_security(p);

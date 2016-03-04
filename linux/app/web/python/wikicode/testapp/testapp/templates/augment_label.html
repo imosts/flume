@@ -1,0 +1,27 @@
+
+<p>
+Test browser's augment_label handler.
+
+<p>Zone 1, no children (augment should pass)<br>
+<iframe src="{{ prefix_cid1 }}/augment_label_subframe1/" width="800" height="100"></iframe>
+
+<p>Zone 2, child has S={} (augment should fail)<br>
+<iframe src="{{ prefix_cid2 }}/augment_label_subframe2/" width="800" height="100"></iframe>
+
+<p>Zone 3, child has S={etag} (augment should pass)<br>
+<iframe src="{{ prefix_cid3 }}/augment_label_subframe3/" width="800" height="100"></iframe>
+
+<p>Zone 4, child has host = web.mit.edu with no DC rule (augment should fail)
+<iframe src="{{ prefix_cid4 }}/augment_label_subframe4/" width="800" height="200"></iframe>
+
+<p>Zone 5, child has host = pdos.csail.mit.edu with a DC rule (augment should pass)
+<iframe src="{{ prefix_cid5 }}/augment_label_subframe5/" width="800" height="200"></iframe>
+
+<p>Zone 6, frame has S={anon} and child has host = web.mit.edu with a DC rule (frame should load)
+<iframe src="{{ prefix_cid6 }}/augment_label_subframe6/" width="800" height="100"></iframe>
+
+<p>Zone 6, frame has S={anon} and child has host = pdos.csail.mit.edu with no DC rule (frame should not load)
+<iframe src="{{ prefix_cid7 }}/augment_label_subframe7/" width="800" height="100"></iframe>
+
+
+

@@ -1,0 +1,13 @@
+
+obj-m += %%KONAME%%.o
+
+%%KONAME%%-objs := %%KO_OFILES%%
+
+PWD := `pwd`
+KDIR := /lib/modules/$(shell uname -r)/build
+
+EXTRA_CFLAGS += -I%%KO_INCLUDE%%
+
+default:
+	make -C $(KDIR) SUBDIRS=$(PWD) modules
+

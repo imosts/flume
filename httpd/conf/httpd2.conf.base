@@ -1,0 +1,274 @@
+include /etc/apache2/mods-available/env.load
+Include /etc/apache2/mods-available/authz_host.load
+Include /etc/apache2/mods-available/dir.load
+Include /etc/apache2/mods-available/mime.load
+Include /etc/apache2/mods-available/alias.load
+Include /etc/apache2/mods-available/setenvif.load
+Include /etc/apache2/mods-available/cgi.load
+Include /etc/apache2/mods-available/fcgid.load
+##Include /etc/apache2/mods-available/ssl.load
+
+PassEnv FLUME_DEBUG_LEVEL
+PassEnv FLUME_UMGR_ID
+
+PassEnv MASTERE_CAP
+PassEnv MASTERE_TOK
+PassEnv MASTERI_CAP
+PassEnv MASTERI_TOK
+PassEnv MASTERW_CAP
+PassEnv MASTERW_TOK
+PassEnv MASTERR_CAP
+PassEnv MASTERR_TOK
+PassEnv MASTERGTAG_CAP
+PassEnv MASTERGTAG_TOK
+PassEnv MASTERGGRP_CAP
+PassEnv MASTERGGRP_TOK
+PassEnv USER
+
+
+######################################################################
+## Django Configuration
+##Alias /media/ /disk/USERVAL/flume/run/lib/pythonPYVERS/site-packages/django/contrib/admin/media/
+##ScriptAlias /django/ "/disk/USERVAL/flume-django/trusted/cgi-bin/django.cgi/"
+######################################################################
+
+ServerRoot "/tmp/httpd-USERVAL"
+LockFile /tmp/httpd-USERVAL/accept.lock
+PidFile /tmp/httpd-USERVAL/httpd.pid
+ScoreBoardFile /tmp/httpd-USERVAL/apache_runtime_status
+Timeout 300
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 15
+StartServers 5
+MaxClients 150
+MaxRequestsPerChild 0
+ServerLimit 50
+
+ServerName FQDN
+
+Listen SERVPORT
+
+<IfModule mod_ssl.c>
+Listen SSLPORT
+</IfModule>
+
+
+User USERVAL
+Group USERVAL
+
+ServerAdmin you@your.address
+
+ErrorLog /tmp/httpd-USERVAL/error_log
+LogLevel debug
+UseCanonicalName On
+TypesConfig conf/mime.types
+DefaultType text/plain
+<IfModule mod_mime_magic.c>
+    MIMEMagicFile conf/magic
+</IfModule>
+
+#
+# The following directives define some format nicknames for use with
+# a CustomLog directive (see below).
+#
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\"" common
+LogFormat "%{Referer}i -> %U" referer
+LogFormat "%{User-agent}i" agent
+
+CustomLog /tmp/httpd-USERVAL/access_log common
+
+
+#################################################################
+##  SSL Global Context
+##
+##  All SSL configuration in this context applies both to
+##  the main server and all SSL-enabled virtual hosts.
+##
+
+#
+#   Some MIME-types for downloading Certificates and CRLs
+#
+<IfDefine SSL>
+AddType application/x-x509-ca-cert .crt
+AddType application/x-pkcs7-crl    .crl
+</IfDefine>
+
+<IfModule mod_ssl.c>
+SSLPassPhraseDialog  builtin
+SSLSessionCache         dbm:/tmp/httpd-USERVAL/ssl_scache
+SSLSessionCacheTimeout  300
+SSLMutex  file:/tmp/httpd-USERVAL/ssl_mutex
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+</IfModule>
+
+HostnameLookups Off
+ServerSignature On
+DirectoryIndex index.html
+AccessFileName .htaccess
+<Files .htaccess>
+        Order allow,deny
+        Deny from all
+</Files>
+
+AddEncoding x-compress Z
+AddEncoding x-gzip gz
+
+BrowserMatch "Mozilla/2" nokeepalive
+BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
+BrowserMatch "RealPlayer 4\.0" force-response-1.0
+BrowserMatch "Java/1\.0" force-response-1.0
+BrowserMatch "JDK/1\.0" force-response-1.0
+
+#################################################################
+## W5 Configuration stuff
+
+    DocumentRoot "/tmp/httpd-USERVAL/htdocs"
+
+    Alias /icons/ "/var/www/icons/"
+    Alias /wiki/ /disk/USERVAL/moin/share/moin/htdocs/
+
+    ScriptAlias /cgi-bin/   "/tmp/httpd-USERVAL/cgi-bin/"
+    ScriptAlias /moin       "FLUMEBIN/moinlaunch-static"
+
+    #ScriptAlias /trusted        "PYBIN/wclaunch.py"
+    #ScriptAlias /trusted-worker "PYBIN/wclaunch.py"
+    #ScriptAlias /toolbar        "PYBIN/wclaunch.py"
+    #ScriptAlias /static         "PYBIN/wclaunch.py"
+    #ScriptAlias /static-ihome   "PYBIN/wclaunch.py"
+    #ScriptAlias /exec           "PYBIN/wclaunch.py"
+    #ScriptAlias /python         "PYBIN/wclaunch.py"
+    #ScriptAlias /forksrv        "PYBIN/wclaunch.py"
+    #ScriptAlias /debug          "PYBIN/debuginfo.py"
+
+    ScriptAlias /photoapp "/tmp/httpd-USERVAL/cgi-bin/django.cgi"
+    <Directory "/tmp/httpd-USERVAL/cgi-bin">
+        Options FollowSymLinks
+        AllowOverride None
+        SetEnv PYTHONPATH /disk/USERVAL/django-install/lib/python2.5/site-packages/:/disk/yipal/django-app/:/disk/yipal/django-app/mysite/
+    </Directory>
+
+
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+    </Directory>
+
+
+    <Directory "/tmp/httpd-USERVAL/htdocs">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    <Directory "/disk/USERVAL/moin/share/moin/htdocs/">
+       Order deny,allow
+       Allow from all
+    </Directory>
+
+    <Location "/debug">
+       UnsetEnv LD_LIBRARY_PATH
+       UnsetEnv FLUME_SOCKET 
+       Order deny,allow
+       Allow from all
+    </Location>
+
+#################################################################
+## Testing FastCGI stuff
+
+  SharememPath /tmp/httpd-USERVAL/fcgid_shm
+  SocketPath /tmp/httpd-USERVAL/fcgi_sockets
+
+  # Need to set these with DefaultInitEnv so the FastCGI process will
+  # get them.
+  DefaultInitEnv FLUME_SOCKET TZSOCK
+  DefaultInitEnv PYTHONPATH "PYPATH:/var/lib/python-support/pythonPYV"
+  DefaultInitEnv PYTHONBIN PYBIN
+  DefaultInitEnv PYVERS PYV
+  DefaultInitEnv LD_LIBRARY_PATH RLIB:TLIB:/usr/local/lib
+  DefaultInitEnv USER USERVAL
+
+  # For benchmarking, comment the following line to reuse FastCGI processes
+  #MaxRequestsPerProcess 1
+  #MaxRequestsPerProcess 500
+
+  IPCCommTimeout 20
+  #ProcessLifeTime 10
+  IdleTimeout 86400
+
+  ScriptAlias /fastcgi-test "TESTBIN/fastcgi-hello.py"
+  <Directory "TESTBIN/">
+    Order allow,deny
+    Allow from all
+    AddHandler fcgid-script .fcgi
+    AddHandler cgi-script .py
+    Options +ExecCGI FollowSymLinks
+  </Directory>
+
+  # Setup an alias for FastCGI Gateway 
+  ScriptAlias /trusted        "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /trusted-worker "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /trusted-workerf "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /trusted-appf   "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /toolbar        "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /static         "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /static-ihome   "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /exec           "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /python         "PYBIN/wclaunch-fast.fcgi"
+  ScriptAlias /pythonf        "PYBIN/wclaunch-fast.fcgi"
+
+  <Directory "PYBIN/">
+    Order allow,deny
+    Allow from all
+    AddHandler fcgid-script .fcgi
+    AddHandler cgi-script .py
+    Options +ExecCGI FollowSymLinks
+
+    SetEnv FLUME_SOCKET TZSOCK
+    SetEnv PYTHONPATH PYPATH
+    SetEnv PYTHONBIN PYBIN
+    SetEnv PYVERS PYV
+    SetEnv LD_LIBRARY_PATH RLIB:TLIB:/usr/local/lib
+
+  </Directory>
+
+#################################################################
+## Non-SSL virtual host
+
+NameVirtualHost *:SERVPORT
+<VirtualHost *:SERVPORT>
+</VirtualHost>
+
+#################################################################
+## SSL virtual host
+##
+
+<IfModule mod_ssl.c>
+NameVirtualHost *:SSLPORT
+<VirtualHost *:SSLPORT>
+    SSLEngine on
+    SSLOptions +StrictRequire
+
+    <Directory />
+        SSLRequireSSL
+    </Directory>
+
+    SSLProtocol -all +TLSv1 +SSLv3
+    SSLCipherSuite HIGH:MEDIUM:!aNULL:+SHA1:+MD5:+HIGH:+MEDIUM
+    SSLSessionCacheTimeout 600    
+    SSLCertificateFile /tmp/httpd-USERVAL/conf/server.crt
+    SSLCertificateKeyFile /tmp/httpd-USERVAL/conf/server.key
+    SSLVerifyClient none
+    SSLProxyEngine off
+    SSLOptions +StdEnvVars
+
+    <IfModule mime.c>
+        AddType application/x-x509-ca-cert      .crt
+        AddType application/x-pkcs7-crl         .crl
+    </IfModule>
+</VirtualHost>
+</IfModule>
+

@@ -1,0 +1,83 @@
+
+##
+## IDD <hostname>:<port>
+##
+##   Connect to an IDD over TCP/IP, either local or over the network.
+##   IDD must be started before you can start up flumerm.
+##
+IDD -C 127.0.0.1:38423
+
+##
+## Flume's socketfile
+##
+SocketFile /tmp/flumesock.@@USER@@
+
+##
+## TopDir <dir>
+##
+##   Specify where to find flume helper processes
+##
+TopDir /disk/@@USER@@/flume/run/bin/@@TAG@@
+
+##
+## Specify for debugging purposes that user processes can toggle
+## their 'SafeFlags'
+##
+#DebugFlags 0x1
+
+##
+## A random 'seed' to seed Flume's PRNG.  If not supplied, it will 
+## allocate sequential handles, bad for security but useful for debugging.
+##
+Seed fooBEEFfooTACOfooBARfoo
+
+##
+## FileServer [-R|-P] -u <username> -g <groupname> -a <attr-file> 
+##	   -n <num-aiods> -s <shmem-size> -m <maxbuf-size>
+##	    <jaildir> <mountpoint>
+##
+##  Start up a Flume file server:
+##
+##      -R      Specify if read only
+##
+##      -P      Specify if public (don't check S labels on file opens)
+##
+##      -a      Specify an attribute file that backs all extended
+##               attributes for this FileSystem; specified relative
+##               to the chroot jail [default=.flume_extattr]
+##
+##      -t      Timeout for the NOENT cache.
+##
+##      -G      Use 'ghetto' extended attributes.
+##
+##     
+##
+##    jaildir   The directory on the real FS to which the FS will be jailed
+##               if it is started as root.
+##
+##  mountpoint  The mountpoint in the flume FS namespace to make this
+##               file system available as.
+##	
+##
+
+#
+# Read-only file systems.
+#
+FileServer	flumefs -R -L "{ I : all, S : [] }" -t 10 -o /usr /usr
+FileServer	flumefs -R -L "{ I : all, S : [] }" -t 10 /lib /lib
+FileServer	flumefs -R -L "{ I : all , S : [] }" /disk/@@USER@@/flume/run /disk/@@USER@@/flume/run
+FileServer	flumefs -R -L "{ I : all , S : [] }" /disk/@@USER@@/flume/data/etc /etc
+FileServer	flumefs -RP /var/run /var/run
+
+#
+# Read/write file systems below..
+#
+FileServer	flumefs -u @@USER@@ -g users /disk/@@USER@@/flume/data/home /home
+FileServer	flumefs -I -u @@USER@@ -g users -p 5 /disk/@@USER@@/flume/data/ihome /ihome
+FileServer	flumefs -u @@USER@@ -g users /disk/@@USER@@/flume/data/tmp /tmp
+
+##
+## Spawner process.
+##
+Spawner spawner -L /disk/@@USER@@/run/rlib/flume/@@TAG@@
+

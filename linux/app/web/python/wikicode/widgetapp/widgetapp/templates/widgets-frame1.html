@@ -1,0 +1,37 @@
+<script type="text/javascript">
+window.onload = function () {
+/*var popup = window.parent.frames["pm2"]; */
+
+for (var i=0; i< 1; i++) {
+alert (window.location);
+  }
+
+/*  document.getElementById ("foo1").innerHTML = window.postMessage; */
+/*  document.getElementById ("foo2").innerHTML = popup.postMessage;*/
+
+  function xxx (x) { 
+/*    popup.sendMessageIFC("neha is sending a message", "*"); */
+
+    var element = document.createElement("MyCrossDomainMsg");
+    element.setAttribute("target", "parent_window");
+    element.setAttribute("msg", "hello world");
+    document.documentElement.appendChild(element);
+
+    var evt = document.createEvent("Events");
+    evt.initEvent("w5send", true, false);
+    element.dispatchEvent(evt);
+	document.getElementById ("foo1").innerHTML = element.getAttribute("msg");
+
+
+  }
+  window.setTimeout (xxx, 100, 1);
+}
+</script>
+
+frame1<br/>
+
+window.postMessage: <div id="foo1"></div>
+<!--popup.postMessage: <div id="foo2"></div>
+	popup.document.URL: <div id="foo3"></div>  -->
+
+asdlkasd

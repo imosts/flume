@@ -1,0 +1,35 @@
+<script type='text/javascript'>
+/*
+ * In window A's scripts, with A being on <http://example.com:8080>:
+ */
+
+function test_postMessage () {
+  var popup = window.parent.frames[1];
+  popup.postMessage("Sent via postMessage!", "*"); 
+}
+
+function test_w5send () {
+  if ("createEvent" in document) {
+    var popup = window.parent.frames[1];
+
+    var element = document.createElement("MyCrossDomainMsg");
+    element.setAttribute("target", popup.w5_win_id);
+    element.setAttribute("msg", "hello world");
+    document.documentElement.appendChild(element);
+
+    var evt = document.createEvent("Events");
+    evt.initEvent("w5send", true, false);
+    element.dispatchEvent(evt);
+
+  } else {
+    alert ("could not find createEvent");
+  } 
+}
+
+</script>
+
+Tests for cross-domain and cross-frame messaging.
+
+<p><button onClick="test_postMessage();">Send postMessage</button></p>
+<p><button onClick="test_w5send();">Send W5 msg</button></p>
+

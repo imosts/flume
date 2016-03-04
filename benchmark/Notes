@@ -1,0 +1,1113 @@
+
+--- BASE CASES --- (All binaries unoptimized, shared.  CGI launch using spawner)
+Null CGI without TRAZ or CGI Launch (14ms)
+rm data; ./ascli -e data -c 1 -n 50 -v 0 -U 3 -r 3 -H ./userlist -p cgi-bin2/nullcgi 18.26.4.60:8000 > xx && head -50 data | stats.pl
+
+Null CGI with CGI Launch (~580ms)
+rm data; ./ascli -e data -c 1 -n 50 -x nullcgi -v 0 -U 3 -r 3 -H ./userlist -p cgi-bin/cgilaunch 18.26.4.60:8000 > xx && head -50 data | stats.pl
+
+Shopping Cart Benchmark with sessions (~700ms)
+rm data; ./ascli -e data -c 1 -n 50 -k -x shoppingcart -v 0 -U 3 -r 3 -H ./userlist -p cgi-bin/cgilaunch 18.26.4.60:8000 > xx && head -50 data | stats.pl
+
+Moinmoin on click without traz. (~520ms)  http://18.26.4.60:9000/mywiki/
+rm data; ./ascli -e data -c 1 -n 50 -v 0 -U 3 -r 3 -H ./userlist -p mywiki 18.26.4.60:9000 > xx && head -50 data | stats.pl
+
+
+
+--- WITH SOME OPTIMIZATIONS --- (RM is optimized, shared)
+* Need to recompile rm-static/launchers/cgilaunch with -static flag
+* Need to recompile rm-static/test/c/nullcgi with -static flag
+
+
+nullcgi-unoptimized-dynamic with optimized-static CGI Launch (58ms)
+rm data; ./ascli -e data -c 1 -n 50 -x nullcgi -v 0 -U 3 -r 3 -H ./userlist -p cgi-bin/cgilaunch-optimized-static 18.26.4.60:8000 > xx && head -50 data | stats.pl
+
+nullcgi-optimized-dynamic with optimized-static CGI Launch (57ms)
+rm data; ./ascli -e data -c 1 -n 50 -x nullcgi-optimized -v 0 -U 3 -r 3 -H ./userlist -p cgi-bin/cgilaunch-optimized-static 18.26.4.60:8000 > xx && head -50 data | stats.pl
+
+nullcgi-optimized-static with optimized-static CGI Launch (43ms = 25ms in cgilaunch + 18ms in linker)
+rm data; ./ascli -e data -c 1 -n 50 -x nullcgi-optimized-static -v 0 -U 3 -r 3 -H ./userlist -p cgi-bin/cgilaunch-optimized-static 18.26.4.60:8000 > xx && head -50 data | stats.pl
+
+
+--- Benchmarking Python ---
+time ./pyrun-bench.sh > & /tmp/x
+
+
+
+--- Optimizing RM ---
+Run with MALLOC_OPTIONS=">>>>>>>>>>>"
+  - With RM optimized, traz_open takes 951us  (test/c/opener)
+  - With RM optimized and MALLOC_OPTIONS, traz_open takes 414us
+
+  - With RM optimized, running null.py with python takes ~340ms.
+  - With RM optimized and MALLOC_OPTIONS, null.py takes ~214ms.
+
+--- Optimizing Python ---
+Remove from python path (recompile python, or symlink to /usr/local/lib/python2.4/)
+  /usr/local/lib/python24.zip
+  /usr/local/lib/python2.4/lib-tk
+ -> symlinked, 200 traz_opens -> 156 traz_opens
+    null.py now takes 195ms
+
+FS use NOENT caching 10sec timeout
+ -> null.py 187ms
+
+RM use TRAZ_CLOCK=/var/tmp/clock
+ -> null.py 183ms
+
+Fix stupid NFS accesses in pyrun-bench.sh
+ -> null.py 120ms
+
+Shopping Cart Benchmark with sessions 
+rm data; ./ascli -e data -c 1 -n 50 -k -x shoppingcart -v 0 -U 3 -r 3 -H ./userlist -p cgi-bin/cgilaunch-optimized-static 18.26.4.60:8000 > xx && head -50 data | stats.pl
+ 1 concurrency, 50 req --> (~62ms, 16 req/sec)
+rm data ; ./ascli -T10,3 -e data -c 3 -n 100 -k -x shoppingcart -v 0 -U 3 -r 3 -H ./userlist -p cgi-bin/cgilaunch-optimized-static 18.26.4.60:8000
+ 3 concurrency, 100 req --> (~115ms, 19 req/sec)
+
+New command format:
+  rm data; ./ascli -T10,3 -e data -c 3 -n 100 trazcart -H userlist -x shoppingcart -p cgi-bin/cgilaunch 18.26.4.60:8000
+
+--- Optimizing Moinmoin ---
+
+Freezing Trazed Moin (need to append all modules that moin uses)
+
+PYTHONPATH=.:/disk/yipal/run/lib/python2.4/site-packages/:/disk/yipal/moin/lib/python2.4/site-packages /usr/ports/lang/python/2.4/w-python-2.4.2p0/Python-2.4.2/Tools/freeze/freeze.py -m moin.cgi encodings.utf_8 encodings.ascii zipfile MoinMoin
+
+PYTHONPATH=.:/disk/yipal/run/lib/python2.4/site-packages/:/disk/yipal/moin/lib/python2.4/site-packages /usr/ports/lang/python/2.4/w-python-2.4.2p0/Python-2.4.2/Tools/freeze/freeze.py -m moin.cgi encodings.utf_8 encodings.ascii zipfile MoinMoin MoinMoin.action.userprefs MoinMoin.macro.GetText MoinMoin.theme MoinMoin.action.login os zipimport time strop _socket math binascii random fcntl array sha cPickle cStringIO struct zlib _ssl && make -j 4
+
+Freezing Trazed Moin on UBUNTU:
+PYTHONPATH=.:`traz-cfg pylib`:/disk/yipal/moin/lib/python2.4/site-packages /usr/share/doc/python2.4/examples/Tools/freeze/freeze.py -m moin.cgi encodings.utf_8 encodings.ascii zipfile MoinMoin MoinMoin.action.userprefs MoinMoin.macro.GetText MoinMoin.theme MoinMoin.action.login os zipimport time strop _socket math binascii random fcntl array sha cPickle cStringIO struct zlib _ssl && make
+
+
+
+Freezing Unmodified Moin
+
+PYTHONPATH=. /usr/ports/lang/python/2.4/w-python-2.4.2p0/Python-2.4.2/Tools/freeze/freeze.py -m moin.cgi encodings.utf_8 encodings.ascii zipfile os zipimport time strop _socket math binascii random fcntl array sha cPickle cStringIO struct zlib _ssl && make
+
+Freezing Unmodified Moin on UBUNTU:
+PYTHONPATH=. /usr/share/doc/python2.4/examples/Tools/freeze/freeze.py -m moin.cgi encodings.utf_8 encodings.ascii zipfile os zipimport time strop _socket math binascii random fcntl array sha cPickle cStringIO struct zlib _ssl && make
+
+
+--- Benchmarking Trazed Moinmoin ---
+Create user:
+  sh create-moinusers.sh 100 18.26.4.60:8000/moin/UserPreferences | tee tmoin_userlist
+
+Login users:
+  sh login-moinusers.sh -t 100 tmoin_userlist 18.26.4.60:8000 | tee tmoin_tpwlist
+
+Prepage Pages (run as Root on server):
+  sh prepare_pages.sh 100
+
+Trazed Moin Read Test
+  sh prepare_pages.sh 100
+  ./ascli -c 3 -n 100 tmoincli -H tmoin_tpwlist -p moin/TestPage -r 100 18.26.4.60:8000
+
+Trazed Moin Write Test
+  sh prepare_pages.sh 100
+  ./ascli -c 3 -n 100 tmoincli -H tmoin_tpwlist -p moin/TestPage -r 100 -w 18.26.4.60:8000
+
+  sh bench-moin -t (optimized, dualcore, hydra, no page_cache)
+100 100 50 5 0.690923  7.129210  7.259452  0.340368 read
+100 100 50 10 0.664791 14.847673 14.871147  0.497345 read
+100 100 50 15 0.622849 22.643218 25.183221  5.288588 read
+100 100 50 5 0.643914  7.606711  7.746632  0.494576 write
+100 100 50 10 0.612734 16.189169 15.886094  1.038759 write
+100 100 50 15 0.624332 22.309920 23.376361  3.504260 write
+
+  sh bench-moin -t (optimized, dualcore, hydra, with page_cache)
+100 100 50 1 0.657116  1.521800  1.510215  0.054461 read
+100 100 50 5 0.737717  6.686274  6.721876  0.246402 read
+100 100 50 10 0.716301 13.859944 13.906177  0.439464 read
+100 100 50 15 0.709580 19.851008 21.294140  4.138130 read
+100 100 50 1 0.519736  1.924053  1.914967  0.060962 write
+100 100 50 5 0.633828  7.730728  7.871744  0.455774 write
+100 100 50 10 0.611024 16.244403 16.179815  0.698849 write
+100 100 50 15 0.617323 22.521969 23.571700  3.682920 write
+
+  sh bench-moin -t (optimized, dualcore, hydra, no page_cache & frozen moin)
+100 10 30 1 1.119687  0.893107  0.823331  0.108752 read
+100 10 30 5 1.346761  3.615107  3.586528  0.307566 read
+100 10 30 10 1.320012  7.344721  7.488519  0.483174 read
+100 10 30 15 1.333320 11.173654 11.164758  0.223442 read
+100 10 30 1 0.873640  1.144636  1.159730  0.078809 write
+100 10 30 5 1.133212  4.272509  4.318614  0.257320 write
+100 10 30 10 1.110765  8.854852  9.040394  0.486347 write
+
+  sh bench-moin -t (optimized, dualcore, hydra, with page_cache & frozen moin)
+100 10 30 1 1.170589  0.854271  0.859634  0.029112 read
+100 10 30 5 1.338168  3.681423  3.721920  0.134922 read
+100 10 30 10 1.286386  7.747019  7.732949  0.207696 read
+100 10 30 15 1.250605 11.852089 11.875109  0.481076 read
+
+  sh bench-moin -t (optimized, singlecore, hydra, with page_cache, frozen moin, static moinlaunch, nologins)
+30req in 16.720460 sec (1.8 req/sec)
+
+ccache g++ -static -g -O2 -Wall -Wsign-compare -Wchar-subscripts -Werror -o .libs/moinlaunch moinlaunch.o -L/usr/local/lib -L/home/am7/yipal/research/traz/traz/rm/../libc/obj -L../libtrazclnt/.libs -ltrazclnt_c -ltrazclnt_cxx -L../libtrazc/.libs -ltrazc -L../libtraz/.libs -ltraz -L../prot/.libs -ltrazprot -L/usr/local/lib/sfslite-1.0/shopt -ltame -lsfsmisc -lsfscrypt -larpc -lasync -lgmp -Wl,-rpath,/disk/yipal/run/lib/traz-0.0/shopt/runtime -Wl,-rpath,/disk/yipal/run/lib/traz-0.0/shopt -Wl,-rpath,/usr/local/lib/sfslite-1.0/shopt -Wl,-rpath,/usr/local/lib
+
+  sh bench-moin -t (optimized, singlecore, hydra, with page_cache, static moinlaunch, nologins) (3/4/07)
+50 20 20 10 0.562399 15.241080 16.247557  3.148926 read
+50 20 20 10 0.512833 17.476225 18.120404  2.531890 write
+
+  sh bench-moin -t (optimized, singlecore, hydra, with page_cache, frozen moin, static moinlaunch, nologins) (3/4/07)
+50 20 20 10 1.066385  7.886636  8.398748  1.710138 read
+50 20 20 10 1.006747  8.630295  9.367783  1.917519 write
+50 20 100 10 0.897440 10.807374 11.306783  1.903127 read
+50 20 100 10 0.816171 11.896841 12.309534  1.555921 write
+  
+  Add async fds in moinlaunch
+50 20 30 10 1.036168  9.016197  9.686616  2.194293 read
+50 20 30 10 0.922039  9.958214 10.427186  2.202395 write
+
+50 20 30 2 1.799581  1.096088  1.119600  0.210283 read
+50 20 30 2 1.180881  1.665643  1.684338  0.218314 write
+
+  Using lower concurrency seems to improve throughput (C=1 optimizes tmoin throughput)
+50 20 30 1 1.905865  0.524696  0.519984  0.025544 read
+50 20 30 1 1.144607  0.873662  0.860041  0.037781 write
+
+  Turn off spawner output
+50 20 30 1 1.911879  0.523046  0.519925  0.021188 read
+50 20 30 1 1.140904  0.876498  0.868236  0.079956 write
+
+  Turn off "cache hit" messages
+50 20 30 1 1.910606  0.523394  0.519973  0.018694 read
+50 20 30 1 1.161947  0.860625  0.859954  0.056117 write
+
+  Stop looking at log files
+50 20 30 1 1.984196  0.503983  0.499989  0.016066 read
+50 20 30 1 1.188657  0.841286  0.840047  0.052521 write
+
+  Turn off frozen
+50 20 30 1 0.947895  1.054969  1.039995  0.028117 read
+50 20 30 1 0.692915  1.443178  1.429939  0.043942 write
+
+
+--- Benchmarking Unmodified Moinmoin ---
+Create user:
+  sh create-moinusers.sh 100 18.26.4.60:9000/moin/UserPreferences | tee moin_userlist
+
+Login users:
+  sh login-moinusers.sh -m 100 moin_userlist 18.26.4.60:9000 | tee moin_cookielist
+
+Prepage Pages (run as Root on server):
+  sh prepare_pages.sh 100
+
+Unmodified Moin Read Test
+  sh prepare_pages.sh 100
+  rm data; ./ascli -e data -c 10 -n 100 moincli -H moin_cookielist -p moin/TestPage -r 10 18.26.4.60:9000
+  Only using 10 pages to eliminate cache warm up cost.
+
+Unmodified Moin Write Test
+  sh prepare_pages.sh 100
+  ./ascli -e data -c 10 -n 100 moincli -H moin_cookielist -p moin/TestPage -r 100 -w 18.26.4.60:9000
+
+  sh bench-moin -m (optimized, dualcore, hydra)
+100 100 200 1 2.057504  0.486026  0.366278  0.150295 read
+100 100 200 2 4.908969  0.407226  0.390248  0.067632 read
+100 100 200 3 5.305054  0.563597  0.557532  0.114959 read
+100 100 200 4 5.351127  0.743144  0.730138  0.145181 read
+100 100 200 5 5.332256  0.934631  0.914068  0.205131 read
+100 100 200 10 5.374007  1.845454  1.797899  0.871750 read
+100 100 200 15 5.390010  2.750479  2.680981  0.809074 read
+100 100 200 20 5.349206  3.655370  3.531563  1.112527 read
+100 100 200 30 5.397276  5.427894  5.439110  1.677229 read
+100 100 200 40 5.408074  7.138626  7.013821  1.945466 read
+100 100 200 50 5.431532  8.724637  8.964156  2.361853 read
+
+100 100 200 1 1.277239  0.782939  0.778889  0.056729 write
+100 100 200 2 2.221509  0.898456  0.899940  0.079273 write
+100 100 200 3 2.734131  1.094234  1.051070  0.210459 write
+100 100 200 4 2.876178  1.386381  1.350303  0.261161 write
+100 100 200 5 3.037737  1.639798  1.627210  0.310644 write
+100 100 200 10 3.061621  3.232404  3.153836  0.884033 write
+100 100 200 15 3.065929  4.830386  4.518242  1.445308 write
+100 100 200 20 3.071776  6.396353  6.355492  1.517707 write
+100 100 200 30 3.074385  9.535730  9.543817  3.229246 write
+100 100 200 40 3.045703 12.889275 12.593336  7.114737 write
+100 100 200 50 3.062382 15.546539 15.068461  4.229967 write
+
+  sh bench-moin -m (optimized, singlecore, hydra)
+100 10 30 1 2.940383  0.340092  0.334194  0.039554 read
+100 10 30 5 3.411698  1.420130  1.450632  0.541110 read
+100 10 30 10 3.413600  2.687872  2.491535  2.716441 read
+100 10 30 15 3.435829  3.902708  3.670129  1.853280 read
+100 10 30 1 1.413871  0.707278  0.716722  0.088022 write
+100 10 30 5 1.742120  2.813846  2.908691  0.801748 write
+100 10 30 10 1.887959  4.822587  3.880896  4.133266 write
+
+  sh bench-moin -m (optimized, singlecore, hydra, no-login) (3/3/07)
+50 20 50 10 3.200596  3.042894  2.941723  0.839373 read
+50 20 50 10 1.792247  5.406705  5.437161  1.462953 write
+
+  sh bench-moin -m (optimized, singlecore, hydra, no-login) (3/4/07)
+100 10 30 1 3.499059  0.285791  0.282033  0.021832 read
+100 10 30 5 3.601663  1.358532  1.244871  0.432173 read
+100 10 30 10 3.603805  2.527277  2.401497  1.949507 read
+100 10 30 1 1.552387  0.644169  0.649315  0.065888 write
+100 10 30 5 1.866614  2.638268  2.834783  0.880100 write
+100 10 30 10 1.868316  4.929944  4.335110  3.420646 write
+
+  sh bench-moin -m (optimized, singlecore, hydra, no-login, frozen) (3/4/07)
+100 10 30 1 3.767347  0.265439  0.263214  0.012561 read
+100 10 30 5 3.861575  1.259096  1.284691  0.767301 read
+100 10 30 10 3.854589  2.359252  1.492816  2.482240 read
+100 10 30 1 1.694813  0.590036  0.605966  0.073267 write
+100 10 30 5 1.914349  2.559522  2.530922  0.695244 write
+100 10 30 10 1.976748  4.723662  3.682414  3.572266 write
+
+
+Final numbers with all optimizations
+
+Unmodified, Frozen, SingleCore, NoLogin
+20 20 200 1 3.778998  0.264620  0.262690  0.013695 read
+20 20 200 3 3.843214  0.779210  0.712965  0.307836 read
+20 20 200 5 3.852669  1.293807  1.289716  0.374274 read
+20 20 200 10 3.849650  2.581191  2.589034  1.318160 read
+20 20 200 1 1.641691  0.609128  0.614672  0.065008 write
+20 20 200 3 1.940516  1.543877  1.553151  0.429060 write
+20 20 200 5 1.920523  2.596084  2.577558  0.502016 write
+20 20 200 10 1.915830  5.181459  5.108046  1.717641 write
+
+Unmodified, NonFrozen, SingleCore, NoLogin
+20 20 200 1 3.501492  0.285592  0.281917  0.019186 read
+20 20 200 3 3.595225  0.832361  0.804964  0.262232 read
+20 20 200 5 3.602442  1.382337  1.370419  0.356138 read
+20 20 200 10 3.602566  2.762807  2.760946  1.334732 read
+20 20 200 1 1.592039  0.628125  0.641101  0.083490 write
+20 20 200 3 1.824339  1.642464  1.636886  0.497188 write
+20 20 200 5 1.827556  2.728194  2.801088  0.645508 write
+20 20 200 10 1.816265  5.458518  5.457715  1.802510 write
+
+Unmodified, Frozen, SingleCore, Login
+20 20 200 1 3.599627  0.277806  0.274929  0.016532 read
+20 20 200 3 3.726443  0.804934  0.780795  0.281175 read
+20 20 200 1 1.477498  0.676820  0.676139  0.045368 write
+20 20 200 3 1.857497  1.613029  1.612005  0.373600 write
+
+Unmodified, NonFrozen, SingleCore, Login
+20 20 200 1 3.369360  0.296792  0.292895  0.019982 read
+20 20 200 3 3.494516  0.858153  0.821890  0.345638 read
+20 20 200 1 1.417812  0.705312  0.705731  0.057098 write
+20 20 200 3 1.769570  1.691988  1.649504  0.427007 write
+
+
+TrazMoin, Frozen, SingleCore, NoLogin
+20 20 200 1 1.987130  0.503238  0.499974  0.015879 read
+20 20 200 2 1.808488  1.105512  1.107776  0.156246 read
+20 20 200 1 1.184883  0.843966  0.840231  0.056010 write
+20 20 200 2 1.206948  1.655169  1.663455  0.215408 write
+
+TrazMoin, NonFrozen, SingleCore, NoLogin
+20 20 200 1 0.925191  1.080858  1.079837  0.030670 read
+20 20 200 2 0.879660  2.271314  2.270309  0.216332 read
+20 20 200 1 0.679607  1.471438  1.459950  0.031016 write
+20 20 200 2 0.705191  2.832814  2.852174  0.316867 write
+
+TrazMoin, Frozen, SingleCore, Login
+20 20 200 1 1.845264  0.541928  0.539948  0.018091 read
+20 20 200 1 1.131439  0.883831  0.879950  0.037975 write
+20 20 200 2 1.171728  1.704604  1.713186  0.231230 write
+
+TrazMoin, NonFrozen, SingleCore, Login
+20 20 200 1 0.882387  1.133289  1.119944  0.037421 read
+20 20 200 1 0.662486  1.509466  1.499872  0.043803 write
+20 20 200 2 0.670345  2.981172  2.971634  0.244047 write
+
+-- dual core --
+
+Unmodified, Frozen, DualCore, NoLogin
+20 20 200 1 3.321035  0.301111  0.296843  0.013202 read
+20 20 200 5 6.115339  0.813808  0.748668  0.405638 read
+20 20 200 1 1.525125  0.655684  0.658142  0.064554 write
+20 20 200 5 3.395468  1.462329  1.434656  0.309842 write
+
+Unmodified, NonFrozen, DualCore, NoLogin
+20 20 200 1 3.001277  0.333191  0.325226  0.043502 read
+20 20 200 5 5.594284  0.890924  0.866949  0.379655 read
+20 20 200 1 1.458172  0.685790  0.693443  0.066121 write
+20 20 200 5 3.153955  1.576672  1.587097  0.301658 write
+
+Unmodified, Frozen, DualCore, Login
+20 20 200 1 3.184566  0.314014  0.310615  0.016582 read
+20 20 200 5 6.024361  0.825729  0.819000  0.177630 read
+20 20 200 1 1.383259  0.722931  0.723572  0.052607 write
+20 20 200 5 3.238502  1.538897  1.515106  0.349276 write
+
+Unmodified, NonFrozen, DualCore, Login
+20 20 200 1 2.941086  0.340010  0.335056  0.016784 read
+20 20 200 5 5.488733  0.906632  0.880742  0.210652 read
+20 20 200 1 1.326963  0.753601  0.759069  0.069325 write
+20 20 200 5 2.949721  1.683694  1.678160  0.361893 write
+
+TrazMoin, Frozen, DualCore, NoLogin
+CPU util approx 50% each
+20 20 200 1 1.461085  0.684423  0.680081  0.020607 read
+20 20 200 2 1.707933  1.168211  1.165767  0.041151 read
+20 20 200 3 1.699468  1.759154  1.760056  0.081530 read
+20 20 200 4 1.706579  2.333612  2.349106  0.102729 read
+20 20 200 1 0.945539  1.057597  1.053893  0.035945 write
+20 20 200 2 1.351966  1.476280  1.472926  0.054482 write
+20 20 200 3 1.382809  2.162843  2.167373  0.113936 write
+20 20 200 4 1.372821  2.903511  2.925168  0.172850 write
+
+TrazMoin, NonFrozen, DualCore, NoLogin
+20 20 200 1 0.657205  1.521596  1.515589  0.036247 read
+20 20 200 2 0.745412  2.679833  2.675086  0.081330 read
+20 20 200 1 0.517875  1.930968  1.919704  0.043634 write
+20 20 200 3 0.663398  4.508799  4.515625  0.155889 write
+20 20 200 4 0.652011  6.111848  6.125395  0.245554 write
+
+TrazMoin, Frozen, Dualcore, Login
+20 20 200 1 1.482094  0.674721  0.673981  0.016340 read
+20 20 200 2 1.701215  1.174311  1.173444  0.029573 read
+20 20 200 1 0.967691  1.033387  1.030175  0.037580 write
+20 20 200 3 1.372152  2.177077  2.188728  0.141338 write
+
+TrazMoin, NonFrozen, DualCore, Login
+20 20 200 1 0.658762  1.517998  1.508798  0.040534 read
+20 20 200 2 0.752872  2.653343  2.648735  0.060652 read
+20 20 200 1 0.516580  1.935810  1.920395  0.044542 write
+20 20 200 3 0.641958  4.659695  4.669463  0.162321 write
+
+
+How many (open, stat) RPCs?  NonFrozen vs. Frozen?
+Frozen TrazWiki
+ 811 traz_prog_1:OPEN_FILE
+ 250 traz_prog_1:TRAZ_STAT_FILE
+   6 traz_prog_1:TRAZ_REGISTER_FD
+   3 traz_prog_1:TRAZ_PIPE
+   3 traz_prog_1:TRAZ_NULL
+   3 traz_prog_1:TRAZ_CLAIM_FD
+   2 traz_prog_1:TRAZ_READLINK
+   2 traz_prog_1:TRAZ_CLOSE
+   1 traz_spawn_prog_1:TRAZ_SPAWN_EXIT
+   1 traz_prog_1:TRAZ_WAIT
+   1 traz_prog_1:TRAZ_SPAWN
+   1 traz_prog_1:TRAZ_LSTAT_FILE
+   1 traz_prog_1:TRAZ_ENABLE_SYSTRACE
+   1 traz_prog_1:TRAZ_ACCESS_FILE
+   1 traz_prog_1:SET_LABEL
+   1 traz_prog_1:DO_LOGIN
+(1088 syscalls)
+(688 noent, 145 exist)
+
+NonFrozen TrazWiki
+2237 traz_prog_1:OPEN_FILE
+ 640 traz_prog_1:TRAZ_STAT_FILE
+  19 traz_prog_1:TRAZ_UNLINK_FILE
+   6 traz_prog_1:TRAZ_REGISTER_FD
+   3 traz_prog_1:TRAZ_READLINK
+   3 traz_prog_1:TRAZ_PIPE
+   3 traz_prog_1:TRAZ_NULL
+   3 traz_prog_1:TRAZ_CLAIM_FD
+   2 traz_prog_1:TRAZ_CLOSE
+   1 traz_spawn_prog_1:TRAZ_SPAWN_EXIT
+   1 traz_prog_1:TRAZ_WAIT
+   1 traz_prog_1:TRAZ_SPAWN
+   1 traz_prog_1:TRAZ_LSTAT_FILE
+   1 traz_prog_1:TRAZ_ENABLE_SYSTRACE
+   1 traz_prog_1:TRAZ_ACCESS_FILE
+   1 traz_prog_1:SET_LABEL
+   1 traz_prog_1:DO_LOGIN
+(2924 syscalls)
+
+--- Micro-benchmark Results ---
+
+Optimized, Dual-core, no profiling (hydra) (optimized-dualcore-hydra-data)
+small file benchmark: 100 1024-byte files
+creat: 100 1024-byte files in  1.964560 sec = 52.123631 KB/sec
+read: 100 1024-byte files in 0.002112 sec = 48484.848485 KB/sec
+delete: 100 files in 0.780572 sec = 128.111180 files/sec
+
+tz.so: Attempting connect to RM on socket: /tmp/trazsock.yipal, got  fd 3
+tz.so: operating in traz linker mode
+small file benchmark: 100 1024-byte files
+creat: 100 1024-byte files in  1.970205 sec = 51.974287 KB/sec
+read: 100 1024-byte files in 0.036616 sec = 2796.591654 KB/sec
+delete: 100 files in 0.841651 sec = 118.814093 files/sec
+
+mkdir           100      1866784.000     18667.840
+rmdir           100      839383.000      8393.830
+open_create     100      779715.000      7797.150
+open_exists     100      1383.000        13.830
+open_noent      100      1179.000        11.790
+close           100      224.000         2.240
+stat            100      1187.000        11.870
+unlink          100      779113.000      7791.130
+symlink         100      786907.000      7869.070
+readlink        100      1366.000        13.660
+
+mkdir           100      1902122.000     19021.220
+rmdir           100      1035567.000     10355.670
+open_create     100      905392.000      9053.920
+open_exists     100      31295.000       312.950
+open_noent      100      46208.000       462.080
+close           100      355.000         3.550
+stat            100      40950.000       409.500
+unlink          100      926401.000      9264.010
+symlink         100      834725.000      8347.250
+readlink        100      26743.000       267.430
+newhandle       100      7094.000        70.940
+setlabel        100      16853.000       168.530
+
+ipc_lat(us)             100000   2153666         21.537
+ipc_bw                  2048     2.845   719.750
+
+traznull_lat(us)        10000    546296  54.630
+ipc_lat(us)             100000   12036399        120.364
+ipc_bw                  2048     7.946   257.743
+
+
+Optimized, Single-core, no profiling (hydra) (optimized-singlecore-hydra-data)
+small file benchmark: 100 1024-byte files
+OBSD
+creat: 100 1024-byte files in  1.663873 sec = 61.543159 KB/sec
+read: 100 1024-byte files in 0.001348 sec = 75964.391691 KB/sec
+delete: 100 files in 0.948730 sec = 105.404066 files/sec
+TRAZ
+small file benchmark: 100 1024-byte files
+creat: 100 1024-byte files in  1.807078 sec = 56.666065 KB/sec
+read: 100 1024-byte files in 0.038104 sec = 2687.381902 KB/sec
+delete: 100 files in 0.893956 sec = 111.862329 files/sec
+
+mkdir           100      2288137.000     22881.370
+rmdir           100      1054678.000     10546.780
+open_create     100      857426.000      8574.260
+open_exists     100      834.000         8.340
+open_noent      100      746.000         7.460
+close           100      79.000  0.790
+stat            100      634.000         6.340
+unlink          100      854419.000      8544.190
+symlink         100      833519.000      8335.190
+readlink        100      796.000         7.960
+
+mkdir           100      2123618.000     21236.180
+rmdir           100      1182547.000     11825.470
+open_create     100      1141344.000     11413.440
+open_exists     100      28848.000       288.480
+open_noent      100      37043.000       370.430
+close           100      111.000         1.110
+stat            100      29998.000       299.980
+unlink          100      1126894.000     11268.940
+symlink         100      1136277.000     11362.770
+readlink        100      26075.000       260.750
+newhandle       100      17444.000       174.440
+setlabel        100      31103.000       311.030
+
+OBSD
+ipc_lat(us)             100000   753692  7.537
+ipc_bw                  2048     1.295   1580.934
+TRAZ
+traznull_lat(us)        10000    299676  29.968
+
+ipc_lat(us)             100000   6328498 63.285
+ipc_bw                  2048     4.534   451.667
+
+
+-- Final Micro-benchmark  results --
+DUAL CPU
+mkdir           1000     21604667.000    21604.667
+rmdir           1000     13639824.000    13639.824
+open_create     1000     9851787.000     9851.787
+open_exists     1000     14217.000       14.217
+open_noent      1000     12964.000       12.964
+close           1000     2225.000        2.225
+stat            1000     14429.000       14.429
+unlink          1000     9875738.000     9875.738
+symlink         1000     9813754.000     9813.754
+readlink        1000     13885.000       13.885
+
+mkdir           1000     23379098.000    23379.098
+rmdir           1000     14707626.000    14707.626
+open_create     1000     9912676.000     9912.676
+open_exists     1000     348755.000      348.755
+open_noent      1000     406509.000      406.509
+open_noent(pub) 1000     101893.000      101.893
+close           1000     3318.000        3.318
+stat            1000     337076.000      337.076
+unlink          1000     10446943.000    10446.943
+symlink         1000     9963150.000     9963.150
+readlink        1000     302688.000      302.688
+newhandle       1000     62979.000       62.979
+setlabel        1000     92568.000       92.568
+traznull        1000     54753.000       54.753
+
+sh bench-ipc tmp 2048 10000 10000
+ipc_lat(us)             10000    159489  15.949
+ipc_bw                  2048     2.557   800.788
+ipc_lat(us)             10000    1304035 130.404
+ipc_bw                  2048     11.388  179.839
+
+SINGLE CPU
+small file benchmark: 1000 1024-byte files
+creat: 1000 1024-byte files in  19.350601 sec = 52.918253 KB/sec
+read: 1000 1024-byte files in 0.013042 sec = 78515.565097 KB/sec
+delete: 1000 files in 9.972740 sec = 100.273345 files/sec
+tz.so: operating in traz linker mode, ctlsock 3
+small file benchmark: 1000 1024-byte files
+creat: 1000 1024-byte files in  19.768700 sec = 51.799056 KB/sec
+read: 1000 1024-byte files in 0.309927 sec = 3304.003846 KB/sec
+delete: 1000 files in 10.464691 sec = 95.559439 files/sec
+mkdir           1000     18963053.000    18963.053
+rmdir           1000     11763050.000    11763.050
+open_create     1000     9828008.000     9828.008
+open_exists     1000     9068.000        9.068
+open_noent      1000     8144.000        8.144
+close           1000     791.000         0.791
+stat            1000     8524.000        8.524
+unlink          1000     9843304.000     9843.304
+symlink         1000     9753850.000     9753.850
+readlink        1000     8330.000        8.330
+
+mkdir           1000     20922912.000    20922.912
+rmdir           1000     13114308.000    13114.308
+open_create     1000     9904579.000     9904.579
+open_exists     1000     304054.000      304.054
+open_noent      1000     290794.000      290.794
+close           1000     1073.000        1.073
+stat            1000     302019.000      302.019
+unlink          1000     10417231.000    10417.231
+symlink         1000     9891294.000     9891.294
+readlink        1000     264734.000      264.734
+newhandle       1000     44622.000       44.622
+setlabel        1000     577805.000      577.805
+ipc_lat(us)             10000    75461   7.546
+ipc_bw                  2048     1.303   1571.542
+traznull_lat(us)        10000    316692  31.669
+ipc_lat(us)             10000    692105  69.210
+ipc_bw                  2048     5.021   407.896
+
+
+
+--- Modified code in Moinmoin ---
+
+Unmodified = 91813 lines python
+  +  771 (lines removed)
+  + 1304 (lines added)
+  - 1018 (moved files)
+  -  107 (setup scripts) 
+ ==  950 (lines changed in MoinMoin)
+
+  Removed 241 lines.
+  Added 818 lines.  (72 lines in our setup scripts)
+  Left in most code that handles moin login and moin ACLs.
+
+
+-- With Integrity New benchmark results (singlecore, optimized, frozen)--
+(hydra, local disk)
+20 20 1000 1 1.831455  0.546014  0.539980  0.022498 read
+
+20 20 100 1 1.843297  0.542506  0.539957  0.021054 read
+20 20 100 2 1.682203  1.188359  1.195261  0.165715 read
+
+(hydra, ghetto extattr on local disk)
+20 20 100 1 1.649053  0.606409  0.599959  0.023238 read
+20 20 100 2 1.694803  1.176291  1.166690  0.149498 read
+20 20 100 3 1.622082  1.837005  1.831413  0.314039 read
+
+(hydra, ghetto extattr on nfs)
+20 20 100 1 1.372693  0.728495  0.720140  0.016335 read
+20 20 100 2 1.594738  1.249739  1.242310  0.138513 read
+20 20 100 3 1.545634  1.928205  1.931599  0.182551 read
+
+ 811 traz_prog_1:OPEN_FILE
+ 246 traz_prog_1:TRAZ_STAT_FILE
+  27 traz_prog_1:TRAZ_LABELSET_TO_FILENAME
+   6 traz_prog_1:TRAZ_REGISTER_FD
+   5 traz_prog_1:TRAZ_UNLINK_FILE
+   3 traz_prog_1:TRAZ_PIPE
+   3 traz_prog_1:TRAZ_CLAIM_FD
+   3 traz_prog_1:SET_LABEL
+   2 traz_prog_1:TRAZ_READLINK
+   2 traz_prog_1:TRAZ_CLOSE
+   1 traz_spawn_prog_1:TRAZ_SPAWN_EXIT
+   1 traz_prog_1:TRAZ_WAIT
+   1 traz_prog_1:TRAZ_SPAWN
+   1 traz_prog_1:TRAZ_LSTAT_FILE
+   1 traz_prog_1:TRAZ_FREEZE_LABEL
+   1 traz_prog_1:TRAZ_ENABLE_SYSTRACE
+   1 traz_prog_1:TRAZ_APPLY_FILTER
+   1 traz_prog_1:TRAZ_ACCESS_FILE
+   1 traz_prog_1:REQ_PRIVS
+   1 traz_prog_1:DO_LOGIN
+(1118 syscalls)
+(692 open_noent, 140 open_exist)
+
+2215 traz_prog_1:OPEN_FILE
+ 635 traz_prog_1:TRAZ_STAT_FILE
+  27 traz_prog_1:TRAZ_LABELSET_TO_FILENAME
+   6 traz_prog_1:TRAZ_UNLINK_FILE
+   6 traz_prog_1:TRAZ_REGISTER_FD
+   3 traz_prog_1:TRAZ_READLINK
+   3 traz_prog_1:TRAZ_PIPE
+   3 traz_prog_1:TRAZ_CLAIM_FD
+   3 traz_prog_1:SET_LABEL
+   2 traz_prog_1:TRAZ_CLOSE
+   1 traz_spawn_prog_1:TRAZ_SPAWN_EXIT
+   1 traz_prog_1:TRAZ_WAIT
+   1 traz_prog_1:TRAZ_SPAWN
+   1 traz_prog_1:TRAZ_LSTAT_FILE
+   1 traz_prog_1:TRAZ_FREEZE_LABEL
+   1 traz_prog_1:TRAZ_ENABLE_SYSTRACE
+   1 traz_prog_1:TRAZ_APPLY_FILTER
+   1 traz_prog_1:TRAZ_ACCESS_FILE
+   1 traz_prog_1:REQ_PRIVS
+   1 traz_prog_1:DO_LOGIN
+(2913 syscalls)
+
+-- Cluster mode on 4way vmware --
+Throughput (prelim: 4x ascli)
+1 1.44
+2 2.84
+3 4.17
+4 5.42
+
+Final results (1000 requests) 
+1 20 20 1000 2 1.444440  1.384320  1.363479  0.176208 read
+2 20 20 1000 2 2.800548  1.427310  1.405207  0.203430 read
+3 20 20 1000 2 4.263369  1.405262  1.397090  0.208010 read
+4 20 20 1000 2 5.450570  1.464231  1.450214  0.197575 read
+
+----------------------------------------------------------
+  Begin SOSP camera ready data
+----------------------------------------------------------
+
+Setting up trazwiki
+ 0) Add yourself to your own group.
+ 1) install traz
+ 2) add user_xattr to fstab and remount partition
+ 3) `traz-cfg bin`/traz-python `traz-cfg pybin`/mksetuidh.py
+ 4) copy SetuidHandle to traz.conf and restart RM
+
+
+
+ 2) cd /disk/yipal
+ 3) svn checkout svn+ssh://am.lcs.mit.edu/home/am8/max/svnrepos-mit/traz/devel/2.0/moin
+ 4) mkdir moin-home moin-ihome
+ 5) cp -r ~yipal/moin-page-backups /disk/yipal/
+ 5) `traz-cfg bin`/traz/`traz-cfg tag`/initfile -c /disk/yipal/moin-home /disk/yipal/moin-ihome
+ 6) cd moin
+ 7) sh initmoin.sh 2>&1 | tee x
+ 8) Save environment variables in ~/moin.env.i (tags & labels) somewhere safe.
+ 9) source ~/moin.env.i
+
+
+Running trazwiki benchmarks
+
+  sh bench-moin -t 18.26.4.62 (trazwiki)
+  sh bench-moin -m 18.26.4.62 (moin)
+
+For write tests, use 20 pages, and 20 users (All on Hydra 4core)
+For final numbers, we should use 10000 requests, 200 pages
+
+Unmodified Moin (non frozen)
+20 20 200 1 8.580037  0.116549  0.114674  0.020765 read
+20 20 200 5 33.043198  0.150128  0.122183  0.057856 read
+20 20 200 10 33.475218  0.295238  0.239175  0.235167 read
+20 20 200 15 33.482369  0.441195  0.288893  0.525423 read
+20 20 200 20 33.342247  0.578920  0.318721  0.971045 read
+
+Unmodified Moin (frozen)
+20 200 10000 10 34.075066  0.293404  0.260377  0.173071 read
+20 200 10000 30 34.081231  0.879496  0.668957  1.360624 read
+20 200 10000 60 34.065629  1.759461  1.242755  2.917568 read
+20 200 10000 90 34.041591  2.640755  1.903641  3.764582 read
+
+20 200 10000 10 16.555680  0.603866  0.530841  0.338016 write
+20 200 10000 30 17.109164  1.752125  1.323176  1.392576 write
+20 200 10000 50 17.317750  2.883667  2.402436  2.302248 write
+20 200 10000 60 17.365530  3.449848  2.797931  3.117957 write
+20 200 10000 70 17.391102  4.018514  3.249319  3.558351 write
+20 200 10000 80 17.421860  4.582024  3.741112  4.043339 write
+20 200 10000 90 17.443723  5.148976  4.207832  4.643595 write
+20 200 10000 100 17.411494  5.729175  4.639467  5.328293 write
+
+Unmodified Moin (frozen, optimized python_path)
+20 200 400 1 8.990230  0.111231  0.110768  0.003944 read
+20 200 400 3 26.119131  0.114711  0.113565  0.003860 read
+20 200 400 5 34.476137  0.144581  0.121839  0.044803 read
+20 200 400 7 34.591462  0.201111  0.199644  0.079474 read
+20 200 400 10 34.718145  0.286669  0.230442  0.232131 read
+20 200 400 15 34.825371  0.427244  0.307663  0.683925 read
+20 200 400 20 34.753766  0.567100  0.294193  1.205690 read
+
+20 200 400 1 4.330806  0.230904  0.225300  0.051527 write
+20 200 400 50 17.030004  2.836943  2.220762  2.336807 write
+20 200 400 60 17.465122  3.301854  2.582069  2.768408 write
+20 200 400 70 17.306091  3.860405  3.182170  2.582057 write
+
+20 200 10000 1 8.862382  0.112836  0.111914  0.010882 read
+20 200 10000 3 25.828151  0.116141  0.114597  0.011512 read
+20 200 10000 5 34.080174  0.146701  0.124554  0.046118 read
+20 200 10000 7 34.386468  0.203524  0.196012  0.079338 read
+20 200 10000 10 34.456361  0.290117  0.246322  0.201086 read
+20 200 10000 15 34.452945  0.435248  0.346343  0.482983 read
+20 200 10000 20 34.446398  0.580364  0.428295  0.820518 read
+20 200 10000 30 34.444172  0.870238  0.605191  1.444134 read
+
+20 200 10000 1 4.355155  0.229613  0.226970  0.044583 write
+20 200 10000 20 17.193562  1.162530  0.900662  0.981333 write
+20 200 10000 30 17.229532  1.738041  1.250250  1.492532 write
+20 200 10000 40 17.315119  2.307667  1.758896  1.958271 write
+20 200 10000 50 17.419350  2.866743  2.239613  2.487163 write
+20 200 10000 60 17.423089  3.438469  2.648367  3.246984 write
+20 200 10000 70 17.445518  4.003635  3.158724  3.761624 write
+20 200 10000 80 17.440192  4.577884  3.810754  4.023271 write
+
+
+TrazWiki (frozen, static launcher, non-greedy RM, optimized python_path)
+
+4 file servers for ihome:
+20 200 10000 1 6.899549  0.144937  0.144186  0.012246 read
+20 200 10000 3 16.715288  0.179469  0.175467  0.019538 read
+20 200 10000 4 18.669906  0.214224  0.210560  0.028351 read
+20 200 10000 5 19.618991  0.254831  0.252076  0.035633 read
+20 200 10000 6 20.123283  0.298113  0.296449  0.043442 read
+20 200 10000 7 20.388711  0.343271  0.342429  0.054073 read
+20 200 10000 8 14.224617  0.562307  0.588445  0.107740 read
+20 200 10000 9 12.959373  0.694382  0.701353  0.083212 read
+20 200 10000 10 12.620930  0.792212  0.792883  0.071000 read
+20 200 10000 12 12.205077  0.982988  0.984060  0.080146 read
+20 200 10000 14 12.091727  1.157518  1.157145  0.091640 read
+
+20 200 100 1 3.745950  0.266955  0.265908  0.006879 write
+20 200 100 3 9.905104  0.301154  0.300223  0.024943 write
+20 200 100 4 11.329695  0.341446  0.342143  0.042338 write
+20 200 100 5 11.911737  0.413631  0.401844  0.070039 write
+20 200 100 10 10.185879  0.958067  0.977105  0.170855 write
+20 200 100 15 9.345834  1.554275  1.647508  0.309794 write
+
+1 fs for ihome and fixed file struct leak.
+20 200 400 1 6.962285  0.143631  0.141585  0.004726 read
+20 200 400 3 17.249391  0.173717  0.170690  0.015397 read
+20 200 400 4 19.305352  0.206279  0.203959  0.026367 read
+20 200 400 5 20.212349  0.246509  0.243692  0.034317 read
+20 200 400 6 20.589137  0.290350  0.287326  0.052769 read
+20 200 400 7 21.193309  0.329027  0.329460  0.059255 read
+20 200 400 8 21.421337  0.371801  0.371932  0.076097 read
+20 200 400 9 14.112942  0.634742  0.661524  0.111555 read
+20 200 400 10 14.219997  0.701103  0.754872  0.148712 read
+20 200 400 12 12.397198  0.963534  0.973421  0.116900 read
+20 200 400 14 13.056258  1.065093  1.073730  0.097506 read
+
+20 200 400 1 3.791862  0.263722  0.262705  0.015922 write
+20 200 400 4 11.635455  0.342508  0.328403  0.066543 write
+20 200 400 5 12.123274  0.411211  0.395774  0.086501 write
+20 200 400 6 12.341671  0.483349  0.472911  0.120759 write
+20 200 400 7 11.890124  0.585307  0.575638  0.127832 write
+20 200 400 8 11.341328  0.701657  0.685615  0.155236 write
+20 200 400 9 11.232736  0.792534  0.789774  0.112894 write
+20 200 400 10 9.751137  1.019715  1.035255  0.129531 write
+
+20 200 10000 1 6.859182  0.145790  0.142749  0.012368 read
+20 200 10000 3 17.122850  0.175192  0.172070  0.015655 read
+20 200 10000 4 19.248872  0.207786  0.205038  0.026350 read
+20 200 10000 5 20.183578  0.247685  0.244645  0.034994 read
+20 200 10000 6 20.701370  0.289772  0.287596  0.044108 read
+20 200 10000 7 20.971462  0.333746  0.332578  0.054529 read
+20 200 10000 8 21.064739  0.379705  0.380076  0.065341 read
+20 200 10000 9 13.763275  0.653797  0.672357  0.103067 read
+20 200 10000 10 12.885491  0.775937  0.775727  0.070249 read
+20 200 10000 12 12.581055  0.953614  0.955927  0.079308 read
+20 200 10000 14 12.331446  1.135015  1.135403  0.090580 read
+
+20 200 10000 1 3.728866  0.268178  0.263868  0.048440 write
+20 200 10000 4 11.402364  0.350762  0.331222  0.088370 write
+20 200 10000 5 11.873610  0.421047  0.392808  0.116668 write
+20 200 10000 6 11.882098  0.504867  0.482380  0.141853 write
+20 200 10000 7 11.755957  0.595323  0.577353  0.144952 write
+20 200 10000 8 11.076119  0.722127  0.707350  0.146694 write
+20 200 10000 9 10.350500  0.869330  0.865339  0.143326 write
+20 200 10000 10 9.477572  1.054917  1.057323  0.135623 write
+
+Syscall Results with optimized Readonly traz_open()
+linux
+mkdir           10000    859564.000      85.956
+rmdir           10000    138440.000      13.844
+open_create     10000    124738.000      12.474
+open_exists(ro) 10000    32877.000       3.288
+open_exists(rw) 10000    32006.000       3.201
+close           10000    6460.000        0.646
+open_noent      10000    42962.000       4.296
+open_noent(pub) 10000    42133.000       4.213
+stat(rw)        10000    28475.000       2.848
+stat(ro)        10000    28202.000       2.820
+unlink          10000    153680.000      15.368
+symlink         10000    95393.000       9.539
+readlink        10000    27381.000       2.738
+
+traz
+mkdir           10000    3711405.000     371.141
+rmdir           10000    1068316.000     106.832
+open_create     10000    2001864.000     200.186
+open_exists(ro) 10000    409768.000      40.977
+open_exists(rw) 10000    1102945.000     110.294
+close           10000    8610.000        0.861
+open_noent      10000    1013829.000     101.383
+open_noent(pub) 10000    398292.000      39.829
+stat(rw)        10000    981354.000      98.135
+stat(ro)        10000    386699.000      38.670
+unlink          10000    1099581.000     109.958
+symlink         10000    1068191.000     106.819
+readlink        10000    902247.000      90.225
+
+newhandle       10000    225529.000      22.553
+setlabel        10000    550118.000      55.012
+traznull        10000    201473.000      20.147
+
+cat x | awk '{print $4}' > x1
+cat y | awk '{print $4}' > y1
+paste x1 y1 | awk '{print $1, "&", $2, "&", $2 - $1, "&", $2/$1}'
+
+
+Following test run on Hydra with 1 core, IPC 64k block size.
+
+ipc_lat(us)             1000000  4062592  4.063
+ipc_bw                  20000    6.790    2945.356
+
+ipc_lat(us)             1000000  33815549 33.816
+ipc_bw                  20000    21.340   937.216
+
+Optmizing Python path.
+
+Original Path:
+/usr/lib/python24.zip
+/usr/lib/python2.4
+/usr/lib/python2.4/plat-linux2
+/usr/lib/python2.4/lib-tk
+/usr/lib/python2.4/lib-dynload
+/usr/local/lib/python2.4/site-packages
+/usr/lib/python2.4/site-packages
+/var/lib/python-support/python2.4
+
+Remove these from the path for moin  (Good for 15 req/sec --> 17.4 req/sec)
+  /usr/lib/python24.zip
+  /usr/lib/python2.4/plat-linux2
+  /usr/lib/python2.4/lib-tk
+  /usr/local/lib/python2.4/site-packages
+
+Trazwiki one page request:
+  708 RPCs into RM, breakdown:
+    472 OPEN_FILE  (378 non-exist pub, 8 non-exist non-pub, 71 exist pub, 15 exist non-pub  )
+    177 TRAZ_STAT_FILE  (152 pub, 25 non-pub)
+     27 TRAZ_LABELSET_TO_FILENAME
+      6 TRAZ_REGISTER_FD
+      5 TRAZ_UNLINK_FILE
+      3 TRAZ_PIPE
+      3 TRAZ_NULL
+      3 TRAZ_CLAIM_FD
+      2 TRAZ_READLINK
+      2 SET_LABEL
+      1 traz_spawn_prog_1:TRAZ_SPAWN_EXIT
+      1 TRAZ_SPAWN
+      1 TRAZ_LSTAT_FILE
+      1 TRAZ_GETPID
+      1 TRAZ_FREEZE_LABEL
+      1 TRAZ_APPLY_FILTER
+      1 TRAZ_ACCESS_FILE
+      1 REQ_PRIVS
+
+(40-4)*378 + (101-4)*8 + (41-3)*71 + (110-3)*15 + (39-3)*152 + (98-3)*25 
+  = 26534 us overhead / read req
+
+Non-frozen Trazwiki: 1800 opens and stats 
+
+Cluster (200 reqs)
+1 20 20 200 1 4.680052  0.213673  0.201773  0.153091 read
+2 20 20 200 1 8.787683  0.226673  0.210572  0.157974 read
+3 20 20 200 1 12.155251  0.246189  0.236340  0.149323 read
+4 20 20 200 1 16.157535  0.246077  0.240837  0.015842 read
+
+1 20 20 200 2 4.550401  0.438478  0.389286  0.308147 read
+2 20 20 200 2 8.594698  0.462956  0.428594  0.359068 read
+3 20 20 200 2 12.786631  0.466088  0.456483  0.242044 read
+4 20 20 200 2 16.213628  0.486235  0.465815  0.214169 read
+
+1 20 20 200 3 4.753590  0.629646  0.616077  0.133017 read
+2 20 20 200 3 9.065715  0.657693  0.618144  0.602778 read
+3 20 20 200 3 12.584121  0.701173  0.662305  0.252313 read
+4 20 20 200 3 16.185672  0.727266  0.712387  0.225886 read
+
+Cluster (10000 reqs)
+1 20 200 10000 1 4.904765  0.203883  0.202673  0.003505 read
+2 20 200 10000 1 9.477202  0.211030  0.210757  0.024137 read
+3 20 200 10000 1 13.533350  0.221650  0.221669  0.012831 read
+4 20 200 10000 1 17.413911  0.229684  0.228921  0.019850 read
+
+
+With Logins
+sh create-moinusers.sh -t 100 18.26.4.60:8000/moin |& tee traz_userlist
+sh login-moinusers.sh -t 100 traz_userlist 2wcaaaaaaaaba..22caaaaaaaaba 18.26.4.60:8000 |& tee tmoin_tpwlist
+sh bench-moin -t 18.26.4.60
+
+TrazWiki:
+100 200 500 1 6.328870  0.158006  0.154591  0.043116 read
+100 200 500 3 15.466615  0.193697  0.189225  0.029019 read
+100 200 500 4 17.526148  0.227712  0.223514  0.032099 read
+100 200 500 5 18.492839  0.269490  0.265336  0.037880 read
+100 200 500 6 18.983521  0.315284  0.314263  0.047083 read
+100 200 500 7 19.026854  0.366469  0.369332  0.046774 read
+100 200 500 8 13.874088  0.574829  0.595637  0.123775 read
+100 200 500 9 12.583690  0.713272  0.721299  0.080751 read
+
+100 200 500 1 3.615314  0.276601  0.273835  0.026050 write
+100 200 500 3 9.374937  0.319097  0.310049  0.053468 write
+100 200 500 6 11.494633  0.519764  0.514990  0.103353 write
+100 200 500 9 10.222067  0.876000  0.872352  0.147581 write
+
+100 200 10000 1 6.416241  0.155854  0.152180  0.018078 read
+100 200 10000 3 15.648783  0.191685  0.187678  0.021767 read
+100 200 10000 4 17.458548  0.229083  0.224661  0.032659 read
+100 200 10000 5 18.311073  0.273024  0.270178  0.039138 read
+100 200 10000 6 18.828657  0.318608  0.315975  0.049453 read
+100 200 10000 7 16.470337  0.424922  0.403031  0.096610 read
+100 200 10000 8 12.291351  0.650763  0.651565  0.070177 read
+100 200 10000 9 11.992621  0.750342  0.752784  0.074692 read
+
+100 200 10000 1 3.596385  0.278057  0.273133  0.045419 write
+100 200 10000 3 9.308312  0.322258  0.311275  0.065804 write
+100 200 10000 4 10.782201  0.370943  0.355094  0.085470 write
+100 200 10000 5 11.140000  0.448780  0.426119  0.114834 write
+100 200 10000 6 11.114335  0.539787  0.521919  0.133182 write
+100 200 10000 7 10.748754  0.651109  0.635028  0.133480 write
+100 200 10000 8 10.367834  0.771444  0.757180  0.136012 write
+100 200 10000 9 9.256796  0.972077  0.974840  0.155590 write
+
+
+sh create-moinusers.sh -m 100 18.26.4.60:9000/moin/UserPreferences |& tee moin_userlist
+sh login-moinusers.sh -m 100 moin_userlist 2wcaaaaaaaaba..22caaaaaaaaba 18.26.4.60:9000 |& tee moin_cookielist
+sh bench-moin -m 18.26.4.60
+
+100 200 500 1 8.556121  0.116875  0.114693  0.026515 read
+100 200 500 3 24.961119  0.119960  0.117572  0.010290 read
+100 200 500 5 32.290228  0.154033  0.128145  0.057373 read
+100 200 500 7 33.466635  0.208398  0.200698  0.078542 read
+100 200 500 10 33.517076  0.296938  0.248746  0.234770 read
+100 200 500 15 33.540000  0.444088  0.316339  0.618618 read
+100 200 500 20 33.498966  0.591792  0.340406  1.168519 read
+100 200 500 30 33.479570  0.883767  0.374642  1.801609 read
+
+100 200 500 1 4.245351  0.235552  0.231824  0.037566 write
+100 200 500 20 16.019181  1.233228  0.877807  1.315351 write
+100 200 500 30 15.987774  1.848757  1.282970  1.748617 write
+100 200 500 40 15.896178  2.436833  2.015302  1.782202 write
+100 200 500 50 16.214721  2.978386  2.606180  2.164127 write
+100 200 500 60 15.977992  3.586566  3.154859  2.296765 write
+100 200 500 70 16.632879  4.052353  3.386729  3.008040 write
+100 200 500 80 16.911541  4.530544  4.168845  2.821068 write
+
+100 200 10000 1 8.510758  0.117498  0.116361  0.012671 read
+100 200 10000 3 24.846063  0.120735  0.118994  0.009870 read
+100 200 10000 5 32.704490  0.152861  0.129573  0.049159 read
+100 200 10000 7 33.131536  0.211261  0.204459  0.081055 read
+100 200 10000 10 33.164832  0.301425  0.262670  0.193627 read
+100 200 10000 15 33.094087  0.453102  0.364227  0.558043 read
+100 200 10000 20 33.182430  0.602505  0.462850  0.797732 read
+100 200 10000 30 33.176844  0.903694  0.644906  1.362272 read
+
+100 200 10000 1 4.212699  0.237377  0.232079  0.053929 write
+100 200 10000 20 16.017276  1.248180  0.891589  1.295746 write
+100 200 10000 30 16.157018  1.855457  1.382457  1.697116 write
+100 200 10000 40 16.371838  2.440723  2.013952  1.900023 write
+100 200 10000 50 16.513413  3.024253  2.540805  2.293817 write
+100 200 10000 60 16.692457  3.589006  3.042697  2.642445 write
+100 200 10000 70 16.710151  4.182716  3.564555  3.033847 write
+100 200 10000 80 16.809396  4.747983  4.067456  3.459650 write
+100 200 10000 90 16.851764  5.324488  4.546085  3.902933 write
+100 200 10000 100 16.856603  5.917128  5.102519  4.356022 write
+
+
+Cluster with Login:
+sh create-moinusers.sh -t 100 18.26.4.61:8000/moin |& tee traz_userlist.nfs
+sh login-moinusers.sh -t 100 traz_userlist.nfs 56daaaaaaaaba..6adaaaaaaaaba 18.26.4.61:8000 |& tee tmoin_tpwlist.nfs
+sh bench-cluster 18.26.4.60
+
+1 20 200 500 1 4.416892  0.226403  0.221921  0.032329 read
+2 20 200 500 1 8.042430  0.246639  0.240064  0.105684 read
+3 20 200 500 1 11.529139  0.259772  0.250111  0.127608 read
+4 20 200 500 1 14.614385  0.273260  0.260079  0.147104 read
+
+4 20 200 10000 1 15.516463  0.257764  0.256922  0.010235 read
+
+
+One Request Breakdown with Login:
+FROZEN
+    487 traz_prog_1:OPEN_FILE
+    186 traz_prog_1:TRAZ_STAT_FILE
+     32 traz_prog_1:TRAZ_LABELSET_TO_FILENAME
+      6 traz_prog_1:TRAZ_REGISTER_FD
+      6 traz_prog_1:SET_LABEL
+      5 traz_prog_1:TRAZ_UNLINK_FILE
+      5 traz_prog_1:GET_LABEL
+      3 traz_prog_1:TRAZ_TRAZ_STAT_FILE
+      3 traz_prog_1:TRAZ_READLINK
+      3 traz_prog_1:TRAZ_PIPE
+      3 traz_prog_1:TRAZ_NULL
+      3 traz_prog_1:TRAZ_CLAIM_FD
+      2 traz_prog_1:TRAZ_FREEZE_LABEL
+      2 traz_prog_1:REQ_PRIVS
+      1 traz_spawn_prog_1:TRAZ_SPAWN_EXIT
+      1 traz_prog_1:TRAZ_SUBSET_OF
+      1 traz_prog_1:TRAZ_SPAWN
+      1 traz_prog_1:TRAZ_LSTAT_FILE
+      1 traz_prog_1:TRAZ_GETPID
+      1 traz_prog_1:TRAZ_APPLY_FILTER
+      1 traz_prog_1:TRAZ_ACCESS_FILE
+
+  OPEN (487)
+    non-pub (34)
+      exist   18
+      noexist 16
+    pub (453)
+      exist   73
+      noexist 380
+  STAT (186)
+    non-pub (30)
+      exist   17
+      noexist 13
+    pub (156)
+      exist   49
+      noexist 107
+
+(40-4)*380 + (101-4)*16 + (41-3)*73 + (110-3)*18 + (39-3)*156 + (98-3)*30 
+  =  28398 us overhead / read req  vs. 39ms measured
+
+NON FROZEN:
+   1447 traz_prog_1:OPEN_FILE
+    466 traz_prog_1:TRAZ_STAT_FILE
+     32 traz_prog_1:TRAZ_LABELSET_TO_FILENAME
+      8 traz_prog_1:TRAZ_UNLINK_FILE
+      6 traz_prog_1:TRAZ_REGISTER_FD
+      6 traz_prog_1:SET_LABEL
+      5 traz_prog_1:GET_LABEL
+      4 traz_prog_1:TRAZ_READLINK
+      3 traz_prog_1:TRAZ_TRAZ_STAT_FILE
+      3 traz_prog_1:TRAZ_PIPE
+      3 traz_prog_1:TRAZ_NULL
+      3 traz_prog_1:TRAZ_CLAIM_FD
+      2 traz_prog_1:TRAZ_FREEZE_LABEL
+      2 traz_prog_1:REQ_PRIVS
+      1 traz_spawn_prog_1:TRAZ_SPAWN_EXIT
+      1 traz_prog_1:TRAZ_SUBSET_OF
+      1 traz_prog_1:TRAZ_SPAWN
+      1 traz_prog_1:TRAZ_LSTAT_FILE
+      1 traz_prog_1:TRAZ_GETPID
+      1 traz_prog_1:TRAZ_APPLY_FILTER
+      1 traz_prog_1:TRAZ_ACCESS_FILE
+
+
+Single VM benchmark
+
+sh create-moinusers.sh -t 100 18.26.4.61:8000/moin |& tee traz_userlist.hydra1
+sh login-moinusers.sh -t 100 traz_userlist.hydra1 uwasaaaaaaaba..u2asaaaaaaaba 18.26.4.61:8000 |& tee tmoin_tpwlist.hydra1
+sh bench-cluster 18.26.4.60
+
+Using VM IDD, VM IHOME, Native xattr
+100 200 500 1 4.661540  0.214521  0.209164  0.080973 read
+
+Using 4 individual VMs, 4 IDDs, no NFS, no login,
+Compared to 21.1 req/sec on non-VM 4CPU:
+  4 20 200 5000 1 18.553414  0.215536  0.209364  0.051432 read
+
+Using 4 individual VMs, 1 IDD on host, no NFS, no login,
+  4 20 200 5000 1 18.719790  0.213602  0.210719  0.052091 read

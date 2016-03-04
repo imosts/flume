@@ -1,0 +1,11 @@
+--- iconv/gconv_cache.c.orig	2006-01-11 02:08:29.000000000 -0500
++++ iconv/gconv_cache.c	2008-07-27 10:42:20.000000000 -0400
+@@ -79,7 +79,7 @@
+   /* Make the file content available.  */
+   cache_size = st.st_size;
+ #ifdef _POSIX_MAPPED_FILES
+-  gconv_cache = __mmap (NULL, cache_size, PROT_READ, MAP_SHARED, fd, 0);
++  gconv_cache = __mmap (NULL, cache_size, PROT_READ, MAP_PRIVATE, fd, 0);
+   if (__builtin_expect (gconv_cache == MAP_FAILED, 0))
+ #endif
+     {

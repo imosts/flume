@@ -1,0 +1,87 @@
+
+##
+## IDD <hostname>:<port>
+##
+##   Connect to an IDD over TCP/IP, either local or over the network.
+##   IDD must be started before you can start up flumerm.
+##
+IDD -C 127.0.0.1:38423
+
+##
+## Flume's socketfile
+##
+SocketFile /tmp/flumesock.max
+
+##
+## TopDir <dir>
+##
+##   Specify where to find flume helper processes
+##
+TopDir /disk/max/run/bin/flume/shopt
+
+##
+## Specify which replacement linker you're using
+##
+LinkerName fl
+
+##
+## Specify for debugging purposes that user processes can toggle
+## their 'SafeFlags'
+##
+#DebugFlags 0x1
+
+#Seed fooBEEFfooTACOfooBARfoo
+
+##
+## FileServer [-R|-P] -u <username> -g <groupname> -a <attr-file> 
+##	   -n <num-aiods> -s <shmem-size> -m <maxbuf-size>
+##	    <jaildir> <mountpoint>
+##
+##  Start up a Flume file server:
+##
+##	-R	Specify if read only
+##
+##	-P	Specify if public (don't check S labels on file opens)
+##
+##	-a	Specify an attribute file that backs all extended
+##		  attributes for this FileSystem; specified relative
+##		  to the chroot jail [default=.flume_extattr]
+##
+##  -t  Timeout for the NOENT cache.
+##
+##  -G  Use 'ghetto' extended attributes.
+##
+##	-[nsm]  For AIOD-based file server, which isn't being used right
+##		  now.
+##
+##    jaildir	The direction on the real FS to which the FS will be jailed
+##		  if it is started as root.
+##
+##    mountpoint The mountpoint in the flume FS namespace to make this
+##		  file system available as.
+##	
+##
+FileServer	flumefs -R -L "{ I : all, S : [] }" -t 10 -o /usr /usr
+FileServer	flumefs -R -L "{ I : all, S : [] }" -t 10 /lib /lib
+FileServer	flumefs -R -L "{ I : all , S : [] }" /disk/max/run /disk/max/run
+FileServer	flumefs -R -L "{ I : all , S : [] }" /disk/flume/data/etc /etc
+FileServer	flumefs -RP /var/run /var/run
+
+##
+## All read/write file systems need -G for now, since real extended
+## attributes aren't working yet.
+##
+FileServer	ACLNT_TRACE=10 flumefs -G -u root -g wheel /disk/flume/data/home /home
+FileServer	flumefs -G -I -u root -g wheel -p 5 /disk/flume/data/ihome /ihome
+FileServer	flumefs -G -u root -g wheel /disk/flume/data/tmp /tmp
+
+##
+## Spawner process.
+##
+Spawner FLUME_DEBUG_SRV=0xffffff spawner -L /disk/max/flume/run/rlib/shopt
+
+##
+## Include per-host stuff in this file (which isn't checked in and
+## can vary machine-by-machine).
+##
+include /usr/local/etc/flume/flume.conf.max.local

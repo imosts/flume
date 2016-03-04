@@ -1,0 +1,23 @@
+<h3>Upload Photos to Album: {{ album.title  }}</h3>
+
+<form action="{{urlprefix}}/upload/newphoto/{{ album.id }}/{{ new_page_id }}/" method="post" enctype="multipart/form-data">
+
+
+<table border="0">
+<tr>
+  <td>Title:</td>
+  <td><input type="text" name="title"></td>
+</tr>
+<tr>
+  <td>Caption:</td>
+  <td><input type="text" name="caption"></td>
+</tr>
+<tr>
+  <td>File:</td>
+  <td><input type="file" name="file"></td>
+</tr>
+</table>
+
+<input type="hidden" name="page_id" value={{ page_id }}>
+<input type="submit" value="Submit"><BR>
+</form>

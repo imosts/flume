@@ -1,0 +1,16 @@
+<script type='text/javascript'>
+
+function dump_object (obj) {
+    var s = "";
+    for (var k in obj) {
+        s += k + "\n";
+    }
+    alert (s);
+}
+
+function foo_handler (msg) {
+  alert ("FOO" + msg);
+}
+
+alert (window.postMessage);
+</script>

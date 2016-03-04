@@ -1,0 +1,14 @@
+<h1>W5 Blogger: {{title}}</h1>
+
+<h2>Matching Posts</h2>
+{% if post_list %}
+    {% for p in post_list %}
+    <p>
+         Title: {{ p.title }}<BR>
+         Text: {{ p.text }}<BR>
+         Date: {{ p.pub_date }}<BR>
+    </p>
+    {% endfor %}
+{% else %}
+    <p>No posts are available.</p>
+{% endif %}

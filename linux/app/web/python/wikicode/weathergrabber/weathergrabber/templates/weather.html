@@ -1,0 +1,10 @@
+<h1>The WeatherGrabber</h1>
+<p>Use this application in "upload" mode to get the weather information
+for the next two days  for a list
+of zipcodes.  Here is a listing of all the weather in the database.</p>
+<br>
+<ul>
+  {% for weather in weather_list %}
+  <li>{{ weather.day }}, {{ weather.zip }}: {{ weather }}, high: {{ weather.high }}, low: {{ weather.low }}</li>
+  {% endfor %}
+</ul>

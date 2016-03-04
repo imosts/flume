@@ -1,0 +1,29 @@
+<script type='text/javascript'>
+/*
+ * In the popup's scripts, running on <http://example.org>:
+ */
+
+// Called sometime after postMessage is called
+function receiveMessage(event)
+{
+
+  var elm = event.target;
+  var msg = elm.getAttribute("msg");
+
+  document.getElementById ("foo").innerHTML = msg;
+}
+
+window.onload = function () {
+  window.addEventListener("w5recv", receiveMessage, false);
+  window.name = "parent_window";
+document.getElementById ("pm").innerHTML = window.postMessage;
+}
+
+</script>
+
+<div id="w5recvdiv")></div>
+
+frame2
+Got message: <div id="foo"></div>
+
+postmessage: <div id="pm"></div>

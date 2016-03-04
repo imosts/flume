@@ -1,0 +1,59 @@
+#!/bin/sh
+
+MYSQL=mysql
+ROOTUSER="root"
+ROOTPW=""
+DBNAME=idd_db
+IDDUSER=idd_user
+IDDPW="asdfqwer"
+
+PROG=$0
+
+usage()
+{
+    echo "usage: $PROG [-u <user>] [-p <passwd>]" 1>&2
+    exit 1
+}
+
+args=`getopt p:u:h $*`
+if [ $? -ne 0 ] 
+then
+    usage 
+fi
+
+for i
+do
+  case "$i"
+      in
+      -u)
+	  ROOTUSER=$2
+	  shift ; shift
+	  ;;
+      -p) 
+	  ROOTPW=$2
+	  shift
+	  shift
+	  ;;
+      --)
+	  shift
+	  break
+	  ;;
+  esac
+done
+
+root_mysql()
+{
+	${MYSQL} -u ${ROOTUSER} -p${ROOTPW} $*
+}
+
+idd_mysql()
+{
+	${MYSQL} -u ${IDDUSER} -p${IDDPW} ${DBNAME}
+}
+
+echo "create database ${DBNAME} " | root_mysql 
+echo "create user ${IDDUSER}" | root_mysql
+echo "set password for ${IDDUSER} = PASSWORD('${IDDPW}') " | root_mysql
+echo "grant all on ${DBNAME}.* TO ${IDDUSER}"| root_mysql
+
+idd_mysql < srv/sql/idd.sql

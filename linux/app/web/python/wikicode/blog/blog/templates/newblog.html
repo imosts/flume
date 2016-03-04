@@ -1,0 +1,16 @@
+
+
+<h1>Create a new blog</h1>
+
+<form action="{{urlprefix}}/upload/newblog/{{ new_page_id }}/" method="post">
+
+<p>Title: <BR><input type="text" name="title"><BR></p>
+
+<input type="hidden" name="page_id" value="{{ page_id }}">
+<input type="submit" value="Submit"><BR>
+</form>
+
+
+{% if msg %}
+  msg: {{msg}}
+{% endif %}

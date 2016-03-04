@@ -1,0 +1,8 @@
+
+Write on {{ profile_owner }}'s wall:
+
+<form action="{{ urlprefix }}/savepost/{{ profile_owner }}/" method="post">
+<input type="hidden" name="redir" value="{{ redir }}">
+<input type="text" name="post_content">
+<input type="submit" name="submit" value="Post">
+</form>
