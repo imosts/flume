@@ -14,6 +14,7 @@
 static str
 ws_strip (const str &in)
 {
+	//python里面好像有描述！！！
   rxx x ("^\\s*(.*?)\\s*$");
   return x.match (in) ? x[1] : in;
 }
@@ -35,6 +36,7 @@ handle_t::def_setuid_h ()
 
 handle_factory_secure_t::handle_factory_secure_t (const str &key) : _i (0)
 {
+	//strbuf类型找不到！！！
   strbuf b ("%s-%d-%d", key.cstr (), getpid (), int (time (NULL)));
   str seed = b;
   bf_setkey (&_ctx, seed.cstr (), seed.len ());
