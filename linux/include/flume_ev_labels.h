@@ -4,8 +4,9 @@
 #include "flume_features.h"
 #include "flume_ev.h"
 #include "flume_prot.h"
+//blowfish加密算法 算法用来加密64bit的字符串
 #include "flume_bf60.h"
-//两个hash.h文件找不到
+//两个hash.h文件找不到！！！
 #include "ihash.h"
 #include "qhash.h"
 #include "tame.h"
