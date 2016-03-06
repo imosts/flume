@@ -70,7 +70,6 @@ public:
   bool is_valid () const { return ::is_valid (type()); }
   bool is_identifier () const { return ::is_identifier (type ()); }
 
-//此函数体为空？？？
   bool contained_in (const label_t **rhs, handle_prefix_t cp) const;
 
   handle_t add_persistence () const 
