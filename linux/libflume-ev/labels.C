@@ -295,7 +295,7 @@ hcmp (const void *v1, const void *v2)
 }
 
 //-----------------------------------------------------------------------
-
+//qsort()中最后一个参数是一个 hcmp函数名？？？
 str
 label_t::freeze (x_label_t *x) 
 {
