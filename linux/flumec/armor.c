@@ -1,3 +1,7 @@
+/*
+*这个文件是什么？？？ armor_type_t是否有关系！！！
+*
+*/
 
 #include <sys/types.h>
 #include <stdlib.h>
