@@ -38,6 +38,7 @@ enum { CAPABILITY_BITS = CAPABILITY_GROUP_SELECT,
 
 const char *set_repr (setcmp_type_t typ);
 
+//类handle_t 是???
 class handle_t {
 public:
   handle_t () : _value (0) {}
