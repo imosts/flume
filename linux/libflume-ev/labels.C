@@ -281,6 +281,7 @@ label_t::from_xdr (const x_label_t &x)
 
 //-----------------------------------------------------------------------
 
+//(const void *v1, const void *v2) 传入 v1 v2两个参数 不是会报错么？？？
 static int
 hcmp (const void *v1, const void *v2)
 {
