@@ -94,6 +94,18 @@ capset_t::capset_t (const x_label_t *x) : label_t (x) { if (x) init (*x); }
 
 //-----------------------------------------------------------------------
 
+
+/*typedef unsigned hyper x_handle_t;
+*typedef unsigned hyper x_caph_t;
+*typedef x_handle_t x_label_t<>;
+*typedef x_label_t x_handlevec_t;
+*typedef unsigned handle_prefix_t;
+*typedef string nickname_t<>;
+*typedef string random_str_t<>;
+*typedef string endpoint_desc_t<>;
+*此处x_handle_t &x 不是一个unsigned hyper吗？
+*/
+
 void
 label_t::init (const x_label_t &x)
 {
