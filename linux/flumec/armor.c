@@ -1,6 +1,6 @@
 /*
 *这个文件是什么？？？ armor_type_t是否有关系！！！
-*
+*此文件可能是与OpenCDK 中加密算法相关的文件
 */
 
 #include <sys/types.h>
