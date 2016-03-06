@@ -56,6 +56,8 @@ label_t::label_t (const x_label_t &x) : _is_infinite (false) { init (x); }
 
 //-----------------------------------------------------------------------
 
+
+//armor_type_t的几个类型 还不清楚此函数具体作用！！！
 str
 handle_t::to_str (armor_type_t base) const
 {
