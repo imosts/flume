@@ -305,6 +305,7 @@ label_t::freeze (x_label_t *x)
     if (!first) b << ",";
     else first = false;
     handle_t h ((*x)[i]);
+    //"0x%"此处格式？？？
     b.fmt ("0x%" PRIx64, h.value ());
   }
   return b;
