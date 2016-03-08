@@ -696,6 +696,7 @@ handle_id_t::to_xdr (new_handle_arg_t *x) const
 
 //-----------------------------------------------------------------------
 
+//hash_t是什么数据类型？
 hash_t 
 handle_id_t::mkhsh () const 
 {
@@ -708,6 +709,8 @@ handle_id_t::mkhsh () const
 
 //-----------------------------------------------------------------------
 
+
+//此函数？？？
 bool 
 is_valid (handle_prefix_t p) { return true; }
 
