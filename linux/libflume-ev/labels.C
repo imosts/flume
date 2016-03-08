@@ -440,6 +440,7 @@ label_t::from_str (str s)
       s = brace_rxx[1];
       // vector可以简写vec? string可以简写str？ 还是别的用法
     vec<str> v;
+    //vector<string> split(const string &s, const string &seperator); STL里split实现的方式 不一样！！！
     split (&v, thaw_rxx, s);
     for (size_t i = 0; i < v.size (); i++) {
       handle_t h;
