@@ -762,7 +762,6 @@ handle_t::add_capabilities (label_t *O)
 //-----------------------------------------------------------------------
 
 
-//union_in_diff()返回值为空，此处为何返回r？？？
 ptr<label_t>
 set_xor (const label_t &l1, const label_t &l2)
 {
