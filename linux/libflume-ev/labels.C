@@ -552,6 +552,7 @@ handle_t::from_str (const str &s)
       (_value == ULLONG_MAX && errno == ERANGE) ||
       (_value == 0 && errno == EINVAL)) {
 
+//dearmor32()函数？？？
     str x = dearmor32 (s);
     if (x && x.len () == sizeof (_value)) {
       memcpy (static_cast<void *> (&_value), x.cstr (), x.len ());
