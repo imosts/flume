@@ -751,6 +751,7 @@ handle_t::add_capabilities (label_t *O)
   } else if (is_identifier ()) {
     O->insert (capability_t (CAPABILITY_GENERIC, *this)); 
   } else {
+  	//if (!is_default_add ()) ？？？  is_default_add ()等函数调用时不添加参数吗？
     if (!is_default_add ()) 
       O->insert (capability_t (CAPABILITY_ADD, *this));
     if (!is_default_subtract ())
