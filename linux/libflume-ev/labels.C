@@ -573,15 +573,15 @@ handle_factory_t::remote_alloc (handle_t h)
 }
 
 //-----------------------------------------------------------------------
-
+///新建一个handle_factory_t的对象？
 handle_t
 handle_factory_t::newh ()
 {
   return newh (handle_prefix_t (0), true);
 }
+
 //-----------------------------------------------------------------------
-
-
+///新建一个handle_factory_t的对象？
 handle_t
 handle_factory_t::newh (handle_prefix_t p, bool no_handle_val_dups)
 {
@@ -589,7 +589,7 @@ handle_factory_t::newh (handle_prefix_t p, bool no_handle_val_dups)
 }
 
 //-----------------------------------------------------------------------
-
+///新建一个reliabled的handle_factory_t的对象？
 handle_t
 handle_factory_t::_newh_reliable (handle_prefix_t p)
 {
@@ -607,7 +607,7 @@ handle_factory_t::_newh_reliable (handle_prefix_t p)
 }
 
 //-----------------------------------------------------------------------
-
+///判断handle_it_t是否从string转换而来，并设置其前缀_prefix
 bool
 handle_id_t::from_str (const str &s)
 {
@@ -660,7 +660,7 @@ handle_id_t::from_str (const str &s)
 }
 
 //-----------------------------------------------------------------------
-
+///前缀转换成string
 str
 prefix2str (handle_prefix_t p)
 {
@@ -677,7 +677,7 @@ prefix2str (handle_prefix_t p)
 }
 
 //-----------------------------------------------------------------------
-
+///转换成string
 str
 handle_id_t::to_str () const
 {
@@ -687,7 +687,7 @@ handle_id_t::to_str () const
 }
 
 //-----------------------------------------------------------------------
-
+///转换到外部数据
 void
 handle_id_t::to_xdr (new_handle_arg_t *x) const
 {
@@ -696,7 +696,7 @@ handle_id_t::to_xdr (new_handle_arg_t *x) const
 }
 
 //-----------------------------------------------------------------------
-
+///对handle_id的名字和前缀做字节hash操作
 //hash_t是什么数据类型？
 hash_t 
 handle_id_t::mkhsh () const 
@@ -709,41 +709,40 @@ handle_id_t::mkhsh () const
 }
 
 //-----------------------------------------------------------------------
-
-
+///。。。
 //此函数？？？
 bool 
 is_valid (handle_prefix_t p) { return true; }
 
 //-----------------------------------------------------------------------
-
+///handle选项是否为持久的
 bool
 is_persistent (handle_prefix_t p) { return p & HANDLE_OPT_PERSISTENT; }
 
 //-----------------------------------------------------------------------
-
+///handle选项是否为组
 bool
 is_group (handle_prefix_t p) { return p & HANDLE_OPT_GROUP; }
 
 //-----------------------------------------------------------------------
-
+///handle选项是否为默认的加
 bool 
 is_default_add (handle_prefix_t p) 
 { return p & HANDLE_OPT_DEFAULT_ADD; }
 
 //-----------------------------------------------------------------------
-
+///handle选项是否为默认的减
 bool 
 is_default_subtract (handle_prefix_t p) 
 { return p & HANDLE_OPT_DEFAULT_SUBTRACT; }
 
 //-----------------------------------------------------------------------
-
+///是否为capability标记位
 bool
 is_capability (handle_prefix_t p) { return p & CAPABILITY_BITS; }
 
 //-----------------------------------------------------------------------
-
+///向handle添加capability标签
 void
 handle_t::add_capabilities (label_t *O)
 {
@@ -761,8 +760,7 @@ handle_t::add_capabilities (label_t *O)
 }
 
 //-----------------------------------------------------------------------
-
-
+///集合求异或
 ptr<label_t>
 set_xor (const label_t &l1, const label_t &l2)
 {
@@ -773,7 +771,7 @@ set_xor (const label_t &l1, const label_t &l2)
 }
 
 //-----------------------------------------------------------------------
-
+///集合减法
 ptr<label_t>
 label_t::subtract (const label_t &l) const
 {
@@ -783,7 +781,7 @@ label_t::subtract (const label_t &l) const
 }
 
 //-----------------------------------------------------------------------
-
+///集合减法
 void
 label_t::subtract (const label_t &l2, label_t *out) const
 {
@@ -791,7 +789,7 @@ label_t::subtract (const label_t &l2, label_t *out) const
 }
 
 //-----------------------------------------------------------------------
-
+///集合异或
 ptr<const label_t>
 set_xor (ptr<const label_t> l1, ptr<const label_t> l2)
 {
@@ -801,7 +799,7 @@ set_xor (ptr<const label_t> l1, ptr<const label_t> l2)
 }
 
 //-----------------------------------------------------------------------
-
+///集合联合相异元素
 void
 label_t::union_in_diff (const label_t &l1, const label_t &l2)
 {
