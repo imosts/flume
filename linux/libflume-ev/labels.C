@@ -489,7 +489,7 @@ label_t::subset_of (const label_t *r1) const
 }
  
 //-----------------------------------------------------------------------
-
+///是否为子集（两个label r1 r2）
 bool
 label_t::subset_of (const label_t *r1, const label_t *r2) const 
 {
@@ -504,7 +504,7 @@ label_t::subset_of (const label_t *r1, const label_t *r2) const
 }
 
 //-----------------------------------------------------------------------
-
+///标签是否包含此handle_t
 bool
 handle_t::contained_in (const label_t **rhs, handle_prefix_t cap) const
 {
@@ -519,7 +519,7 @@ handle_t::contained_in (const label_t **rhs, handle_prefix_t cap) const
 }
 
 //-----------------------------------------------------------------------
-
+///此标签是否包含rhs
 bool
 label_t::subset_of (const label_t **rhs) const
 {
@@ -542,8 +542,7 @@ label_t::subset_of (const label_t **rhs) const
 }
 
 //-----------------------------------------------------------------------
-
-
+///判断handle是否由字符串s转换而来？
 bool
 handle_t::from_str (const str &s)
 {
@@ -566,7 +565,7 @@ handle_t::from_str (const str &s)
 }
 
 //-----------------------------------------------------------------------
-
+///向_already_seen插入h
 void
 handle_factory_t::remote_alloc (handle_t h)
 {
