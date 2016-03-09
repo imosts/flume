@@ -332,7 +332,7 @@ label_t::contains (const handle_t &h) const
 }
 
 //-----------------------------------------------------------------------
-///
+///分配内存的函数
 ptr<label_t>
 capset_t::virtual_alloc (const x_label_t &x)
 {
@@ -350,7 +350,7 @@ capset_t::virtual_alloc (const x_label_t &x)
 }
 
 //-----------------------------------------------------------------------
-
+///是否包含handle h
 bool
 label_t::contains (const handle_t &h, handle_prefix_t pfx) const
 {
@@ -359,7 +359,7 @@ label_t::contains (const handle_t &h, handle_prefix_t pfx) const
 
 
 //-----------------------------------------------------------------------
-
+///把标签转换为string
 str
 label_t::to_str () const
 {
@@ -382,7 +382,7 @@ label_t::to_str () const
 }
 
 //-----------------------------------------------------------------------
-
+///返回setcmp_type_t类型的字符串
 const char *
 set_repr (setcmp_type_t typ)
 {
@@ -394,7 +394,7 @@ set_repr (setcmp_type_t typ)
 }
 
 //-----------------------------------------------------------------------
-
+///把标签转换为string
 str
 label_t::to_str (setcmp_type_t typ) const
 {
@@ -402,7 +402,7 @@ label_t::to_str (setcmp_type_t typ) const
 }
 
 //-----------------------------------------------------------------------
-
+///把标签集转换成string
 str
 capset_t::to_str (setcmp_type_t typ) const
 {
@@ -423,11 +423,11 @@ capset_t::to_str (setcmp_type_t typ) const
 }
 
 //-----------------------------------------------------------------------
-
+///label的构造函数
 label_t::label_t (const str &s) : _is_infinite (false) { (void )from_str (s); }
 
 //-----------------------------------------------------------------------
-
+///根据输入的字符串，转换为label的_map
 bool
 label_t::from_str (str s)
 {
@@ -457,7 +457,7 @@ label_t::from_str (str s)
 }
 
 //-----------------------------------------------------------------------
-
+///分配内存
 handle_factory_t *
 handle_factory_t::alloc (const str &s)
 {
@@ -466,7 +466,7 @@ handle_factory_t::alloc (const str &s)
 }
 
 //-----------------------------------------------------------------------
-
+///导出_groups
 void
 capset_t::export_groups (vec<handle_t> *out) const
 {
@@ -478,7 +478,7 @@ capset_t::export_groups (vec<handle_t> *out) const
 }
 
 //-----------------------------------------------------------------------
-
+///是否为子集
 bool
 label_t::subset_of (const label_t *r1) const
 {
