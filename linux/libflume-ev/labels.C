@@ -811,7 +811,7 @@ label_t::union_in_diff (const label_t &l1, const label_t &l2)
 }
 
 //-----------------------------------------------------------------------
-
+///把labelset转换成string
 str
 labelset_t::to_str (int which) const
 {
@@ -844,7 +844,7 @@ do { \
 
 
 //-----------------------------------------------------------------------
-
+///判断label是否为有效的
 bool
 label_t::is_valid () const
 {
@@ -858,7 +858,7 @@ label_t::is_valid () const
 }
 
 //-----------------------------------------------------------------------
-
+///判断label是否为持久的
 bool
 label_t::is_persistent () const
 {
@@ -872,12 +872,12 @@ label_t::is_persistent () const
 }
 
 //-----------------------------------------------------------------------
-
+///判断label是否为为标识符
 bool
 is_identifier (handle_prefix_t p) { return p & HANDLE_OPT_IDENTIFIER; }
 
 //-----------------------------------------------------------------------
-
+///判断label是否为为标识符
 void
 intersects_debug (const label_t *lhs, const label_t *rhs, int rc)
 {
