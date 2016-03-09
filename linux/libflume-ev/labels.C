@@ -894,7 +894,7 @@ intersects_debug (const label_t *lhs, const label_t *rhs, int rc)
 }
 
 //-----------------------------------------------------------------------
-
+///用于debug的函数？
 void 
 subset_of_debug (const label_t *lhs, const label_t **rhs, setcmp_type_t typ)
 {
@@ -927,7 +927,7 @@ subset_of_debug (const label_t *lhs, const label_t **rhs, setcmp_type_t typ)
 }
 
 //-----------------------------------------------------------------------
-
+///用于debug的函数？
 void
 subset_of_debug_res (int res)
 {
@@ -937,7 +937,7 @@ subset_of_debug_res (int res)
 }
 
 //-----------------------------------------------------------------------
-
+///如英文注释：交换两个数组，以至于空指针都在右边
 // pivot the given array so that all NULL pointers are on the right
 // side and all non-NULL pointers are on the left side.
 void
@@ -960,7 +960,7 @@ pivot_nulls (const label_t **b, const label_t **right)
 }
 
 //-----------------------------------------------------------------------
-
+///若_O_label为空，新建一个对象并返回；非空直接返回_O_label
 ptr<capset_t>
 labelset_t::O_notnull ()
 {
@@ -971,7 +971,7 @@ labelset_t::O_notnull ()
 }
 
 //-----------------------------------------------------------------------
-
+///拷贝标签in到本标签
 void
 label_t::copy (const label_t &in)
 {
@@ -983,7 +983,7 @@ label_t::copy (const label_t &in)
 }
 
 //-----------------------------------------------------------------------
-
+///判断labset是否由字符串str转换而来
 bool
 labelset_t::from_str (const str &in)
 {
@@ -1029,7 +1029,7 @@ labelset_t::from_str (const str &in)
 }
 
 //-----------------------------------------------------------------------
-
+///把flume 的状态转换成str
 str
 status2str (flume_status_t st)
 {
@@ -1039,7 +1039,7 @@ status2str (flume_status_t st)
 }
 
 //-----------------------------------------------------------------------
-
+///把四个labset转成str，或者找到错误？
 str
 lset_error (const char *fmt, const labelset_t *l1, const labelset_t *l2,
 	    const labelset_t *l3, const labelset_t *l4)
@@ -1072,7 +1072,7 @@ lset_error (const char *fmt, const labelset_t *l1, const labelset_t *l2,
 }
 
 //-----------------------------------------------------------------------
-
+///priv_tok_t和priv_tok_bin_t转换 或哈希
 void
 tok2bin (const priv_tok_t &tok, priv_tok_bin_t *bin)
 {
@@ -1085,7 +1085,7 @@ tok2bin (const priv_tok_t &tok, priv_tok_bin_t *bin)
 }
 
 //-----------------------------------------------------------------------
-
+///转换成string
 str
 label_t::label2str (const label_t *in)
 {
@@ -1094,7 +1094,7 @@ label_t::label2str (const label_t *in)
 }
 
 //-----------------------------------------------------------------------
-
+///判断label的类型
 const char *
 labeltyp2str (label_type_t t)
 {
@@ -1109,7 +1109,7 @@ labeltyp2str (label_type_t t)
 }
 
 //-----------------------------------------------------------------------
-
+///对标签进行hash等一些操作
 hash_t
 label_t::hsh () const
 {
@@ -1127,7 +1127,7 @@ label_t::hsh () const
 }
 
 //-----------------------------------------------------------------------
-
+///对标签进行hash等一些操作
 hash_t
 labelset_t::hsh (int which) const 
 {
@@ -1140,7 +1140,7 @@ labelset_t::hsh (int which) const
 }
 
 //-----------------------------------------------------------------------
-
+///判断标签集是否相等
 bool
 labelset_t::eq (const labelset_t &in, int which) const
 {
@@ -1150,7 +1150,7 @@ labelset_t::eq (const labelset_t &in, int which) const
 }
 
 //-----------------------------------------------------------------------
-
+///判断标签是否相等
 bool
 label_t::eq (const label_t *l1, const label_t *l2)
 {
@@ -1159,7 +1159,7 @@ label_t::eq (const label_t *l1, const label_t *l2)
 }
 
 //-----------------------------------------------------------------------
-
+///设置I或S标签
 void 
 labelset_t::set_label (int which, ptr<label_t> l)
 {
@@ -1171,7 +1171,7 @@ labelset_t::set_label (int which, ptr<label_t> l)
 }
 
 //-----------------------------------------------------------------------
-
+///将label拷贝到外部
 void
 label_t::to_xdr (rpc_ptr<x_label_t> *x) const
 {
