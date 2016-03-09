@@ -246,7 +246,7 @@ label_t::superset_of (const x_label_t &x)
 }
 
 //-----------------------------------------------------------------------
-///
+///并集
 void
 label_t::union_in (const x_label_t &x)
 {
@@ -256,7 +256,7 @@ label_t::union_in (const x_label_t &x)
 }
 
 //-----------------------------------------------------------------------
-
+///把label转换成外部label对象
 void
 label_t::to_xdr (x_label_t *x) const
 {
@@ -271,7 +271,7 @@ label_t::to_xdr (x_label_t *x) const
 }
 
 //-----------------------------------------------------------------------
-
+///根据外部label对象，初始化label对象
 void
 label_t::from_xdr (const x_label_t &x)
 {
@@ -280,7 +280,7 @@ label_t::from_xdr (const x_label_t &x)
 }
 
 //-----------------------------------------------------------------------
-
+///为快排写的函数指针函数
 static int
 hcmp (const void *v1, const void *v2)
 {
@@ -294,6 +294,8 @@ hcmp (const void *v1, const void *v2)
 }
 
 //-----------------------------------------------------------------------
+///把外部label中的handle快速排序之后再返回string类型
+
 //qsort()中最后一个参数是一个 hcmp函数名  函数指针
 str
 label_t::freeze (x_label_t *x) 
@@ -312,7 +314,7 @@ label_t::freeze (x_label_t *x)
 }
 
 //-----------------------------------------------------------------------
-
+///把本对象label中的handle快速排序之后再返回string类型
 str
 label_t::freeze () const
 {
@@ -322,7 +324,7 @@ label_t::freeze () const
 }
 
 //-----------------------------------------------------------------------
-
+///是否包含handle h
 bool
 label_t::contains (const handle_t &h) const
 {
@@ -330,7 +332,7 @@ label_t::contains (const handle_t &h) const
 }
 
 //-----------------------------------------------------------------------
-
+///
 ptr<label_t>
 capset_t::virtual_alloc (const x_label_t &x)
 {
