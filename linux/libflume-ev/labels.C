@@ -25,7 +25,7 @@ handle_factory_t *hfact;
 u_int64_t handle_t::_def_setuid_base = 0x1;
 
 //-----------------------------------------------------------------------
-
+///使用HANDLE_OPT_PERSISTENT前缀调用handle_t的构造函数
 handle_t
 handle_t::def_setuid_h ()
 {
@@ -33,7 +33,7 @@ handle_t::def_setuid_h ()
 }
 
 //-----------------------------------------------------------------------
-
+///构造函数
 handle_factory_secure_t::handle_factory_secure_t (const str &key) : _i (0)
 {
 	//strbuf类型找不到！！！
@@ -43,7 +43,7 @@ handle_factory_secure_t::handle_factory_secure_t (const str &key) : _i (0)
 }
 
 //-----------------------------------------------------------------------
-
+///使用p前缀调用handle_factory_secure_t构造函数
 handle_t
 handle_factory_secure_t::_newh (handle_prefix_t p)
 {
@@ -51,12 +51,12 @@ handle_factory_secure_t::_newh (handle_prefix_t p)
 }
 
 //-----------------------------------------------------------------------
-
+///label_t的构造函数
 label_t::label_t (const x_label_t &x) : _is_infinite (false) { init (x); }
 
 //-----------------------------------------------------------------------
 
-
+///根据armor_type_t泪ing转换为string
 //armor_type_t的几个类型 还不清楚此函数具体作用！！！
 str
 handle_t::to_str (armor_type_t base) const
@@ -80,16 +80,16 @@ handle_t::to_str (armor_type_t base) const
 }
 
 //-----------------------------------------------------------------------
-
+///label_t的构造函数
 label_t::label_t (const x_label_t *x): _is_infinite (false) 
 { if (x) init (*x); }
 
 //-----------------------------------------------------------------------
-
+///capset_t的构造函数
 capset_t::capset_t (const x_label_t &x) : label_t (x) { init (x); }
 
 //-----------------------------------------------------------------------
-
+///capset_t的构造函数
 capset_t::capset_t (const x_label_t *x) : label_t (x) { if (x) init (*x); }
 
 //-----------------------------------------------------------------------
@@ -105,7 +105,7 @@ capset_t::capset_t (const x_label_t *x) : label_t (x) { if (x) init (*x); }
 *typedef string endpoint_desc_t<>;
 *此处x_handle_t &x 不是一个unsigned hyper吗？
 */
-
+///将x的值拷贝到_map
 void
 label_t::init (const x_label_t &x)
 {
@@ -115,7 +115,7 @@ label_t::init (const x_label_t &x)
 }
 
 //-----------------------------------------------------------------------
-
+///label_t的构造函数
 label_t::label_t (const label_t &in)
   : _is_infinite (in._is_infinite)
 {
@@ -123,7 +123,7 @@ label_t::label_t (const label_t &in)
 }
 
 //-----------------------------------------------------------------------
-
+///capset_t的构造函数
 capset_t::capset_t (const label_t &l)
 {
   hset_iterator_t it (l.map ());
@@ -135,7 +135,7 @@ capset_t::capset_t (const label_t &l)
 }
 
 //-----------------------------------------------------------------------
-
+///capset_t的构造函数
 capset_t::capset_t (const capset_t &l)
 {
   hset_iterator_t it (l.map ());
@@ -147,7 +147,7 @@ capset_t::capset_t (const capset_t &l)
 }
 
 //-----------------------------------------------------------------------
-
+///
 void
 capset_t::init (const x_label_t &x)
 {
