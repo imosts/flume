@@ -147,7 +147,7 @@ capset_t::capset_t (const capset_t &l)
 }
 
 //-----------------------------------------------------------------------
-///
+///将x的值拷贝到_map，若x是group，再拷贝到_groups
 void
 capset_t::init (const x_label_t &x)
 {
@@ -159,7 +159,7 @@ capset_t::init (const x_label_t &x)
 }
 
 //-----------------------------------------------------------------------
-
+///向_map和_groups插入h
 void
 capset_t::insert (const handle_t &h)
 {
@@ -169,7 +169,7 @@ capset_t::insert (const handle_t &h)
 }
 
 //-----------------------------------------------------------------------
-
+///移除_groups中的h
 void
 capset_t::remove (const handle_t &h)
 {
@@ -178,7 +178,7 @@ capset_t::remove (const handle_t &h)
 }
 
 //-----------------------------------------------------------------------
-
+///获取迭代器中的下一个对象
 const handle_t *
 hset_iterator_t::next ()
 {
@@ -191,7 +191,7 @@ hset_iterator_t::next ()
 }
 
 //-----------------------------------------------------------------------
-
+///判断调用在函数的label对象是否为标记标签
 bool
 label_t::is_flatlabel () const
 {
@@ -205,7 +205,7 @@ label_t::is_flatlabel () const
 }
 
 //-----------------------------------------------------------------------
-
+///handle_factory_t的初始化函数？？？（hfact是指向handle_factory_t的全局指针）
 void
 handle_factory_t::init (const str &seed)
 {
@@ -217,7 +217,7 @@ handle_factory_t::init (const str &seed)
 }
 
 //-----------------------------------------------------------------------
-
+///判断两个标签是否相等
 bool
 label_t::eq (const label_t *l) const
 {
@@ -225,7 +225,7 @@ label_t::eq (const label_t *l) const
 }
 
 //-----------------------------------------------------------------------
-
+///向指定位置i出插入h
 void
 capmap_t::addops (handle_t h, int i)
 {
@@ -235,7 +235,7 @@ capmap_t::addops (handle_t h, int i)
 }
 
 //-----------------------------------------------------------------------
-
+///判断是否为x的超集
 bool
 label_t::superset_of (const x_label_t &x)
 {
@@ -246,7 +246,7 @@ label_t::superset_of (const x_label_t &x)
 }
 
 //-----------------------------------------------------------------------
-
+///
 void
 label_t::union_in (const x_label_t &x)
 {
